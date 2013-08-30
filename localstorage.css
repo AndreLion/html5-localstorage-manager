@@ -1,0 +1,31 @@
+.form-inline * { display:inline-block; }
+.smily { display:inline-block;font-size:18px;line-height:10px; }
+body.not-suport { height:100%;overflow:hidden; }
+body.not-support #not-support { display:block;position:absolute;top:0;left:0;height:100%;width:100%;background-color:#FFF;padding:50px 0; }
+#not-support { display:none; }
+#table-content td { vertical-align:middle; }
+#table-content .nothing td { padding:40px 0; }
+#table-content.has-data .nothing { display:none; }
+#table-content .checkbox { margin-top:0; }
+#table-content .inner { max-height:100px;overflow:hidden; }
+#table-content .more { display:none;position:absolute;bottom:10px;right:20px; }
+#table-content .long-text .more { display:inline; }
+#table-content td.show-all { }
+#table-content td.show-all .inner { max-height:inherit;}
+#table-content td.show-all .more { display:none; }
+#table-content .key {  }
+#table-content .key .inner {}
+#table-content .key .content { word-break:break-all; }
+#table-content .value {  }
+#table-content .value .inner {}
+#table-content .value .content { word-break:break-all; }
+#table-content tr .confirm,
+#table-content tr .cancel { display:none; }
+#table-content tr.updating .confirm,
+#table-content tr.updating .cancel { display:inline; }
+#table-content tr.updating {}
+#table-content tr.updating .remove,
+#table-content tr.updating .update { display:none; }
+iframe { display:none; }
+footer { padding-bottom:15px; }
+footer .rate:hover { text-decoration:none; }

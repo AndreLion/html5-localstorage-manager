@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>HTML5 Localstorage Manager</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="localstorage.css">
+	<style>
+		body { padding:20px 10px; }
+		.progress { margin-top:20px; }
+		.progress .progress-bar { margin-right:5px; }
+		.progress label { font-weight:normal;padding-left:5px;display:block; }
+		.mt { margin-top:15px; }
+		.snapshot { }
+		.snapshot img { width:31%; }
+		.jumbotron { background-image:url(forkme.png);background-position:right top;background-repeat:no-repeat;position:relative; }
+		.jumbotron .github { position:absolute;right:0;top:0;height:135px;width:135px; }
+	</style>
+</head>
+<body>
+	<p id="not-support" class="text-center">
+		Localstorage is not supported by your Browser.
+	</p>
+	<div class="jumbotron">
+	  <div class="container">
+		<h1>HTML5 Localstorage Manager</h1>
+		<p>Easily inspect localstorage data in Chrome extension. You can add / update / remove / clear localstorage via simple clicks in GUI. In other side, any modification of the localstorage  made in the browser will be shown in the extension immediately (real-time commnication). Besides, the remaining storage is displayed as a bar chart. </p>
+		<p class="snapshot">
+			<!--<img src="https://a1.muscache.com/pictures/19483921/large.jpg" class="img-rounded" />
+			<img src="https://a1.muscache.com/pictures/18359634/large.jpg" class="img-rounded" />
+			<img src="https://a0.muscache.com/pictures/19483904/large.jpg" class="img-rounded" />
+			<img src="https://a1.muscache.com/pictures/19713299/large.jpg" class="img-rounded" />-->
+		</p>
+		<p><a class="btn btn-primary btn-lg">Go to Chrome Web Store</a></p>
+	  </div>
+	  <a href="#" class="github"></a>
+	</div>
+	<div class="form-group">
+		<input id="key" class="form-control input-lg" type="text" placeholder="Key Name">
+	</div>
+	<button id="auto-key" type="button" class="btn btn-primary btn-lg">Auto Generate</button>
+	<button id="reset-key" type="button" class="btn btn-warning btn-lg">Reset Key Name</button>
+	<div class="form-group mt">
+		<textarea id="value" class="form-control input-lg" rows="3" placeholder="Value"></textarea>
+	</div>
+	<button id="auto-value-1kb" type="button" class="btn btn-primary btn-lg">1Kb</button>
+	<button id="auto-value-10kb" type="button" class="btn btn-primary btn-lg">10Kb</button>
+	<button id="auto-value-100kb" type="button" class="btn btn-primary btn-lg">100Kb</button>
+	<button id="auto-value-1mb" type="button" class="btn btn-primary btn-lg">1Mb</button>
+	<button id="reset-value" type="button" class="btn btn-warning btn-lg">Reset Value</button>
+	<button id="add" type="button" class="btn btn-success btn-lg">Add</button>
+	<button id="clear" type="button" class="btn btn-danger btn-lg">Clear</button>
+
+	<div class="progress">
+		<div class="progress-bar progress-bar-success" role="progressbar" id="space" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
+		<label class="alert-success"><span id="available">90</span>% Available</label>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-condensed table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<!--<th><label class="checkbox"><input type="checkbox"></label></th>-->
+					<th width="20%">Key</th>
+					<th width="70%">Value</th>
+					<th class="text-center">Action</th>
+				</tr>
+			</thead>
+			<tbody id="table-content">
+				<tr class="nothing text-center">
+					<td colspan="3">
+						Nothing stored in localstorage under domain <span id="domain"></span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<hr />
+	<footer>
+		<p>
+			<span class="glyphicon glyphicon-hand-up"></span> If you find a bug or have suggestion, please <a href="https://github.com/AndreLion/html5-localstorage-manager/issues"><span class="glyphicon glyphicon-pencil"></span> write it down</a>.
+		</p>
+		<p>
+			<span class="glyphicon glyphicon-thumbs-up"></span> If you like it, please give ir a rate.
+			<a class="rate" href="#">
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+			</a>
+		</p>
+		<p>
+			<span class="smily">☺</span> If this extension is helpful and saved you lots of time, please <a href="https://github.com/AndreLion/html5-localstorage-manager/issues"><span class="glyphicon glyphicon-usd"></span> donate</a> if you like.
+		</p>
+	</footer>
+	<iframe src="notification-demo.html"></iframe>
+	<script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="http://cssuseragent.org/cssua.min.js"></script>
+	<script src="localstorage.js"></script>
+	<script>
+window.onchange = function(ev){
+	$('#table-content').removeClass('has-data').find('tr.something').remove();
+	renderTable();
+	renderSpace();
+
+};
+if(support()){
+	$('#not-support').remove();
+}else{
+	$('body').addClass('not-support');
+}
+
+$('#auto-key').on('click',function(ev){
+	$('#key').val('key_'+(+new Date)).select();
+});
+$('button[id|="auto-value"]').on('click',function(ev){
+	var v = $('#value');
+	switch(ev.target.id.split('-')[2]){
+		case '1kb':
+			v.val(longtext(1));
+			break;
+		case '10kb':
+			v.val(longtext(10));
+			break;
+		case '100kb':
+			v.val(longtext(100));
+			break;
+		case '1mb':
+			v.val(longtext(1000));
+			break;
+	}
+});
+$('button[id|="reset"]').on('click',function(ev){
+	$('#'+ev.target.id.split('-')[1]).val('');
+});
+$('#add').on('click',function(ev){
+	var key = $('#key').val();
+	var value = $('#value').val();
+	$('#key').closest('div.form-group')[(key===''?'add':'remove')+'Class']('has-error');
+	$('#value').closest('div.form-group')[(value===''?'add':'remove')+'Class']('has-error');
+	if(key !== '' && value !== ''){
+		setItem(key,value);
+	}
+});
+$('#clear').on('click',function(ev){
+	store.clear();
+});
+$('#table-content').on('click','.more',function(ev){
+	ev.preventDefault();
+	$(this).closest('td').addClass('show-all');
+});
+$('#table-content').on('click','.remove',function(ev){
+	var tr = $(ev.target).closest('tr');
+	var key = tr.attr('key');
+	store.removeItem(key);
+});
+$('#table-content').on('click','.update',function(ev){
+	var tr = $(ev.target).closest('tr');
+	var edit = tr.addClass('updating').find('.value .content');
+	edit.css('height',edit.height()+'px');
+	edit.attr('contenteditable',true);
+	selectElementContents(edit[0]);
+});
+$('#table-content').on('click','.confirm',function(ev){
+	var tr = $(ev.target).closest('tr');
+	var key = tr.attr('key');
+	var value = tr.find('.value .content').text();
+	tr.removeClass('updating');
+	setItem(key,value);
+});
+$('#table-content').on('click','.cancel',function(ev){
+	var tr = $(ev.target).closest('tr');
+	var edit = tr.find('.value .content');
+	edit.css('height','');
+	edit.attr('contenteditable',false);
+	tr.removeClass('updating');
+	$(window).focus();
+});
+$('.rate').on('mouseover','span',function(ev){
+	$(this).add($(this).prevAll()).addClass('glyphicon-star').removeClass('glyphicon-star-empty');
+});
+$('.rate').on('mouseout','span',function(ev){
+	$(this).add($(this).nextAll()).addClass('glyphicon-star-empty').removeClass('glyphicon-star');
+});
+renderTable();
+renderSpace();
+$('#domain').text(location.origin);
+	</script>
+</body>
+</html>

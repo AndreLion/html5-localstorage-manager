@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+
+  "name": "HTML5 LocalStorage Manager",
+  "description": "Best localstorage chrome extension ever! Provide easy accessility and management to browser localstorage data. Real-time interact with web page. And a bar chart to indecate the availabel storage left. Best tool for developer who need to deal with localstorage.",
+  "version": "0.2.2",
+  "icons": { "128": "icon-128.png" },
+  "page_action": {
+	"default_title": "HTML5 LocalStorage Manager",
+	"default_icon": {
+      "19": "icon-19.png",
+      "38": "icon-38.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+	"tabs"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    { "matches": ["http://*/*","https://*/*"], "js": ["inject.js"] }
+  ],
+  "web_accessible_resources": [
+	"notification.html",
+	"notification.js"
+  ],
+  "homepage_url": "http://andrelion.github.io/html5-localstorage-manager/"
+}
