@@ -1,10 +1,13 @@
 {
   "manifest_version": 2,
-
   "name": "HTML5 LocalStorage Manager",
-  "description": "Best localstorage chrome extension ever! Provide easy accessility and management to browser localstorage data. Real-time interact with web page. And a bar chart to indecate the availabel storage left. Best tool for developer who need to deal with localstorage.",
-  "version": "0.2.2",
-  "icons": { "128": "icon-128.png" },
+  "description": "Best localstorage chrome extension ever! Easy accessility and management to browser localstorage data.",
+  "version": "1.0",
+  "icons": { 
+	"16": "icon-128.png",
+	"48": "icon-128.png",
+	"128": "icon-128.png" 
+  },
   "page_action": {
 	"default_title": "HTML5 LocalStorage Manager",
 	"default_icon": {
