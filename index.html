@@ -24,9 +24,6 @@
 		try{
 			localStorage.setItem('sample_data','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborumLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolora');
 			localStorage.setItem('serialized_json','{"key":"value","object":{"level2nd":"deep"},"bool":true,"array":[1,2,3,{"another":"object"},"string"]}');
-			setInterval(function(){
-				localStorage.setItem('current_timestamp',+new Date);
-			},1234);
 		}catch(e){}
 	</script>
 </head>
@@ -40,16 +37,20 @@
 		<p>Easily inspect localstorage data in Chrome extension. You can add / update / remove / clear localstorage via simple clicks in GUI. In other side, any modification of the localstorage  made in the browser will be shown in the extension immediately (real-time commnication). Besides, the remaining storage is displayed as a bar chart. </p>
 		<ul class="snapshot clearfix">
 			<li>
-				<span><img data-src="https://raw.github.com/AndreLion/html5-localstorage-manager/master/images/screenshot/addressbar.png" class="img-rounded" /></span>
+				<span><img data-src="images/screenshot/addressbar.png" class="img-rounded" /></span>
 				<label>Orange icon in address bar indicates whether the localstorage is used under current domain.</label>
 			</li>
 			<li>
-				<span><img data-src="https://raw.github.com/AndreLion/html5-localstorage-manager/master/images/screenshot/glance.png" class="img-rounded" /></span>
+				<span><img data-src="images/screenshot/glance.png" class="img-rounded" /></span>
 				<label>Convenient and real-time inspection and managemant localstorage data in extension popup.</label>
 			</li>
-			<li>
-				<span><img data-src="https://raw.github.com/AndreLion/html5-localstorage-manager/master/images/screenshot/large.png" class="img-rounded" /></span>
+			<!--<li>
+				<span><img data-src="images/screenshot/large.png" class="img-rounded" /></span>
 				<label>A bar chart shows the usage statics of current localstorage, availabel storage size is given. </label>
+			</li>-->
+			<li>
+				<span><img style="margin-top:-100px;" data-src="images/screenshot/json.png" class="img-rounded" /></span>
+				<label>Serialized JSON data stored in localstorage can be parsed and dumped into console. </label>
 			</li>
 		</ul>
 		<p>
@@ -96,6 +97,38 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+	<hr />
+	<h2 id="faq">FAQ</h2>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : The orange icon in the address bar is missing (sometimes).</div>
+		<div class="panel-body">
+			A : Make sure there is any localstorage data stored in current page, if not, the orange icon is hidden.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : The popup page of the extension is not working or the current page is redirected to somewhere else after clicked the icon under some certain website, such as <a href="http://stackoverflow.com/">stackoverflow.com</a> or <a href="https://twitter.com/">twitter.com</a>. </div>
+		<div class="panel-body">
+			A : Beacuse these websites prohibit 3rd part script from injecting iframes into their own website, so that the extension totally failed.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : The popup page of the extension get stuck when huge amount of data stored in the localstorage, what's the problem?</div>
+		<div class="panel-body">
+			A : The problem is Chrome browser can not deal with such amounts of DOM nodes in extension page, it's overloaded. Currently there is no solutions, even the Chrome Developer Tool get stuck too.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : Some javascript exceptions and 404 errors are thrown out into the console by the extension.</div>
+		<div class="panel-body">
+			A : Yes it happens, just leave them alone.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : Who made this extension?</div>
+		<div class="panel-body">
+			A : You mean <a href="http://about.me/andrelion">about me</a>?
+		</div>
 	</div>
 	<hr />
 	<footer>
