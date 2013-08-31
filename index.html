@@ -11,8 +11,11 @@
 		.progress .progress-bar { margin-right:5px; }
 		.progress label { font-weight:normal;padding-left:5px;display:block; }
 		.mt { margin-top:15px; }
-		.snapshot { }
-		.snapshot img { width:31%; }
+		.snapshot { list-style-type:none;width:100%; }
+		.snapshot li { float:left;list-style-type:none;width:30%;padding:1%; }
+		.snapshot span { display:inline-block;height:200px;overflow:hidden;border-bottom:3px solid #FFF; }
+		.snapshot img { width:100%; }
+		.snapshot label { font-weight:normal;line-height:18px;color:#666;font-size:16px;margin-top:10px; }
 		.jumbotron { background-image:url(images/forkme.png);background-position:right top;background-repeat:no-repeat;position:relative; }
 		.jumbotron .github { position:absolute;right:0;top:0;height:135px;width:135px; }
 	</style>
@@ -25,15 +28,26 @@
 	  <div class="container">
 		<h1>HTML5 Localstorage Manager</h1>
 		<p>Easily inspect localstorage data in Chrome extension. You can add / update / remove / clear localstorage via simple clicks in GUI. In other side, any modification of the localstorage  made in the browser will be shown in the extension immediately (real-time commnication). Besides, the remaining storage is displayed as a bar chart. </p>
-		<p class="snapshot">
-			<!--<img src="https://a1.muscache.com/pictures/19483921/large.jpg" class="img-rounded" />
-			<img src="https://a1.muscache.com/pictures/18359634/large.jpg" class="img-rounded" />
-			<img src="https://a0.muscache.com/pictures/19483904/large.jpg" class="img-rounded" />
-			<img src="https://a1.muscache.com/pictures/19713299/large.jpg" class="img-rounded" />-->
+		<ul class="snapshot clearfix">
+			<li>
+				<span><img src="https://raw.github.com/AndreLion/html5-localstorage-manager/master/images/screenshot/addressbar.png" class="img-rounded" /></span>
+				<label>Orange icon in address bar indicates whether the localstorage is used under current domain.</label>
+			</li>
+			<li>
+				<span><img src="https://raw.github.com/AndreLion/html5-localstorage-manager/master/images/screenshot/glance.png" class="img-rounded" /></span>
+				<label>Convenient and real-time inspection and managemant localstorage data in extension popup.</label>
+			</li>
+			<li>
+				<span><img src="https://raw.github.com/AndreLion/html5-localstorage-manager/master/images/screenshot/large.png" class="img-rounded" /></span>
+				<label>A bar chart shows the usage statics of current localstorage, availabel storage size is given. </label>
+			</li>
+		</ul>
+		<p>
+			<a class="btn btn-primary btn-lg">Go to Chrome Web Store</a>
+			<a class="btn btn-link" href="https://github.com/AndreLion/html5-localstorage-manager">View Source Code on GitHub</a>
 		</p>
-		<p><a class="btn btn-primary btn-lg">Go to Chrome Web Store</a></p>
 	  </div>
-	  <a href="#" class="github"></a>
+	  <a href="https://github.com/AndreLion/html5-localstorage-manager" class="github"></a>
 	</div>
 	<div class="form-group">
 		<input id="key" class="form-control input-lg" type="text" placeholder="Key Name">
