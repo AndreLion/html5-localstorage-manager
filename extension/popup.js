@@ -80,4 +80,30 @@ $(function(){
 		edit.attr('contenteditable',false);
 		tr.removeClass('updating');
 	});
+	$('#table-content').on('click','.dump',function(ev){
+		var tr = $(ev.target).closest('tr');
+		var key = tr.attr('key');
+		var value = tr.find('.value .content').text();
+		sendMessage('dump',function(){
+		},{key:key,value:value});
+		var offset = tr.offset();
+		var height = tr.height();
+		var width = tr.width();
+		var avatar = $('<div class="avatar"></div>').appendTo('body');
+		avatar.css({
+			'height':height,
+			'width':width,
+			'left':offset.left,
+			'top':offset.top
+		});
+		var dest = $('html').height();
+		avatar.animate({
+			height:0,
+			width:0,
+			top:dest,
+			left:0
+		},400,function(ev){
+			avatar.remove();
+		});
+	});
 })

@@ -23,6 +23,10 @@
 	<script>
 		try{
 			localStorage.setItem('sample_data','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborumLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolora');
+			localStorage.setItem('serialized_json','{"key":"value","object":{"level2nd":"deep"},"bool":true,"array":[1,2,3,{"another":"object"},"string"]}');
+			setInterval(function(){
+				localStorage.setItem('current_timestamp',+new Date);
+			},1234);
 		}catch(e){}
 	</script>
 </head>
@@ -50,7 +54,7 @@
 		</ul>
 		<p>
 			<a class="btn btn-primary btn-lg" href="https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd">Go to Chrome Web Store</a>
-			<a class="btn btn-link github-logo" href="https://github.com/AndreLion/html5-localstorage-manager">View Source Code on GitHub</a>
+			<a class="btn btn-link github-logo" href="https://github.com/AndreLion/html5-localstorage-manager">View Source Code and Contribute on GitHub</a>
 		</p>
 	  </div>
 	  <a href="https://github.com/AndreLion/html5-localstorage-manager" class="github-fork"></a>
@@ -159,8 +163,7 @@ $('#add').on('click',function(ev){
 	$('#value').closest('div.form-group')[(value===''?'add':'remove')+'Class']('has-error');
 	if(key !== '' && value !== ''){
 		setItem(key,value);
-		key.val('');
-		value.val('');
+		$('#key,#value').val('');
 	}
 });
 $('#clear').on('click',function(ev){
@@ -196,6 +199,13 @@ $('#table-content').on('click','.cancel',function(ev){
 	edit.attr('contenteditable',false);
 	tr.removeClass('updating');
 	$(window).focus();
+});
+$('#table-content').on('click','.dump',function(ev){
+	var tr = $(ev.target).closest('tr');
+	var key = tr.attr('key');
+	var value = tr.find('.value .content').text();
+	console.log('HTML5 LocalStorage Manager dump JSON of key \''+key+'\' :');
+	console.dir(JSON.parse(value));
 });
 $('.rate').on('mouseover','span',function(ev){
 	$(this).add($(this).prevAll()).addClass('glyphicon-star').removeClass('glyphicon-star-empty');

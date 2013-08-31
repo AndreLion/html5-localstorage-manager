@@ -13,7 +13,7 @@ body.not-support #not-support { display:block;position:absolute;top:0;left:0;hei
 #table-content td.show-all { }
 #table-content td.show-all .inner { max-height:inherit;}
 #table-content td.show-all .more { display:none; }
-#table-content .key {  }
+#table-content .key { position:relative;  }
 #table-content .key .inner {}
 #table-content .key .content { word-break:break-all; }
 #table-content .value {  }
@@ -26,6 +26,12 @@ body.not-support #not-support { display:block;position:absolute;top:0;left:0;hei
 #table-content tr.updating {}
 #table-content tr.updating .remove,
 #table-content tr.updating .update { display:none; }
+#table-content tr .dump { display:none; }
+#table-content tr.is-json .dump { display:inline; }
+#table-content tr.updating .dump { display:none; }
+#table-content tr.is-json .json { display:inline; }
 iframe { display:none; }
 footer { padding-bottom:15px; }
 footer .rate:hover { text-decoration:none; }
+.json { position:absolute;top:3px;left:3px;width:24px;height:11px;background:transparent url(json.png) no-repeat 0 0 scroll;background-size:24px;display:none; }
+.avatar { position:absolute;background:#EEE;opcaity:0.5; }

@@ -11,14 +11,13 @@ var init = function(){
 		var fb = fd.getElementsByTagName('body')[0];
 		var fs = fd.createElement('script');
 		fs.innerHTML = ''+
-			'var onchange = function(ev){document.getElementById("iframe").contentWindow.postMessage(\'changed\',\'chrome-extension://jkofiajodjfeakdgakfhhfnfmbohpogg\')};'+
+			'var onchange = function(ev){document.getElementById("iframe").contentWindow.postMessage(\'changed\',\'chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd\')};'+
 			'window.addEventListener("storage", onchange, false);';
 		fb.appendChild(fs);
 
 		var ff = fd.createElement('iframe');
 		ff.id = 'iframe';
-		//ff.onload = 'javascript:onchange();';
-		ff.src = 'chrome-extension://jkofiajodjfeakdgakfhhfnfmbohpogg/notification.html';
+		ff.src = 'chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/notification.html';
 		fb.appendChild(ff);
 	}
 	body.appendChild(iframe);		
@@ -56,6 +55,9 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 		}else if(message.event  === 'add'){
 			store.setItem(message.data.key,message.data.value);
 			sendResponse(dump());
+		}else if(message.event  === 'dump'){
+			console.log('HTML5 LocalStorage Manager dump JSON of key \''+message.data.key+'\' :');
+			console.dir(JSON.parse(message.data.value));
 		}
 	}else if(message.source === 'background'){
 		if(message.event === 'init'){
@@ -65,5 +67,3 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 		}
 	}
 });
-
-
