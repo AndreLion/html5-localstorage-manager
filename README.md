@@ -1,4 +1,8 @@
-localstorage-visualization
+HTML5 Localstorage Manager
 ==========================
 
-Visualization of local storage without the inspector, and test case of capacity in different browsers.
+A Chrome extension helps you to inspect and modify localstorage easily meanwhile indicates the remaining storage percentage.
+
+Please visit [Introduction Page](http://andrelion.github.io/html5-localstorage-manager/) for more details.
+
+Please go to Chome Web Store to install.
