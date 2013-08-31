@@ -3,8 +3,8 @@
 	<meta charset="utf-8">
 	<title>HTML5 Localstorage Manager</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-	<link rel="stylesheet" href="localstorage.css">
+	<link rel="stylesheet" href="extension/lib/bootstrap.min.css">
+	<link rel="stylesheet" href="extension/localstorage.css">
 	<style>
 		body { padding:20px 10px; }
 		.progress { margin-top:20px; }
@@ -13,7 +13,7 @@
 		.mt { margin-top:15px; }
 		.snapshot { }
 		.snapshot img { width:31%; }
-		.jumbotron { background-image:url(forkme.png);background-position:right top;background-repeat:no-repeat;position:relative; }
+		.jumbotron { background-image:url(images/forkme.png);background-position:right top;background-repeat:no-repeat;position:relative; }
 		.jumbotron .github { position:absolute;right:0;top:0;height:135px;width:135px; }
 	</style>
 </head>
@@ -89,14 +89,14 @@
 				<span class="glyphicon glyphicon-star-empty"></span>
 			</a>
 		</p>
-		<p>
+		<!--<p>
 			<span class="smily">☺</span> If this extension is helpful and saved you lots of time, please <a href="https://github.com/AndreLion/html5-localstorage-manager/issues"><span class="glyphicon glyphicon-usd"></span> donate</a> if you like.
-		</p>
+		</p>-->
 	</footer>
 	<iframe src="notification-demo.html"></iframe>
-	<script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
-	<script src="http://cssuseragent.org/cssua.min.js"></script>
-	<script src="localstorage.js"></script>
+	<script src="extension/lib/jquery-1.10.2.min.js"></script>
+	<script src="extension/lib/cssua.min.js"></script>
+	<script src="extension/localstorage.js"></script>
 	<script>
 window.onchange = function(ev){
 	$('#table-content').removeClass('has-data').find('tr.something').remove();
@@ -140,6 +140,8 @@ $('#add').on('click',function(ev){
 	$('#value').closest('div.form-group')[(value===''?'add':'remove')+'Class']('has-error');
 	if(key !== '' && value !== ''){
 		setItem(key,value);
+		key.val('');
+		value.val('');
 	}
 });
 $('#clear').on('click',function(ev){
