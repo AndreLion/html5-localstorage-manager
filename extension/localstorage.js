@@ -57,7 +57,6 @@ var storageSize = function(){
 		result += key.length;
 		result += value.length;
 	}
-	console.log(result);
 	return result;
 
 }

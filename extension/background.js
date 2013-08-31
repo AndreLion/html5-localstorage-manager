@@ -26,7 +26,6 @@ chrome.tabs.query({
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 	if(message.source === 'notification'){
 		if(message.event === 'refresh'){
-			console.log('background get notification refresh message');
 			chrome.tabs.query({active: true,currentWindow: true}, function (tabs) {
 				chrome.tabs.sendMessage(tabs[0].id,{source:'background',event:'refresh'});
 			});
