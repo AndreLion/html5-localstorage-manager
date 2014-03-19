@@ -57,7 +57,7 @@ $(function(){
 			render(data);
 		},{key:key});
 	});
-	$('#table-content').on('click','.update',function(ev){
+	$('#table-content').on('click','.edit',function(ev){
 		var tr = $(ev.target).closest('tr');
 		var edit = tr.addClass('updating').find('.value .content');
 		edit.css('height',edit.height()+'px');
@@ -86,24 +86,9 @@ $(function(){
 		var value = tr.find('.value .content').text();
 		sendMessage('dump',function(){
 		},{key:key,value:value});
-		var offset = tr.offset();
-		var height = tr.height();
-		var width = tr.width();
-		var avatar = $('<div class="avatar"></div>').appendTo('body');
-		avatar.css({
-			'height':height,
-			'width':width,
-			'left':offset.left,
-			'top':offset.top
-		});
-		var dest = $('html').height();
-		avatar.animate({
-			height:0,
-			width:0,
-			top:dest,
-			left:0
-		},400,function(ev){
-			avatar.remove();
-		});
+		tr.addClass('dumped');
+		setTimeout(function(){
+			tr.removeClass('dumped');
+		},2000);
 	});
 })

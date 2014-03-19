@@ -34,7 +34,7 @@
 	<div class="jumbotron">
 	  <div class="container">
 		<h1>HTML5 Localstorage Manager</h1>
-		<p>Easily inspect localstorage data in Chrome extension. You can add / update / remove / clear localstorage via simple clicks in GUI. In other side, any modification of the localstorage  made in the browser will be shown in the extension immediately (real-time commnication). Besides, the remaining storage is displayed as a bar chart. </p>
+		<p>Easily inspect localstorage data in Chrome extension. You can add / edit / remove / clear localstorage via simple clicks in GUI. In other side, any modification of the localstorage  made in the browser will be shown in the extension immediately (real-time commnication). Besides, the remaining storage is displayed as a bar chart. </p>
 		<ul class="snapshot clearfix">
 			<li>
 				<span><img data-src="images/screenshot/addressbar.png" class="img-rounded" /></span>
@@ -127,7 +127,7 @@
 	<div class="panel panel-info">
 		<div class="panel-heading">Q : Who made this extension?</div>
 		<div class="panel-body">
-			A : You mean <a href="http://about.me/andrelion">about me</a>?
+			A : Please visit my <a href="http://andrelion.github.io/about/" target="blank">Github About Page</a> and <a href="http://lnkd.in/7tK6YX" target="blank">LinkedIn Profile</a>.
 		</div>
 	</div>
 	<hr />
@@ -211,7 +211,7 @@ $('#table-content').on('click','.remove',function(ev){
 	var key = tr.attr('key');
 	store.removeItem(key);
 });
-$('#table-content').on('click','.update',function(ev){
+$('#table-content').on('click','.edit',function(ev){
 	var tr = $(ev.target).closest('tr');
 	var edit = tr.addClass('updating').find('.value .content');
 	edit.css('height',edit.height()+'px');

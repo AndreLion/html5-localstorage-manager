@@ -2,9 +2,12 @@
 
 function update(tabId) {
 	chrome.tabs.sendMessage(tabId, {source:'background',event:'init'}, function (len) {
-		if(len){
-			chrome.pageAction.show(tabId);
-		}
+		chrome.storage.sync.get('alwaysShowIcon',function(obj){
+			var alwaysShowIcon = obj.alwaysShowIcon;
+			if(alwaysShowIcon || len){
+				chrome.pageAction.show(tabId);
+			}
+		});
 	});
 }
 

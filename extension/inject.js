@@ -11,13 +11,15 @@ var init = function(){
 		var fb = fd.getElementsByTagName('body')[0];
 		var fs = fd.createElement('script');
 		fs.innerHTML = ''+
-			'var onchange = function(ev){document.getElementById("iframe").contentWindow.postMessage(\'changed\',\'chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd\')};'+
+			//'var onchange = function(ev){document.getElementById("iframe").contentWindow.postMessage(\'changed\',\'chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd\')};'+
+			'var onchange = function(ev){document.getElementById("iframe").contentWindow.postMessage(\'changed\',\'chrome-extension://hojclicaadgoodijhepfflhmbibplllh\')};'+
 			'window.addEventListener("storage", onchange, false);';
 		fb.appendChild(fs);
 
 		var ff = fd.createElement('iframe');
 		ff.id = 'iframe';
-		ff.src = 'chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/notification.html';
+		//ff.src = 'chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/notification.html';
+		ff.src = 'chrome-extension://hojclicaadgoodijhepfflhmbibplllh/notification.html';
 		fb.appendChild(ff);
 	}
 	body.appendChild(iframe);		

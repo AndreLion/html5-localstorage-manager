@@ -25,7 +25,7 @@ var setItem = function(key,value){
 	}
 };
 var newRow = function(key,value){
-	var node = $('<tr class="something" key="'+key+'"><td class="key"><span class="json"></span><div class="inner"><div class="content" /></div><a href="#" class="more">Show All</a></td><td class="value"><div class="inner"><div class="content" /></div><a href="#" class="more">Show All</a></td><td><button type="button" class="btn btn-success btn-xs btn-block confirm">Confirm</button><button type="button" class="btn btn-warning btn-xs btn-block cancel">Cancel</button><button type="button" class="btn btn-primary btn-xs btn-block dump">Dump JSON</button><button type="button" class="btn btn-primary btn-xs btn-block update">Update</button><button type="button" class="btn btn-danger btn-xs btn-block remove">Remove</button></td></tr>');
+	var node = $('<tr class="something" key="'+key+'"><td class="key"><span class="json"></span><div class="inner"><div class="content" /></div><a href="#" class="more">Show All</a></td><td class="value"><div class="inner"><div class="content" /></div><a href="#" class="more">Show All</a></td><td><button type="button" class="btn btn-success btn-xs btn-block confirm">Confirm</button><button type="button" class="btn btn-warning btn-xs btn-block cancel">Cancel</button><button type="button" class="btn btn-primary btn-xs btn-block dump" title="Send JSON object to console">Dump JSON</button><button type="button" class="btn btn-primary btn-xs btn-block edit">Edit</button><button type="button" class="btn btn-danger btn-xs btn-block remove">Remove</button></td></tr>');
 	node.find('.key .content').text(key);
 	node.find('.value .content').text(value);
 	var kih = node.find('.key .inner').height(),
