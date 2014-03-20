@@ -35,6 +35,15 @@ body.not-support #not-support { display:block;position:absolute;top:0;left:0;hei
 #table-content tr.dumped .value { -webkit-transition: background 1s;transition: background 2s;background-color:#D6E9C6; }
 #table-content tr.dumped .value { position:relative; }
 #table-content tr.dumped .value:after { position:absolute;content:'Please check developer console';top:3px;left:3px;color:#3276B1; }
+#cookie-content td { vertical-align:middle; }
+#cookie-content .nothing td { padding:40px 0; }
+#cookie-content.has-data .nothing { display:none; }
+#cookie-content .inner { max-height:100px;overflow:hidden; }
+#cookie-content .long-text .more { display:inline; }
+#cookie-content .key { position:relative;  }
+#cookie-content .key .inner {}
+#cookie-content .key .content { word-break:break-all; }
+#cookie-content .value .content { word-break:break-all; }
 iframe { display:none; }
 footer { padding-bottom:15px; }
 footer .rate:hover { text-decoration:none; }

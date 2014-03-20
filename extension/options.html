@@ -4,34 +4,33 @@
 <title>My Test Extension Options</title>
 <link rel="stylesheet" href="lib/bootstrap.min.css" />
 <style>
-	.options { width:500px;margin:30px auto; }
-	label { display:block;cursor:pointer;padding:10px 0; }
+	h2 { margin:30px; }
+	.options { margin:50px 0; }
+	label { display:block;cursor:pointer;padding:30px 0 0 0;font-weight:normal;font-size:18px;min-width:600px; }
+	#options-icon { height:250px;max-width:600px;overflow:hidden;background:transparent url(assets/options-icon.png) no-repeat 100% 0 scroll; }
+	#options-icon.always { background-position:100% -250px; }
+	#status { display:inline-block;padding:10px;display:none;margin-top:20px; }
 </style>
 </head>
 <body>
-<div class="options container">
+<h2>Options:</h2>
+<div class="options container-fluid">
 	<div class="row">
-		<div class="col-md-10 text-center">
-			<img src="json.png" />
+		<div class="col-md-6 text-center">
+			<div class="thumbnail" id="options-icon"></div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12 text-">
-			<label for="show">
-				<input type="radio" name="icon" value="show" id="show" />
-				<span>Alwasy show the extension icon in address bar</span>
-			</label>
-		</div>
-		<div class="col-md-12 text-">
+		<div class="col-md-6 text-">
 			<label for="hide">
 				<input type="radio" name="icon" value="hide" id="hide" />
-				<span>Only show the icon when there is data stored in current tab</span>
+				<span>Only show the orange icon when localstorage is used in current tab</span>
 			</label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12 text-">
-			<div id="status"></div>
+			<label for="show">
+				<input type="radio" name="icon" value="show" id="show" />
+				<span>Always show the orange icon in address bar</span>
+			</label>
+			<div class="col-md-12 text-">
+				<div class="bg-success" id="status"></div>
+			</div>
 		</div>
 	</div>
 </div>

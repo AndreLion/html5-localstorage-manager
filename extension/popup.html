@@ -22,7 +22,7 @@
 				<input id="value" class="form-control input-sm" type="text" placeholder="Value" />
 			  </div>
 			  <button id="add" type="button" class="btn btn-success btn-sm">Add</button>
-			  <button id="clear" type="button" class="btn btn-danger btn-sm">Clear All</button>
+			  <button id="clear" type="button" class="btn btn-danger btn-sm">Remove All</button>
 			</form>
 			<div class="progress">
 				<div class="progress-bar progress-bar-success" role="progressbar" id="space" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
@@ -46,7 +46,25 @@
 			</table>
 		</div>
 		<div class="tab-pane fade" id="cookie">
+			<form class="form-inline" role="form">
+			  <div class="form-group">
+				<button id="refresh" type="button" class="btn btn-primary btn-sm">Refresh <span class="glyphicon glyphicon-refresh"></span></button>
+			  </div>
+			</form>
 			<table class="table table-condensed table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th width="30%">Key</th>
+						<th width="70%">Value</th>
+					</tr>
+				</thead>
+				<tbody id="cookie-content">
+					<tr class="nothing text-center">
+						<td colspan="2">
+							No cookie found.
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 	</div>

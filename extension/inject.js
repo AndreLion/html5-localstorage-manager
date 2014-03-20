@@ -48,6 +48,8 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 			}
 		}else if(message.event  === 'pull'){
 			sendResponse(dump());
+		}else if(message.event  === 'pullCookie'){
+			sendResponse(document.cookie);
 		}else if(message.event  === 'clear'){
 			store.clear();
 			sendResponse(dump());

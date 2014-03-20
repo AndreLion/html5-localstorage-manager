@@ -45,6 +45,27 @@ var newRow = function(key,value){
 	return node;
 }
 
+var newCookieRow = function(key,value){
+	var node = $('<tr class="something" key="'+key+'"><td class="key"><span class="json"></span><div class="inner"><div class="content" /></div></td><td class="value"><div class="inner"><div class="content" /></div></td></tr>');
+	node.find('.key .content').text(key);
+	node.find('.value .content').text(value);
+	var kih = node.find('.key .inner').height(),
+		kch = node.find('.key .content').height(),
+		vih = node.find('.value .inner').height(),
+		vch = node.find('.value .content').height();
+	if(kih < kch){
+		node.find('.key').addClass('long-text');
+	}
+	if(vih < vch){
+		node.find('.value').addClass('long-text');
+	}
+	try{
+		JSON.parse(value);
+		node.addClass('is-json');
+	}catch(e){}
+	return node;
+}
+
 var selectElementContents = function(el){
     var range = document.createRange();
     range.selectNodeContents(el);
