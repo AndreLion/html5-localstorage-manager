@@ -27,8 +27,18 @@
     { "matches": ["http://*/*","https://*/*"], "js": ["inject.js"] }
   ],
   "web_accessible_resources": [
+	"lib/bootstrap.min.css",
+	"popup.css",
+	"popup-native.js",
 	"notification.html",
-	"notification.js"
+	"notification.js",
+	"lib/jquery-1.10.2.min.js",
+	"lib/jquery-1.10.2.min.map",
+	"lib/bootstrap.min.js",
+	"lib/cssua.min.js",
+	"localstorage.js",
+	"localstorage.css",
+	"json.png"
   ],
   "homepage_url": "http://andrelion.github.io/html5-localstorage-manager/",
   "options_page": "options.html"

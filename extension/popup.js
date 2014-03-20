@@ -50,6 +50,9 @@ $(function(){
 			$('#key,#value').val('');
 		},{key:key,value:value});
 	});
+	$('#popup').on('click',function(){
+		sendMessage('popup');
+	});
 	$('#table-content').on('click','.remove',function(ev){
 		var tr = $(ev.target).closest('tr');
 		var key = tr.attr('key');

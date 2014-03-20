@@ -1,0 +1,9 @@
+html,body { max-width:700px;max-height:550px; }
+body { margin:15px; }
+table { min-width:550px; }
+form { position:relative; }
+form #clear { position:absolute;right:0; }
+.nav-tabs li a { outline:none; }
+.progress .progress-bar { margin-right:5px; }
+.progress label { display:block;font-weight:normal; }
+.wider { width:50%; }
