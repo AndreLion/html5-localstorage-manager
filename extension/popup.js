@@ -74,7 +74,7 @@ $(function(){
 		},{key:key,value:value});
 	});
 	$('#popup').on('click',function(){
-		sendMessage('refresh');
+		sendMessage('popup');
 	});
 	$('#refresh').on('click',function(){
 		sendMessage('pullCookie',function(data){
