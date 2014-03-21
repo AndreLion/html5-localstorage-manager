@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "HTML5 LocalStorage Manager",
-  "description": "Best localstorage manager extension ever! Real-time inspect localstorage data and easily manage them in an indipendent popup window. It's a convenient and efficient tool for every web developers.",
+  "description": "Best localstorage manager extension ever! Real-time inspect and easily use. It's a convenient & efficient tool for every developers",
   "version": "1.5",
   "icons": { 
 	"16": "icon-128.png",
