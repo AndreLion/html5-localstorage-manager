@@ -3,7 +3,9 @@ body { margin:15px; }
 table { min-width:550px; }
 form { position:relative; }
 form #clear { position:absolute;right:0; }
+form.native #clear { position:static;right:auto; }
 .nav-tabs li a { outline:none; }
 .progress .progress-bar { margin-right:5px; }
 .progress label { display:block;font-weight:normal; }
 .wider { width:47%; }
+.native .wider { width:40%; }

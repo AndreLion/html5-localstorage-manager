@@ -19,6 +19,9 @@ $('#clear').on('click',function(ev){
 	store.clear();
 	render();
 });
+$('#close').on('click',function(ev){
+	window.close();
+});
 $('#table-content').on('click','.more',function(ev){
 	ev.preventDefault();
 	$(this).closest('td').addClass('show-all');
