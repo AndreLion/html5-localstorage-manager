@@ -87,7 +87,7 @@ var storageSize = function(){
 }
 
 var renderTable = function(){
-	var content = $('#table-content');
+	var content = $('#table-content,#table-content-demo');
 	for(var i=0,l=store.length;i<l;i++){
 		var key = store.key(i);
 		var value = store.getItem(key);
@@ -100,7 +100,7 @@ var renderTable = function(){
 }
 
 var renderSpace = function(){
-	var space = $('#space');
+	var space = $('#space,#space-demo');
 	var limit;
 	var used = storageSize();
 	var ua = cssua.ua;
@@ -111,5 +111,5 @@ var renderSpace = function(){
 	}
 	percent = used/limit*100;
 	space.css('width',percent+'%');
-	$('#available').text((100-percent).toFixed(2));
+	$('#available,#available-demo').text((100-percent).toFixed(2));
 }

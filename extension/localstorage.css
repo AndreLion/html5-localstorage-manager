@@ -4,37 +4,38 @@
 body.not-suport { height:100%;overflow:hidden; }
 body.not-support #not-support { display:block;position:absolute;top:0;left:0;height:100%;width:100%;background-color:#FFF;padding:50px 0; }
 #not-support { display:none; }
-#table-content td { vertical-align:middle; }
-#table-content .nothing td { padding:40px 0; }
-#table-content.has-data .nothing { display:none; }
-#table-content .checkbox { margin-top:0; }
-#table-content .inner { max-height:100px;overflow:hidden; }
-#table-content .more { display:none;position:absolute;bottom:10px;right:20px; }
-#table-content .long-text .more { display:inline; }
-#table-content td.show-all { }
-#table-content td.show-all .inner { max-height:inherit;}
-#table-content td.show-all .more { display:none; }
-#table-content .key { position:relative;  }
-#table-content .key .inner {}
-#table-content .key .content { word-break:break-all; }
-#table-content .value {  }
-#table-content .value .inner {}
-#table-content .value .content { word-break:break-all; }
-#table-content tr .confirm,
-#table-content tr .cancel { display:none; }
-#table-content tr.updating .confirm,
-#table-content tr.updating .cancel { display:inline; }
-#table-content tr.updating {}
-#table-content tr.updating .remove,
-#table-content tr.updating .edit { display:none; }
-#table-content tr .dump { display:none; }
-#table-content tr.is-json .dump { display:inline; }
-#table-content tr.updating .dump { display:none; }
-#table-content tr.is-json .json { display:inline; }
-#table-content tr.dumped .key,
-#table-content tr.dumped .value { -webkit-transition: background 1s;transition: background 2s;background-color:#D6E9C6; }
-#table-content tr.dumped .value { position:relative; }
-#table-content tr.dumped .value:after { position:absolute;content:'Please check developer console';top:3px;left:3px;color:#3276B1; }
+.localstorage-table td { vertical-align:middle; }
+.localstorage-table .nothing td { padding:40px 0; }
+.localstorage-table.has-data .nothing { display:none; }
+.localstorage-table .checkbox { margin-top:0; }
+.localstorage-table .inner { max-height:100px;overflow:hidden; }
+.localstorage-table .more { display:none;position:absolute;bottom:10px;right:20px; }
+.localstorage-table .long-text .more { display:inline; }
+.localstorage-table td.show-all { }
+.localstorage-table td.show-all .inner { max-height:inherit;}
+.localstorage-table td.show-all .more { display:none; }
+.localstorage-table .key { position:relative;  }
+.localstorage-table .key .inner {}
+.localstorage-table .key .content { word-break:break-all; }
+.localstorage-table .value {  }
+.localstorage-table .value .inner {}
+.localstorage-table .value .content { word-break:break-all; }
+.localstorage-table tr .confirm,
+.localstorage-table tr .cancel { display:none; }
+.localstorage-table tr.updating .confirm,
+.localstorage-table tr.updating .cancel { display:inline; }
+.localstorage-table tr.updating {}
+.localstorage-table tr.updating .remove,
+.localstorage-table tr.updating .edit { display:none; }
+.localstorage-table tr .dump { display:none; }
+.localstorage-table tr.is-json .dump { display:inline; }
+.localstorage-table tr.updating .dump { display:none; }
+.localstorage-table tr.is-json .json { display:inline; }
+.localstorage-table tr.dumped .key,
+.localstorage-table tr.dumped .value { -webkit-transition: background 1s;transition: background 2s;background-color:#D6E9C6; }
+.localstorage-table tr.dumped .value { position:relative; }
+.localstorage-table tr.dumped .value:after { position:absolute;content:'Please check developer console';top:3px;left:3px;color:#3276B1; }
+
 #cookie-content td { vertical-align:middle; }
 #cookie-content .nothing td { padding:40px 0; }
 #cookie-content.has-data .nothing { display:none; }
@@ -44,7 +45,8 @@ body.not-support #not-support { display:block;position:absolute;top:0;left:0;hei
 #cookie-content .key .inner {}
 #cookie-content .key .content { word-break:break-all; }
 #cookie-content .value .content { word-break:break-all; }
-iframe { display:none; }
+
+iframe#notification { display:none; }
 footer { padding-bottom:15px; }
 footer .rate:hover { text-decoration:none; }
 .json { position:absolute;top:3px;left:3px;width:24px;height:11px;background:transparent url(json.png) no-repeat 0 0 scroll;background-size:24px;display:none; }

@@ -7,14 +7,32 @@
 	<link rel="stylesheet" href="extension/localstorage.css">
 	<style>
 		body { padding:20px 10px; }
-		.version { font-size:16px;font-weight:normal;font-style:italic; }
+		.version { font-size:16px;font-weight:normal;font-style:italic;display:none; }
 		.extension { font-family:'Open Sans',arial,sans-serif;font-size:18px;vertical-align:bottom; }
 		.extension img { margin-right:10px; }
+		.desc { margin-top:30px;margin-bottom:30px; }
+		.popup { }
+		.popup .wrap { position:relative;min-width:440px; }
+		.popup .icon { }
+		.popup .icon .addressbar { display:inline-block;position:relative;width:90%;background:#FFF url(extension/icon-38.png) no-repeat 98% 4px scroll;border:1px solid #959592;border-radius:4px;line-height:29px;background-size:19px 19px;padding-left:26px;color:#686868;margin:0 2px; }
+		.popup .icon .glyphicon { color:#6d6d6d; }
+		.popup .icon .addressbar:before { content:' ';position:absolute;top:0;left:0;height:29px;width:24px;background:transparent url(images/url.png) no-repeat 3px 6px scroll;background-size:18px 18px; }
+		.popup .wrap .window { position:absolute;top:36px;right:0;margin-right:15px; }
+		.popup .wrap .window-inner { height:350px;width:400px;background-color:#fff;border-radius:4px;border:1px solid #afafaf;box-shadow:1px 1px 15px #AAA;padding:0 10px;overflow:auto; }
+		.popup .wrap .window:before { content:' ';position:absolute;top:-24px;right:16px;background-color:transparent;border:12px solid transparent;border-bottom-color:#AFAFAF; }
+		.popup .wrap .window:after { content:' ';position:absolute;top:-23px;right:16px;background-color:transparent;border:12px solid transparent;border-bottom-color:#FFF; }
+		.popup .wrap .window .form-inline { margin-top:10px; }
+		.popup .wrap .window .progress { margin-top:10px; }
+		#key-demo { width:80px; }
+		#value-demo { width:160px; }
+		/*.popup .icon img { width:20px; }*/
+		.brief { color:#666;padding-left:3px;padding-right:90px; }
 		.progress { margin-top:20px; }
 		.progress .progress-bar { margin-right:5px; }
 		.progress label { font-weight:normal;padding-left:5px;display:block; }
 		.mt { margin-top:15px; }
-		.feature { margin-top:30px;margin-bottom:30px; }
+		.feature { margin-top:30px;margin-bottom:30px;padding-left:30px; }
+		.feature p { font-size:16px;margin-bottom:5px; }
 		.snapshot { list-style-type:none;width:100%;margin-top:10px;margin-bottom:50px; }
 		.snapshot span { height:200px;overflow:hidden;border-bottom:3px solid #FFF; }
 		.snapshot label { font-weight:normal;line-height:18px;color:#666;font-size:16px;margin-top:10px; }
@@ -38,14 +56,55 @@
 		<div class="container">
 			<span class="extension"><img src="images/extension.png" alt="" height="32" width="32" />Chrome Extension</span>
 			<h1>HTML5 Localstorage Manager <span class="version">ver 1.5</span></h1>
-			<ul class="feature">
-				<li><p>Real-time inspect localstorage data of Chrome, any change of the localstorage made in current page will be shown immediately in this extension. </p></li>
-				<li><p>Easily check / add / edit / remove localstorage, Also an independent popup window is provided so that developers can conveniently manage localstorage data while the current page is running.</p></li>
-				<li><p>Parse and send JSON data to devtool console as object by clicking the <button class="btn btn-primary btn-xs">Dump JSON</button> button,it's much more readable for developers.</p></li>
-				<li><p>Visualizable bar chart to indicate available localstorage size. And a simple cookie inspector is also provieded.</p></li>
-			</ul>
+			<div class="row desc">
+				<div class="col-sm-6 col-md-7">
+					<p class="brief">Best LocalStorage Manager Chrome Extension ever! Real-time inspect localstorage data and easily manage them in an independent popup window. It's a convenient and efficient tool for every web developers.</p>
+				</div>
+				<div class="col-sm-6 col-md-5 popup">
+					<div class="wrap">
+						<!--<div class="icon"><img src="extension/icon-38.png" /></div>-->
+						<div class="icon">
+							<span class="glyphicon glyphicon-home"></span>
+							<div class="addressbar">http://localhost/</div>
+							<span class="glyphicon glyphicon-align-justify"></span>
+						</div>
+						<div class="window"><div class="window-inner">
+							<form class="form-inline" role="form">
+							  <div class="form-group">
+								<input id="key-demo" class="form-control input-sm" type="text" placeholder="Key" />
+							  </div>
+							  <div class="form-group wider">
+								<input id="value-demo" class="form-control input-sm" type="text" placeholder="Value" />
+							  </div>
+							  <button id="add-demo" type="button" class="btn btn-success btn-sm">Add</button>
+							  <button id="clear-demo" type="button" class="btn btn-danger btn-sm">Remove All</button>
+							</form>
+							<div class="progress">
+								<div class="progress-bar progress-bar-success" role="progressbar" id="space-demo" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
+								<label class="alert-success"><span id="available-demo">100</span>% Available</label>
+							</div>
+							<table class="table table-condensed table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										<th width="15%">Key</th>
+										<th width="65%">Value</th>
+										<th class="text-center">Action</th>
+									</tr>
+								</thead>
+								<tbody id="table-content-demo" class="localstorage-table">
+									<tr class="nothing text-center">
+										<td colspan="3">
+											Nothing stored in localstorage under current domain <span id="domain"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div></div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="snapshot row">
+		<!--<div class="snapshot row">
 			<div class="col-sm-4">
 				<span><img src="images/screenshot/icon.jpg" class="img-rounded img-responsive" /></span>
 				<label>Orange icon in address bar to indicate whether the localstorage is used under current domain.</label>
@@ -58,15 +117,30 @@
 				<span><img src="images/screenshot/popup.jpg" class="img-rounded img-responsive" /></span>
 				<label>A popup window helps developer to inspect localstorage all the time.</label>
 			</div>
-			<!--<div class="col-sm-3">
+			<div class="col-sm-3">
 				<span><img src="images/screenshot/cookie.jpg" class="img-rounded img-responsive" /></span>
 				<label>Orange icon in address bar indicates whether the localstorage is used under current domain.</label>
-			</div>-->
-		</div>
+			</div>
+		</div>-->
 		<p class="container">
-			<a class="btn btn-primary btn-lg" href="https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd">Download in Chrome Web Store <img src="images/extension.png" alt="" height="32" width="32" /></a>
-			<a class="btn btn-link github-logo" href="https://github.com/AndreLion/html5-localstorage-manager">View Source Code and Contribute on GitHub</a>
+			<a class="btn btn-primary btn-lg" href="https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd">Download in Chrome Web Store</a>
+
+			<!--<a class="btn btn-link github-logo" href="https://github.com/AndreLion/html5-localstorage-manager">View Source Code and Contribute on GitHub</a>-->
 		</p>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-md-7 ">
+					<ul class="feature">
+						<li><p>Real-time inspect, any change of localstorage will be shown in this extension immediately. </p></li>
+						<li><p>Check / add / edit / remove localstoage easily, also in an independent window.</p></li>
+						<li><p>Parse and send JSON to devtool console by clicking the <button class="btn btn-primary btn-xs">Dump JSON</button> button.</p></li>
+						<li><p>Visualizable available storage size. And a simple cookie manager.</p></li>
+					</ul>
+					<a href="https://twitter.com/share" class="twitter-share-button" style="visibility:hidden;" data-url="http://git.io/neaESw" data-text="Best HTML5 LocalStorage Manager Chrome Extension ever! Strongly recommend to every web developers" id="twitter-share" data-via="AndreLion" data-count="none">Tweet</a>
+					<script>!function(d,s,id){window.onload = function(){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';setTimeout(function(){fjs.parentNode.insertBefore(js,fjs);document.getElementById('twitter-share').style.visibility='';},3000);}}}(document, 'script', 'twitter-wjs');</script>
+				</div>
+			</div>
+		</div>
 	  </div>
 	  <a href="https://github.com/AndreLion/html5-localstorage-manager" class="github-fork"></a>
 	</div>
@@ -90,7 +164,7 @@
 
 	<div class="progress">
 		<div class="progress-bar progress-bar-success" role="progressbar" id="space" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
-		<label class="alert-success"><span id="available">90</span>% Available</label>
+		<label class="alert-success"><span id="available">100</span>% Available</label>
 	</div>
 	<div class="table-responsive">
 		<table class="table table-condensed table-striped table-bordered table-hover">
@@ -101,7 +175,7 @@
 					<th class="text-center">Action</th>
 				</tr>
 			</thead>
-			<tbody id="table-content">
+			<tbody class="localstorage-table" id="table-content">
 				<tr class="nothing text-center">
 					<td colspan="3">
 						Nothing stored in localstorage under domain <span id="domain"></span>
@@ -161,13 +235,13 @@
 			<span class="smily">☺</span> If this extension is helpful and saved you lots of time, please <a href="https://github.com/AndreLion/html5-localstorage-manager/issues"><span class="glyphicon glyphicon-usd"></span> donate</a> if you like.
 		</p>-->
 	</footer>
-	<iframe src="notification-demo.html"></iframe>
+	<iframe id="notification" src="notification-demo.html"></iframe>
 	<script src="extension/lib/jquery-1.10.2.min.js"></script>
 	<script src="extension/lib/cssua.min.js"></script>
 	<script src="extension/localstorage.js"></script>
 	<script>
 window.onchange = function(ev){
-	$('#table-content').removeClass('has-data').find('tr.something').remove();
+	$('#table-content,#table-content-demo').removeClass('has-data').find('tr.something').remove();
 	renderTable();
 	renderSpace();
 
@@ -201,43 +275,47 @@ $('button[id|="auto-value"]').on('click',function(ev){
 $('button[id|="reset"]').on('click',function(ev){
 	$('#'+ev.target.id.split('-')[1]).val('');
 });
-$('#add').on('click',function(ev){
-	var key = $('#key').val();
-	var value = $('#value').val();
-	$('#key').closest('div.form-group')[(key===''?'add':'remove')+'Class']('has-error');
-	$('#value').closest('div.form-group')[(value===''?'add':'remove')+'Class']('has-error');
+$('#add, #add-demo').on('click',function(ev){
+	var suffix = '';
+	if(this.id.indexOf('-demo') !== -1){
+		suffix = '-demo';
+	}
+	var key = $('#key'+suffix).val();
+	var value = $('#value'+suffix).val();
+	$('#key'+suffix).closest('div.form-group')[(key===''?'add':'remove')+'Class']('has-error');
+	$('#value'+suffix).closest('div.form-group')[(value===''?'add':'remove')+'Class']('has-error');
 	if(key !== '' && value !== ''){
 		setItem(key,value);
-		$('#key,#value').val('');
+		$('#key'+suffix+',#value'+suffix).val('');
 	}
 });
-$('#clear').on('click',function(ev){
+$('#clear,#clear-demo').on('click',function(ev){
 	store.clear();
 });
-$('#table-content').on('click','.more',function(ev){
+$('#table-content,#table-content-demo').on('click','.more',function(ev){
 	ev.preventDefault();
 	$(this).closest('td').addClass('show-all');
 });
-$('#table-content').on('click','.remove',function(ev){
+$('#table-content,#table-content-demo').on('click','.remove',function(ev){
 	var tr = $(ev.target).closest('tr');
 	var key = tr.attr('key');
 	store.removeItem(key);
 });
-$('#table-content').on('click','.edit',function(ev){
+$('#table-content,#table-content-demo').on('click','.edit',function(ev){
 	var tr = $(ev.target).closest('tr');
 	var edit = tr.addClass('updating').find('.value .content');
 	edit.css('height',edit.height()+'px');
 	edit.attr('contenteditable',true);
 	selectElementContents(edit[0]);
 });
-$('#table-content').on('click','.confirm',function(ev){
+$('#table-content,#table-content-demo').on('click','.confirm',function(ev){
 	var tr = $(ev.target).closest('tr');
 	var key = tr.attr('key');
 	var value = tr.find('.value .content').text();
 	tr.removeClass('updating');
 	setItem(key,value);
 });
-$('#table-content').on('click','.cancel',function(ev){
+$('#table-content,#table-content-demo').on('click','.cancel',function(ev){
 	var tr = $(ev.target).closest('tr');
 	var edit = tr.find('.value .content');
 	edit.css('height','');
@@ -245,7 +323,7 @@ $('#table-content').on('click','.cancel',function(ev){
 	tr.removeClass('updating');
 	$(window).focus();
 });
-$('#table-content').on('click','.dump',function(ev){
+$('#table-content,#table-content-demo').on('click','.dump',function(ev){
 	var tr = $(ev.target).closest('tr');
 	var key = tr.attr('key');
 	var value = tr.find('.value .content').text();
@@ -266,6 +344,6 @@ $('.snapshot').find('img').each(function(index,node){
 	n.attr('src',n.data('src'));
 });
 	</script>
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css">
+	<!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css">-->
 </body>
 </html>
