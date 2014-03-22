@@ -14,7 +14,7 @@ body.not-support #not-support { display:block;position:absolute;top:0;left:0;hei
 .localstorage-table td.show-all { }
 .localstorage-table td.show-all .inner { max-height:inherit;}
 .localstorage-table td.show-all .more { display:none; }
-.localstorage-table .key { position:relative;  }
+.localstorage-table .key { position:relative;padding-top:16px;  }
 .localstorage-table .key .inner {}
 .localstorage-table .key .content { word-break:break-all; }
 .localstorage-table .value {  }
@@ -34,7 +34,7 @@ body.not-support #not-support { display:block;position:absolute;top:0;left:0;hei
 .localstorage-table tr.dumped .key,
 .localstorage-table tr.dumped .value { -webkit-transition: background 1s;transition: background 2s;background-color:#D6E9C6; }
 .localstorage-table tr.dumped .value { position:relative; }
-.localstorage-table tr.dumped .value:after { position:absolute;content:'Please check developer console';top:3px;left:3px;color:#3276B1; }
+.localstorage-table tr.dumped .value:after { position:absolute;content:'Please check developer console';top:3px;left:3px;color:#3276B1;background-color:#fff;padding:5px; }
 
 #cookie-content td { vertical-align:middle; }
 #cookie-content .nothing td { padding:40px 0; }

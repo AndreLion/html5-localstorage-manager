@@ -18,7 +18,7 @@
 		.popup .icon .glyphicon { color:#6d6d6d; }
 		.popup .icon .addressbar:before { content:' ';position:absolute;top:0;left:0;height:29px;width:24px;background:transparent url(images/url.png) no-repeat 3px 6px scroll;background-size:18px 18px; }
 		.popup .wrap .window { position:absolute;top:36px;right:0;margin-right:15px; }
-		.popup .wrap .window-inner { height:350px;width:400px;background-color:#fff;border-radius:4px;border:1px solid #afafaf;box-shadow:1px 1px 15px #AAA;padding:0 10px;overflow:auto; }
+		.popup .wrap .window-inner { height:410px;width:400px;background-color:#fff;border-radius:4px;border:1px solid #afafaf;box-shadow:1px 1px 15px #AAA;padding:0 10px;overflow:auto; }
 		.popup .wrap .window:before { content:' ';position:absolute;top:-24px;right:16px;background-color:transparent;border:12px solid transparent;border-bottom-color:#AFAFAF; }
 		.popup .wrap .window:after { content:' ';position:absolute;top:-23px;right:16px;background-color:transparent;border:12px solid transparent;border-bottom-color:#FFF; }
 		.popup .wrap .window .form-inline { margin-top:10px; }
@@ -42,8 +42,11 @@
 	</style>
 	<script>
 		try{
-			localStorage.setItem('sample_data','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborumLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolora');
-			localStorage.setItem('serialized_json','{"key":"value","object":{"level2nd":"deep"},"bool":true,"array":[1,2,3,{"another":"object"},"string"]}');
+			localStorage.setItem('data','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborumLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolora');
+			localStorage.setItem('json','{"key":"value","object":{"level2nd":"deep"},"bool":true,"array":[1,2,3,{"another":"object"},"string"]}');
+			setInterval(function(){
+				localStorage.setItem('timer','now : '+(+new Date));
+			},1234);
 		}catch(e){}
 	</script>
 </head>
