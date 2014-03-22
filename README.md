@@ -8,3 +8,16 @@ Best localstorage manager extension ever! Real-time inspect localstorage data an
 Please visit [Introduction Page](http://andrelion.github.io/html5-localstorage-manager/) for more details.
 
 Please go to [Chome Web Store](https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd) to install.
+
+Release log:
+----------------------
+
+Ver 1.5 (Mar 20, 2014)
+  - Independent popup up window
+  - Support cookie
+
+Ver 1.1 (Sep 1, 2013)
+  - Dump JSON button
+
+Ver 1.0 ( Aug 31, 2013)
+  - Everything basic
