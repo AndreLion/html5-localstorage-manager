@@ -1,0 +1,11 @@
+{
+  "appName": {
+    "message": "HTML5 LocalStorage Manager",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "Best localstorage manager extension ever! Real-time inspect and easily use. It's a convenient & efficient tool for every developers", 
+    "description":"The description of the application, displayed in the web store."
+  }
+}
+

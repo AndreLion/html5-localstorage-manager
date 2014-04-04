@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "HTML5 LocalStorage Manager",
-  "description": "Best localstorage manager extension ever! Real-time inspect and easily use. It's a convenient & efficient tool for every developers",
-  "version": "1.5.6",
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
+  "version": "1.5.7",
   "icons": { 
 	"16": "icon-128.png",
 	"48": "icon-128.png",

@@ -1,0 +1,11 @@
+{
+  "appName": {
+    "message": "HTML5 LocalStorage 管理器",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "史上最好用的localstorage管理插件！实时监控和操作localstorage，HTML5时代前端开发必备工具！", 
+    "description":"The description of the application, displayed in the web store."
+  }
+}
+
