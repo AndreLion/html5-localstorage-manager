@@ -21,3 +21,8 @@ Ver 1.1 (Sep 1, 2013)
 
 Ver 1.0 ( Aug 31, 2013)
   - Everything basic
+
+
+================
+
+[♥ There are some other projects you may be interested in ♥](http://andrelion.github.io/about/)
