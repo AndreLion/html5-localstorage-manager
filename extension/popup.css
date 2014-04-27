@@ -9,3 +9,4 @@ form.native #clear { position:static;right:auto; }
 .progress label { display:block;font-weight:normal; }
 .wider { width:47%; }
 .native .wider { width:40%; }
+.footer { padding:0 10px 10px 0; }
