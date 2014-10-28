@@ -1,81 +1,115 @@
 <!doctype html>
-<html>
-  <head>
-    <title>Getting Started Extension's Popup</title>
-	<link rel="stylesheet" href="lib/bootstrap.min.css" />
-	<link rel="stylesheet" href="localstorage.css" />
-	<link rel="stylesheet" href="popup.css" />
-  </head>
-  <body>
-	<ul class="nav nav-tabs">
-      <button id="popup" type="button" class="btn btn-primary btn-sm pull-right">Popup in new window <span class="glyphicon glyphicon-new-window"></span></button>
-	  <li class="active"><a href="#localstorage" data-toggle="tab">LocalStorage</a></li>
-	  <li><a href="#cookie" data-toggle="tab">Cookie</a></li>
-	</ul>
-	<div class="tab-content">
-		<div class="tab-pane fade in active" id="localstorage">
-			<form class="form-inline" role="form">
-			  <div class="form-group">
-				<input id="key" class="form-control input-sm" type="text" placeholder="Key" />
-			  </div>
-			  <div class="form-group wider">
-				<input id="value" class="form-control input-sm" type="text" placeholder="Value" />
-			  </div>
-			  <button id="add" type="button" class="btn btn-success btn-sm">Add</button>
-			  <button id="clear" type="button" class="btn btn-danger btn-sm">Remove All</button>
-			</form>
-			<div class="progress">
-				<div class="progress-bar progress-bar-success" role="progressbar" id="space" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
-				<label class="alert-success"><span id="available">90</span>% Available</label>
-			</div>
-			<table class="table table-condensed table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th width="20%">Key</th>
-						<th width="70%">Value</th>
-						<th class="text-center">Action</th>
-					</tr>
-				</thead>
-				<tbody class="localstorage-table" id="table-content">
-					<tr class="nothing text-center">
-						<td colspan="3">
-							Nothing stored in localstorage under current domain <span id="domain"></span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="tab-pane fade" id="cookie">
-			<form class="form-inline" role="form">
-			  <div class="form-group">
-				<button id="refresh" type="button" class="btn btn-primary btn-sm">Refresh <span class="glyphicon glyphicon-refresh"></span></button>
-			  </div>
-			</form>
-			<table class="table table-condensed table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th width="30%">Key</th>
-						<th width="70%">Value</th>
-					</tr>
-				</thead>
-				<tbody id="cookie-content">
-					<tr class="nothing text-center">
-						<td colspan="2">
-							No cookie found.
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<div class="text-right footer" >
-		<a class="options" href="chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/options.html" target="_blank">Options <span class="glyphicon glyphicon-wrench"></span></a>
-	</div>
-    <script src="lib/jquery-1.10.2.min.js"></script>
-    <script src="lib/bootstrap.min.js"></script>
-    <script src="lib/cssua.min.js"></script>
-    <script src="localstorage.js"></script>
-    <script src="popup.js"></script>
-  </body>
+<html ng-app="storageManagerApp">
+    <head>
+        <title>Getting Started Extension's Popup</title>
+        <link rel="stylesheet" href="lib/bootstrap.min.css" />
+        <link rel="stylesheet" href="localstorage.css" />
+        <link rel="stylesheet" href="popup.css" />
+    </head>
+    <body>
+        <tabset>
+            <tab heading="Storage" ng-controller="storageController">
+                <div class="btn-group">
+                    <label class="btn btn-primary btn-sm" ng-model="type" btn-radio="'localstorage'">Local Storage</label>
+                    <label class="btn btn-primary btn-sm" ng-model="type" btn-radio="'sessionstorage'">Sessin Storage</label>
+                </div>
+                <button ng-click="openWindow()" type="button" class="btn btn-primary btn-sm pull-right">Popup in new window <span class="glyphicon glyphicon-new-window"></span></button>
+                <form class="form-inline" role="form" ng-submit="add()">
+                    <div class="form-group">
+                        <input ng-model="key" class="form-control input-sm" type="text" placeholder="Key" />
+                    </div>
+                    <div class="form-group wider">
+                        <input ng-model="value" class="form-control input-sm" type="text" placeholder="Value" />
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm">Add</button>
+                    <button ng-click="clear()" type="button" class="btn btn-danger btn-sm">Remove All</button>
+                </form>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" id="space" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
+                    <label class="alert-success"><span id="available">{{percentage}}</span>% Available </label>
+                </div>
+                <table class="table table-condensed table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th width="15%">Key</th>
+                            <th width="70%">Value</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="localstorage-table">
+                        <tr ng-repeat="item in localStorage" class="something" ng-class="{editing:editing==item.key}">
+                            <td class="key">
+                                <span ng-show="item.isJson" class="json"></span>
+                                <div class="inner">
+                                    <div class="content">{{item.key}}</div>
+                                </div>
+                            </td>
+                            <td class="value" ng-contenteditable ng-model="item.value" strip-br="true"></td>
+                            <td>
+                                <button type="button" ng-click="submit(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
+                                <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
+                                <button type="button" ng-click="dump(item.key,item.value)" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
+                                <button type="button" ng-click="edit(item.key)" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                <button type="button" ng-click="remove(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
+                                <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
+                                <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
+                            </td>
+                        </tr>
+                        <tr ng-hide="localStorage.length" class="nothing text-center">
+                            <td colspan="3">
+                                Nothing stored in localstorage under current domain
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </tab>
+            <tab heading="Cookie" ng-controller="cookieController">
+                <form class="form-inline" role="form">
+                    <div class="form-group">
+                        <button ng-click="refresh()" type="button" class="btn btn-primary btn-sm">Refresh <span class="glyphicon glyphicon-refresh"></span></button>
+                    </div>
+                </form>
+                <table class="table table-condensed table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th width="30%">Key</th>
+                            <th width="70%">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="cookie in cookies" class="something">
+                            <td class="key">
+                                <div class="inner">
+                                    <div class="content">{{cookie.key}}</div>
+                                </div>
+                            </td>
+                            <td class="value">
+                                <div class="inner">
+                                    <div class="content">{{cookie.value}}</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-hide="cookies.length" class="nothing text-center">
+                            <td colspan="2">
+                                No cookie found.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </tab>
+        </tabset>
+        <div class="text-right footer" >
+            <a class="options" href="chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/options.html" target="_blank">Options <span class="glyphicon glyphicon-wrench"></span></a>
+        </div>
+        <!--<script src="lib/jquery-1.10.2.min.js"></script>
+        <script src="lib/bootstrap.min.js"></script>
+        <script src="lib/cssua.min.js"></script>
+        <script src="localstorage.js"></script>
+        <script src="popup.js"></script>-->
+        <script src="lib/angular.min.js"></script>
+        <script src="lib/angular-sanitize.min.js"></script>
+        <script src="lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
+        <script src="popup.js"></script>
+    </body>
 </html>
 

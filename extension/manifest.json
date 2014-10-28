@@ -3,7 +3,7 @@
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
-  "version": "1.5.8",
+  "version": "1.6.0",
   "icons": { 
 	"16": "icon-128.png",
 	"48": "icon-128.png",
@@ -35,6 +35,9 @@
 	"notification.js",
 	"lib/jquery-1.10.2.min.js",
 	"lib/jquery-1.10.2.min.map",
+	"lib/angular.min.js",
+	"lib/angular.min.js.map",
+    "lib/ui-bootstrap-tpls-0.11.2.min.js",
 	"lib/bootstrap.min.js",
 	"lib/cssua.min.js",
 	"localstorage.js",

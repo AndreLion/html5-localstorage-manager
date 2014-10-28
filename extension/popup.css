@@ -1,6 +1,7 @@
 html,body { max-width:700px;max-height:550px; }
 body { margin:15px; }
-table { min-width:550px; }
+table { min-width:550px;table-layout:fixed; }
+td { word-wrap:break-word; }
 form { position:relative; }
 form #clear { position:absolute;right:0; }
 form.native #clear { position:static;right:auto; }
@@ -10,3 +11,30 @@ form.native #clear { position:static;right:auto; }
 .wider { width:47%; }
 .native .wider { width:40%; }
 .footer { padding:0 10px 10px 0; }
+
+
+/*-----------------*/
+.nav-tabs>li { cursor:pointer; }
+.nav-tabs>li.active { cursor:default; }
+
+.ng-hide {
+/* this is just another form of hiding an element */
+display:block!important;
+position:absolute;
+top:-9999px;
+left:-9999px;
+}
+
+
+/*-------------------------*/
+.value[contenteditable="plaintext-only"] {
+  border-color: #66afe9;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 175, 233, .6);
+}
+
+.table-hover>tbody>tr:hover>td:first-child,
+.table-hover>tbody>tr:hover>td:last-child {
+    background-color: transparent;
+}
+
+.btn-block { margin-bottom:5px; }

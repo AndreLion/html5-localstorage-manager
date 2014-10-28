@@ -1,7 +1,7 @@
 var store = localStorage;
 var inited = false;
-var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd';
-//var extensionid = 'hojclicaadgoodijhepfflhmbibplllh';
+//var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd'; //online
+var extensionid = 'kmclokmeccmafganmdhcodpgdobjmklk'; //offline
 var init = function(){
 	var body = document.getElementsByTagName('body')[0];
 	var iframe = document.createElement('iframe');
@@ -27,12 +27,33 @@ var init = function(){
 };
 
 var dump = function(){
-	var result = {};
+    var len = 0,
+        limit = 2621440,
+        result = {
+            storage:[],
+            percentage:0
+        },
+        key,value,obj;
+
 	for(var i=0,l=store.length;i<l;i++){
-		var key = store.key(i);
-		var value = store.getItem(key);
-		result[key] = value;
+		key = store.key(i);
+		value = store.getItem(key);
+        obj = {
+            key:key,
+            value:value,
+            isJson:false,
+            expand:false
+        };
+        try{
+            JSON.parse(value);
+            obj.isJson = true;
+        }catch(e){}
+        result.storage.push(obj);
+        len += key.length;
+        len += value.length;
 	}
+    result.percentage = len/limit*100;
+
 	return result;
 };
 
