@@ -10,7 +10,7 @@
 	"128": "icon-128.png" 
   },
   "page_action": {
-	"default_title": "HTML5 LocalStorage Manager",
+	"default_title": "HTML5 Storage Manager All in One",
 	"default_icon": {
       "19": "icon-19.png",
       "38": "icon-38.png"
@@ -18,32 +18,22 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-	"tabs","storage"
+	"tabs","storage","cookies"
   ],
   "background": {
     "scripts": ["background.js"],
     "persistent": true
   },
   "content_scripts": [
-    { "matches": ["http://*/*","https://*/*"], "js": ["inject.js"] }
+    { "matches": ["http://*/*","https://*/*"], "js": ["lib/cookies.min.js","inject.js"] }
   ],
   "web_accessible_resources": [
 	"lib/bootstrap.min.css",
 	"popup.css",
-	"popup-native.js",
 	"notification.html",
 	"notification.js",
-	"lib/jquery-1.10.2.min.js",
-	"lib/jquery-1.10.2.min.map",
 	"lib/angular.min.js",
-	"lib/angular.min.js.map",
-    "lib/ui-bootstrap-tpls-0.11.2.min.js",
-	"lib/bootstrap.min.js",
-	"lib/cssua.min.js",
-	"localstorage.js",
-	"localstorage.css",
-	"json.png",
-	"assets/options-icon.png"
+    "lib/ui-bootstrap-tpls-0.11.2.min.js"
   ],
   "homepage_url": "http://andrelion.github.io/html5-localstorage-manager/",
   "options_page": "options.html"

@@ -1,54 +1,15 @@
-.tab-content { margin-top:10px; }
 .form-inline * { display:inline-block; }
 .smily { display:inline-block;font-size:18px;line-height:10px; }
 body.not-suport { height:100%;overflow:hidden; }
 body.not-support #not-support { display:block;position:absolute;top:0;left:0;height:100%;width:100%;background-color:#FFF;padding:50px 0; }
 #not-support { display:none; }
-.localstorage-table td { vertical-align:middle; }
-.localstorage-table .nothing td { padding:40px 0; }
-/*.localstorage-table.has-data .nothing { display:none; }*/
-.localstorage-table .checkbox { margin-top:0; }
-.localstorage-table .inner { max-height:100px;overflow:hidden; }
-.localstorage-table .more { display:none;position:absolute;bottom:10px;right:20px; }
-.localstorage-table .long-text .more { display:inline; }
-.localstorage-table td.show-all { }
-.localstorage-table td.show-all .inner { max-height:inherit;}
-.localstorage-table td.show-all .more { display:none; }
-.localstorage-table .key { position:relative;padding-top:16px;  }
-.localstorage-table .key .inner {}
-.localstorage-table .key .content { word-break:break-all; }
-.localstorage-table .value {  }
-.localstorage-table .value .inner {}
-.localstorage-table .value .content { word-break:break-all; }
-/*.localstorage-table tr .confirm,
-.localstorage-table tr .cancel { display:none; }
-.localstorage-table tr.editing .confirm,
-.localstorage-table tr.editing .cancel { display:inline; }
-.localstorage-table tr.editing {}
-.localstorage-table tr.editing .remove,
-.localstorage-table tr.editing .edit { display:none; }
-.localstorage-table tr .dump { display:none; }
-.localstorage-table tr.is-json .dump { display:inline; }
-.localstorage-table tr.editing .dump { display:none; }
-.localstorage-table tr.is-json .json { display:inline; }*/
-.localstorage-table tr.dumped .key,
-.localstorage-table tr.dumped .value { -webkit-transition: background 1s;transition: background 2s;background-color:#D6E9C6; }
-.localstorage-table tr.dumped .value { position:relative; }
-.localstorage-table tr.dumped .value:after { position:absolute;content:'Please check developer console';top:3px;left:3px;color:#3276B1;background-color:#fff;padding:5px; }
-
-tbody td { vertical-align:middle; }
-tbody .nothing td { padding:40px 0; }
-/*tbody.has-data .nothing { display:none; }*/
+table tbody tr.nothing td { padding:40px 0; }
+table tbody td { vertical-align:middle; }
 tbody .inner { max-height:100px;overflow:hidden; }
-tbody .long-text .more { display:inline; }
-tbody .key { position:relative;  }
-tbody .key .inner {}
-tbody .key .content { word-break:break-all; }
-tbody .value .content { word-break:break-all; }
 
 iframe#notification { display:none; }
 footer { padding-bottom:15px; }
 footer .rate:hover { text-decoration:none; }
-.json { position:absolute;top:3px;left:3px;width:24px;height:11px;background:transparent url(json.png) no-repeat 0 0 scroll;background-size:24px; }
+/*.json { position:absolute;top:3px;left:3px;width:24px;height:11px;background:transparent url(json.png) no-repeat 0 0 scroll;background-size:24px; }*/
 .avatar { position:absolute;background:#EEE;opcaity:0.5; }
 

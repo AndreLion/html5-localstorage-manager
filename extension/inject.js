@@ -80,6 +80,32 @@ var dumpSession = function(){
 	return result;
 };
 
+var dumpCookie = function(){
+    var c = '; '+document.cookie;
+    var result = [];
+    var obj = {};
+    var key, value;
+    var arr = c.split('; ');
+    for(var i=0,l=arr.length;i<l;i++){
+        if(arr[i] === ''){
+            continue;
+        }
+        key = arr[i].split('=')[0];
+        value = Cookies.get(key);
+        obj = {
+            key:key,
+            value:value,
+            isJson:false
+        };
+        try{
+            JSON.parse(value);
+            obj.isJson = true;
+        }catch(e){}
+        result.push(obj);
+    }
+    return result;
+};
+
 var refresh = function(){
 	chrome.runtime.sendMessage({source:'content',event:'sync',data:dump()});
 };
@@ -95,28 +121,42 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 		}else if(message.event  === 'pullSession'){
 			sendResponse(dumpSession());
 		}else if(message.event  === 'pullCookie'){
-			sendResponse(document.cookie);
+			sendResponse(dumpCookie());
 		}else if(message.event  === 'clear'){
 			local.clear();
 			sendResponse(dump());
 		}else if(message.event  === 'clearSession'){
 			session.clear();
 			sendResponse(dumpSession());
+		}else if(message.event  === 'clearCookie'){
+            for(var i=0,l=message.data.c.length;i<l;i++){
+                Cookies.expire(message.data.c[i].key);
+            }
+			sendResponse(dumpCookie());
 		}else if(message.event  === 'remove'){
 			local.removeItem(message.data.key);
 			sendResponse(dump());
 		}else if(message.event  === 'removeSession'){
 			session.removeItem(message.data.key);
 			sendResponse(dumpSession());
+		}else if(message.event  === 'removeCookie'){
+			Cookies.expire(message.data.key);
+			sendResponse(dumpCookie());
 		}else if(message.event  === 'add'){
 			local.setItem(message.data.key,message.data.value);
 			sendResponse(dump());
+		}else if(message.event  === 'addCookie'){
+			Cookies.set(message.data.key,message.data.value);
+			sendResponse(dumpCookie());
+		}else if(message.event  === 'editCookie'){
+			Cookies.set(message.data.key,message.data.value);
+			sendResponse(dumpCookie());
 		}else if(message.event  === 'addSession'){
 			session.setItem(message.data.key,message.data.value);
 			sendResponse(dumpSession());
 		}else if(message.event  === 'dump'){
-			console.log('HTML5 Storage Manager dump JSON of key \''+message.data.key+'\' :');
-			console.dir(JSON.parse(message.data.value));
+            console.log('%c [Dump JSON by HTML5 Storage Manager]','background: yellow; color: darkblue');
+            console.log(message.data.type+' '+message.data.key+' :  %O', JSON.parse(message.data.value));
 		}else if(message.event  === 'popup'){
 			winPopup = window.open("/chrome-extension-localstorage-manager-popup-404.html","storagemanager","toolbar=yes, scrollbars=yes, resizable=yes, width=580, height=600");
 			winPopup.onload = function(ev){
