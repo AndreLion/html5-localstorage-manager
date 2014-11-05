@@ -12,7 +12,7 @@ var selectElementContents = function(el){
     sel.addRange(range);
 }
 
-var extension = angular.module('storageManagerApp',['ui.bootstrap','ngSanitize']);
+var extension = angular.module('storageManagerApp',['ui.bootstrap','ngSanitize','ngCookies']);
 
 extension.directive('ngContenteditable', ['$sce', function($sce){
     return {
@@ -25,7 +25,7 @@ extension.directive('ngContenteditable', ['$sce', function($sce){
                 /*if ( attrs.stripBr && html == '<br>' ) {
                     html = '';
                 }*/
-                console.log('ngModel.$setViewValue',text);
+                ngModel.$setViewValue(text);
             }
             $scope.$watch('editing',function(editing,oldEditing){
                 if(editing === $scope.item.key){
@@ -40,10 +40,10 @@ extension.directive('ngContenteditable', ['$sce', function($sce){
                 ngModel.$render();
             });
             ngModel.$render = function() {
-                var text = $sce.getTrustedHtml(ngModel.$viewValue || '');
+                var text = ngModel.$viewValue || '';
                 var length = text.length;
                 if(length>300 && !$scope.item.expand){
-                    text = text.substr(0,300)+'...( '+(length-300)+' chars more )';
+                    text = text.substr(0,300)+' ... ('+(length-300)+' chars more)';
                 }
                 element.text(text);
             };
@@ -55,8 +55,7 @@ extension.directive('ngContenteditable', ['$sce', function($sce){
     }
 }]);
 
-extension.controller('cookieController',function($scope){
-
+extension.controller('cookieController',['$scope','$cookies',function($scope,$cookies){
 	var parseCookie = function(c){
         var result = [];
 		var arr = c.split(';');
@@ -87,27 +86,30 @@ extension.controller('cookieController',function($scope){
     sendMessage('pullCookie',function(data){
         $scope.cookies = parseCookie(data);
     });
+}]);
 
+extension.controller('indexDBController',function($scope,$cookies){
 });
+
 extension.controller('storageController',function($scope){
     
-    var factory = {
-        localstorage :{
-            add: function(){
-            },
-            remove: function(){
-            }
-        }
-    };
-
-    $scope.type = 'localstorage';
+    $scope.type = 'local';
     $scope.localStorage = [];
+    $scope.sessionStorage = [];
     $scope.editing = false;
     $scope.percentage = 0;
     $scope.add = function(){
         sendMessage('add',function(data){
             $scope.localStorage = data.storage;
             $scope.percentage = data.percentage;
+            $scope.key = '';
+            $scope.value= '';
+            $scope.$apply();
+        },{key:$scope.key,value:$scope.value});
+    };
+    $scope.addSession = function(){
+        sendMessage('addSession',function(data){
+            $scope.sessionStorage = data;
             $scope.key = '';
             $scope.value= '';
             $scope.$apply();
@@ -120,6 +122,12 @@ extension.controller('storageController',function($scope){
             $scope.$apply();
 		});
     };
+    $scope.clearSession = function(){
+		sendMessage('clearSession',function(data){
+            $scope.sessionStorage = data;
+            $scope.$apply();
+		});
+    };
     $scope.edit = function(key){
         $scope.editing = key;
     };
@@ -128,6 +136,13 @@ extension.controller('storageController',function($scope){
 		sendMessage('add',function(data){
             $scope.localStorage = data.storage;
             $scope.percentage = data.percentage;
+            $scope.$apply();
+		},{key:key,value:value});
+    };
+    $scope.submitSession = function(key,value){
+        $scope.editing = false;
+		sendMessage('addSession',function(data){
+            $scope.sessionStorage = data;
             $scope.$apply();
 		},{key:key,value:value});
     };
@@ -144,10 +159,21 @@ extension.controller('storageController',function($scope){
             $scope.$apply();
 		},{key:key});
     };
+    $scope.removeSession = function(key){
+		sendMessage('removeSession',function(data){
+            $scope.sessionStorage = data;
+            $scope.$apply();
+		},{key:key});
+    };
 
 	sendMessage('pull',function(data){
         $scope.localStorage = data.storage;
         $scope.percentage = data.percentage;
+        $scope.$apply();
+	});
+
+	sendMessage('pullSession',function(data){
+        $scope.sessionStorage = data;
         $scope.$apply();
 	});
 

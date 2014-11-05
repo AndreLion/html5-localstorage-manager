@@ -9,25 +9,28 @@
     <body>
         <tabset>
             <tab heading="Storage" ng-controller="storageController">
-                <div class="btn-group">
-                    <label class="btn btn-primary btn-sm" ng-model="type" btn-radio="'localstorage'">Local Storage</label>
-                    <label class="btn btn-primary btn-sm" ng-model="type" btn-radio="'sessionstorage'">Sessin Storage</label>
+                <div class="row">
+                    <div class="btn-group col-xs-6">
+                        <label class="btn btn-default btn-sm" ng-model="type" btn-radio="'local'">Local Storage</label>
+                        <label class="btn btn-info btn-sm" ng-model="type" btn-radio="'session'">Sessin Storage</label>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <button ng-click="openWindow()" type="button" class="btn btn-primary btn-sm">Popup in new window <span class="glyphicon glyphicon-new-window"></span></button>
+                    </div>
                 </div>
-                <button ng-click="openWindow()" type="button" class="btn btn-primary btn-sm pull-right">Popup in new window <span class="glyphicon glyphicon-new-window"></span></button>
-                <form class="form-inline" role="form" ng-submit="add()">
-                    <div class="form-group">
-                        <input ng-model="key" class="form-control input-sm" type="text" placeholder="Key" />
+                <form class="row add" role="form" ng-submit="type=='session'?addSession():add()">
+                    <div class="col-xs-3">
+                        <input ng-model="key" class="form-control input-sm" type="text" placeholder="{{type}} storage key" ng-class="{session:type=='session'}" />
                     </div>
-                    <div class="form-group wider">
-                        <input ng-model="value" class="form-control input-sm" type="text" placeholder="Value" />
+                    <div class="col-xs-6">
+                        <input ng-model="value" class="form-control input-sm" type="text" placeholder="{{type}} storage value" ng-class="{session:type=='session'}" />
                     </div>
-                    <button type="submit" class="btn btn-success btn-sm">Add</button>
-                    <button ng-click="clear()" type="button" class="btn btn-danger btn-sm">Remove All</button>
+                    <div class="col-xs-3 text-right">
+                        <button type="submit" class="btn btn-success btn-sm">Add</button>
+                        <button ng-click="type=='session'?clearSession():clear()" type="button" class="btn btn-danger btn-sm">Remove All</button>
+                    </div>
                 </form>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-success" role="progressbar" id="space" aria-valuemin="0" aria-valuemax="100" style="width:0"></div>
-                    <label class="alert-success"><span id="available">{{percentage}}</span>% Available </label>
-                </div>
+                <progressbar value="percentage" type="success"><b>{{100-percentage}}% Available</b></progressbar>
                 <table class="table table-condensed table-bordered table-hover">
                     <thead>
                         <tr>
@@ -37,6 +40,24 @@
                         </tr>
                     </thead>
                     <tbody class="localstorage-table">
+                        <tr ng-repeat="item in sessionStorage" class="something info" ng-class="{editing:editing==item.key}">
+                            <td class="key">
+                                <span ng-show="item.isJson" class="json"></span>
+                                <div class="inner">
+                                    <div class="content">{{item.key}}</div>
+                                </div>
+                            </td>
+                            <td class="value" ng-contenteditable ng-model="item.value" strip-br="true"></td>
+                            <td class="action">
+                                <button type="button" ng-click="submitSession(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
+                                <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
+                                <button type="button" ng-click="dump(item.key,item.value)" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
+                                <button type="button" ng-click="edit(item.key)" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                <button type="button" ng-click="removeSession(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
+                                <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
+                                <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
+                            </td>
+                        </tr>
                         <tr ng-repeat="item in localStorage" class="something" ng-class="{editing:editing==item.key}">
                             <td class="key">
                                 <span ng-show="item.isJson" class="json"></span>
@@ -45,7 +66,7 @@
                                 </div>
                             </td>
                             <td class="value" ng-contenteditable ng-model="item.value" strip-br="true"></td>
-                            <td>
+                            <td class="action">
                                 <button type="button" ng-click="submit(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
                                 <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
                                 <button type="button" ng-click="dump(item.key,item.value)" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
@@ -97,6 +118,9 @@
                     </tbody>
                 </table>
             </tab>
+            <tab heading="indexDB" ng-controller="indexDBController">
+                Anyone need it?
+            </tab>
         </tabset>
         <div class="text-right footer" >
             <a class="options" href="chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/options.html" target="_blank">Options <span class="glyphicon glyphicon-wrench"></span></a>
@@ -108,6 +132,7 @@
         <script src="popup.js"></script>-->
         <script src="lib/angular.min.js"></script>
         <script src="lib/angular-sanitize.min.js"></script>
+        <script src="lib/angular-cookies.min.js"></script>
         <script src="lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
         <script src="popup.js"></script>
     </body>

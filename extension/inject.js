@@ -1,4 +1,5 @@
-var store = localStorage;
+var local = localStorage;
+var session = sessionStorage;
 var inited = false;
 //var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd'; //online
 var extensionid = 'kmclokmeccmafganmdhcodpgdobjmklk'; //offline
@@ -35,9 +36,9 @@ var dump = function(){
         },
         key,value,obj;
 
-	for(var i=0,l=store.length;i<l;i++){
-		key = store.key(i);
-		value = store.getItem(key);
+	for(var i=0,l=local.length;i<l;i++){
+		key = local.key(i);
+		value = local.getItem(key);
         obj = {
             key:key,
             value:value,
@@ -52,8 +53,30 @@ var dump = function(){
         len += key.length;
         len += value.length;
 	}
-    result.percentage = len/limit*100;
+    result.percentage = (len/limit*100).toFixed(2);
 
+	return result;
+};
+
+var dumpSession = function(){
+    var result = [],
+        key,value,obj;
+
+	for(var i=0,l=session.length;i<l;i++){
+		key = session.key(i);
+		value = session.getItem(key);
+        obj = {
+            key:key,
+            value:value,
+            isJson:false,
+            expand:false
+        };
+        try{
+            JSON.parse(value);
+            obj.isJson = true;
+        }catch(e){}
+        result.push(obj);
+	}
 	return result;
 };
 
@@ -69,19 +92,30 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 			}
 		}else if(message.event  === 'pull'){
 			sendResponse(dump());
+		}else if(message.event  === 'pullSession'){
+			sendResponse(dumpSession());
 		}else if(message.event  === 'pullCookie'){
 			sendResponse(document.cookie);
 		}else if(message.event  === 'clear'){
-			store.clear();
+			local.clear();
 			sendResponse(dump());
+		}else if(message.event  === 'clearSession'){
+			session.clear();
+			sendResponse(dumpSession());
 		}else if(message.event  === 'remove'){
-			store.removeItem(message.data.key);
+			local.removeItem(message.data.key);
 			sendResponse(dump());
+		}else if(message.event  === 'removeSession'){
+			session.removeItem(message.data.key);
+			sendResponse(dumpSession());
 		}else if(message.event  === 'add'){
-			store.setItem(message.data.key,message.data.value);
+			local.setItem(message.data.key,message.data.value);
 			sendResponse(dump());
+		}else if(message.event  === 'addSession'){
+			session.setItem(message.data.key,message.data.value);
+			sendResponse(dumpSession());
 		}else if(message.event  === 'dump'){
-			console.log('HTML5 LocalStorage Manager dump JSON of key \''+message.data.key+'\' :');
+			console.log('HTML5 Storage Manager dump JSON of key \''+message.data.key+'\' :');
 			console.dir(JSON.parse(message.data.value));
 		}else if(message.event  === 'popup'){
 			winPopup = window.open("/chrome-extension-localstorage-manager-popup-404.html","storagemanager","toolbar=yes, scrollbars=yes, resizable=yes, width=580, height=600");

@@ -32,9 +32,26 @@ left:-9999px;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 175, 233, .6);
 }
 
-.table-hover>tbody>tr:hover>td:first-child,
+/*.table-hover>tbody>tr:hover>td:first-child,
 .table-hover>tbody>tr:hover>td:last-child {
     background-color: transparent;
-}
+}*/
 
 .btn-block { margin-bottom:5px; }
+
+.progress { background-color:#dff0d8; }
+.progress .progress-bar { color:#3c763d; }
+.progress .progress-bar b { padding-left:5px;font-weight:normal;white-space:nowrap; }
+
+input.session[type="text"] { background-color:#d9edf7; }
+form.add { margin-top:15px;margin-bottom:15px; }
+form.add>div:first-child { padding-right:0; }
+form.add>div:last-child { padding-left:0; }
+form.add>div:last-child button { padding-left:9px; }
+
+.session-item td.key, .session-item td.value { background-color:red; }
+.session-item:hover td.key, .session-item:hover td.value { background-color:red !important; }
+
+td.action button { visibility:hidden; }
+tr:hover td.action button,
+tr.editing td.action button { visibility:visible; }
