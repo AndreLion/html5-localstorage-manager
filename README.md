@@ -27,6 +27,11 @@ A : Yes it happens, just leave them alone.
 Release log:
 ----------------------
 
+Ver 1.6 (Nov 10, 2014)
+  - Support session storage
+  - Support edit cookie
+  - rewrite everything with AngularJS
+
 Ver 1.5 (Mar 20, 2014)
   - Independent popup up window
   - Support cookie
