@@ -5,9 +5,10 @@ Former: HTML5 LocalStorage Manager
 
 Best web storage manager chrome extension ever! Real-time inspection and easy to use. It's a convenient & efficient tool for every web developers.
 
+![Chrome Web Store](http://andrelion.github.io/html5-localstorage-manager/images/extension.png "Chrome Web Store") Please go to [Chome Web Store](https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd) to install.
+
 ![HTML5 Localstorage Manager](http://andrelion.github.io/html5-localstorage-manager/images/screenshot/localstorage_640.jpg "HTML5 Localstorage Manager")
 
-Please go to [Chome Web Store](https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd) to install.
 
 Release log:
 ----------------------
