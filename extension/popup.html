@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app="storageManagerApp">
     <head>
-        <title>HTML5 Storage Manager Popup</title>
+        <title>HTML5 Storage Manager All in One Popup</title>
         <link rel="stylesheet" href="lib/bootstrap.min.css" />
         <link rel="stylesheet" href="popup.css" />
     </head>
@@ -30,6 +30,9 @@
                     </div>
                 </form>
                 <progressbar value="percentage" type="success"><b>{{100-percentage}}% Available</b></progressbar>
+                <div class="text-right" ng-show="sessionStorage.length">
+                    <label> <input type="checkbox" ng-model="showSession"/> Show Session Storage </label> 
+                </div>
                 <table class="table table-condensed table-bordered table-hover">
                     <thead>
                         <tr>
@@ -39,7 +42,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="item in sessionStorage" class="something info" ng-class="{editing:editing==item.key}">
+                        <tr ng-repeat="item in sessionStorage" class="something info" ng-class="{editing:editing==item.key}" ng-show="showSession">
                             <td class="key">
                                 <span ng-show="item.isJson" class="json"></span>
                                 <div class="inner">
@@ -51,7 +54,7 @@
                                 <button type="button" ng-click="submitSession(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
                                 <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
                                 <button type="button" ng-click="dump(item.key,item.value,'session storage')" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
-                                <button type="button" ng-click="edit(item.key)" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                <button type="button" ng-click="edit(item.key,'session')" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
                                 <button type="button" ng-click="removeSession(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
                                 <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
                                 <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
@@ -69,7 +72,7 @@
                                 <button type="button" ng-click="submit(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
                                 <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
                                 <button type="button" ng-click="dump(item.key,item.value,'local storage')" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
-                                <button type="button" ng-click="edit(item.key)" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                <button type="button" ng-click="edit(item.key,'local')" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
                                 <button type="button" ng-click="remove(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
                                 <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
                                 <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
@@ -132,7 +135,7 @@
                     </tbody>
                 </table>
             </tab>
-            <tab heading="indexDB" ng-controller="indexDBController">
+            <tab heading="indexedDB" ng-controller="indexedDBController">
                 <table class="table table-condensed table-striped table-bordered table-hover" style="visibility:hidden;">
                     <thead>
                         <tr>
@@ -141,10 +144,12 @@
                     </thead>
                 </table>
                 <p class="text-center">
-                    <a href="https://github.com/AndreLion/html5-localstorage-manager/issues/8" target="_blank">Anyone using indexDB?</a>
+                    <a href="https://github.com/AndreLion/html5-localstorage-manager/issues/8" target="_blank">Anyone using indexedDB?</a>
                 </p>
             </tab>
         </tabset>
+        <div ng-popup>
+        </div>
         <div class="text-right footer" >
             <a class="options" href="chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/options.html" target="_blank">Options <span class="glyphicon glyphicon-wrench"></span></a>
         </div>

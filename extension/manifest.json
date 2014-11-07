@@ -25,16 +25,24 @@
     "persistent": true
   },
   "content_scripts": [
-    { "matches": ["http://*/*","https://*/*"], "js": ["lib/cookies.min.js","inject.js"] }
+    { "matches": ["http://*/*","https://*/*"], "js": ["lib/cookies.min.js","common.js","inject.js"] }
   ],
   "web_accessible_resources": [
 	"lib/bootstrap.min.css",
+	"lib/angular-sanitize.min.js",
+	"lib/angular-sanitize.min.js.map",
 	"popup.css",
+	"popup.js",
+	"common.js",
 	"notification.html",
+    "fonts/glyphicons-halflings-regular.woff",
+    "fonts/glyphicons-halflings-regular.ttf",
 	"notification.js",
 	"lib/angular.min.js",
+	"lib/cookies.min.js",
+	"lib/angular.min.js.map",
     "lib/ui-bootstrap-tpls-0.11.2.min.js"
   ],
-  "homepage_url": "http://andrelion.github.io/html5-localstorage-manager/",
+  //"homepage_url": "http://andrelion.github.io/html5-localstorage-manager/",
   "options_page": "options.html"
 }

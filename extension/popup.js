@@ -1,7 +1,58 @@
 var sendMessage = function(ev,cb,data){
-    chrome.tabs.query({"status":"complete","windowId":chrome.windows.WINDOW_ID_CURRENT,"active":true}, function(tabs){
-        chrome.tabs.sendMessage(tabs[0].id,{source:'popup',event:ev,data:data},cb);
-    });
+    if(window.chrome && window.chrome.tabs){
+        chrome.tabs.query({"status":"complete","windowId":chrome.windows.WINDOW_ID_CURRENT,"active":true}, function(tabs){
+            chrome.tabs.sendMessage(tabs[0].id,{source:'popup',event:ev,data:data},cb);
+        });
+    }else{
+        switch(ev){
+            case 'pull':
+                cb(dump());
+                break;
+            case 'pullSession':
+                cb(dumpSession());
+                break;
+            case 'pullCookie':
+                cb(dumpCookie());
+                break;
+            case 'add':
+                local.setItem(data.key,data.value);
+                cb(dump());
+                break;
+            case 'addSession':
+                session.setItem(data.key,data.value);
+                cb(dumpSession());
+                break;
+            case 'addCookie':
+                Cookies.set(data.key,data.value);
+                cb(dumpCookie());
+                break;
+            case 'remove':
+                local.removeItem(data.key);
+                cb(dump());
+                break;
+            case 'removeSession':
+                session.removeItem(data.key);
+                cb(dumpSession());
+                break;
+            case 'removeCookie':
+                Cookies.expire(data.key);
+                cb(dumpCookie());
+                break;
+            case 'clear':
+                local.clear();
+                cb(dump());
+                break;
+            case 'clearSession':
+                session.clear();
+                cb(dumpSession());
+                break;
+            case 'clearCookie':
+                for(var i=0,l=data.c.length;i<l;i++){
+                    Cookies.expire(data.c[i].key);
+                }
+                break;
+        }
+    }
 };
 
 var selectElementContents = function(el){
@@ -11,14 +62,13 @@ var selectElementContents = function(el){
     sel.removeAllRanges();
     sel.addRange(range);
 }
-
 var extension = angular.module('storageManagerApp',['ui.bootstrap','ngSanitize']);
 
 extension.directive('ngContenteditable', ['$sce', function($sce){
     return {
         restrict: 'A',
         require: '?ngModel',
-        link: function ($scope, element, attrs, ngModel) {
+        link: function ($scope, element, attrs, ngModel) { 
             if (!ngModel) return;
             function read() {
                 var text = element.text();
@@ -28,7 +78,7 @@ extension.directive('ngContenteditable', ['$sce', function($sce){
                 ngModel.$setViewValue(text);
             }
             $scope.$watch('editing',function(editing,oldEditing){
-                if(editing === $scope.item.key){
+                if(editing === $scope.item.key && $scope.editingType === $scope.item.type){
                     attrs.$set('contenteditable','plaintext-only');
                     selectElementContents(element[0]);
                     $scope.item.expand = true;
@@ -55,7 +105,7 @@ extension.directive('ngContenteditable', ['$sce', function($sce){
     }
 }]);
 
-extension.controller('cookieController',['$scope',function($scope){
+extension.controller('cookieController',function($scope){
     $scope.cookies = [];
     $scope.editing = false;
 
@@ -102,17 +152,19 @@ extension.controller('cookieController',['$scope',function($scope){
     sendMessage('pullCookie',function(data){
         $scope.cookies = data;
     });
-}]);
+});
 
-extension.controller('indexDBController',function($scope){
+extension.controller('indexedDBController',function($scope){
 });
 
 extension.controller('storageController',function($scope){
     $scope.type = 'local';
     $scope.localStorage = [];
     $scope.sessionStorage = [];
-    $scope.editing = false;
+    $scope.editing;
+    $scope.editingType;
     $scope.percentage = 0;
+    $scope.showSession = true;
     $scope.add = function(){
         sendMessage('add',function(data){
             $scope.localStorage = data.storage;
@@ -143,8 +195,9 @@ extension.controller('storageController',function($scope){
             $scope.$apply();
 		});
     };
-    $scope.edit = function(key){
+    $scope.edit = function(key,type){
         $scope.editing = key;
+        $scope.editingType = type;
     };
     $scope.submit = function(key,value){
         $scope.editing = false;
@@ -180,6 +233,9 @@ extension.controller('storageController',function($scope){
             $scope.$apply();
 		},{key:key});
     };
+    $scope.openWindow = function(key){
+        sendMessage('popup');
+    };
 
 	sendMessage('pull',function(data){
         $scope.localStorage = data.storage;
@@ -192,17 +248,18 @@ extension.controller('storageController',function($scope){
         $scope.$apply();
 	});
 
-    chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-        if(message.source === 'content'){
-            if(message.event === 'sync'){
-                $scope.localStorage = data.storage;
-                $scope.percentage = data.percentage;
-                $scope.$apply();
+    if(window.chrome && window.chrome.runtime && window.chrome.runtime.onMessage){
+        chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
+            if(message.source === 'content'){
+                if(message.event === 'sync'){
+                    $scope.localStorage = data.storage;
+                    $scope.percentage = data.percentage;
+                    $scope.$apply();
+                }
             }
-        }
-    });
+        });
+    }
 
 });
 
 sendMessage('onload');
-

@@ -2,6 +2,8 @@ html,body { max-width:700px;max-height:550px; }
 body { margin:15px; }
 table { min-width:550px;table-layout:fixed; }
 td { word-wrap:break-word; }
+label { font-weight:normal; }
+label, label input { cursor:pointer; }
 .footer { padding:0 10px 10px 0; }
 
 .tab-content { margin-top:10px; }
