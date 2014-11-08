@@ -7,7 +7,7 @@ Best web storage manager chrome extension ever! Real-time inspection and easy to
 
 ![Chrome Web Store](http://andrelion.github.io/html5-localstorage-manager/images/extension.png "Chrome Web Store") Please go to [Chome Web Store](https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd) to install.
 
-![HTML5 Localstorage Manager](http://andrelion.github.io/html5-localstorage-manager/images/screenshot/localstorage_640.jpg "HTML5 Localstorage Manager")
+![HTML5 Localstorage Manager](http://andrelion.github.io/html5-localstorage-manager/images/screenshot/v16_overview.png "HTML5 Localstorage Manager")
 
 Faq:
 ----------------------
