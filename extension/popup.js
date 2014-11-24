@@ -163,9 +163,12 @@ extension.controller('indexedDBController',function($scope){
     var _pool = {};
     var _history = {};
     var onSuccess = function(_name,db){
-        var IDBObjectStore;
-        _pool[_name].status = 'connected';
         _pool[_name].db = db;
+        displayTable(_name);
+    };
+    var displayTable = function(name){
+        var IDBObjectStore;
+        var db = _pool[name].db;
         for(var i=0,l=db.objectStoreNames.length;i<l;i++){
             var storeName = db.objectStoreNames[i];
             var objTable = {
@@ -173,26 +176,26 @@ extension.controller('indexedDBController',function($scope){
                 rows:[],
                 keys:null
             };
-            _pool[_name].ref.tables.push(objTable);
-            _pool[_name].tables[storeName] = {};
-            _pool[_name].tables[storeName].ref = objTable;
+            _pool[name].ref.tables.push(objTable);
+            _pool[name].tables[storeName] = {};
+            _pool[name].tables[storeName].ref = objTable;
             IDBObjectStore = db.transaction(storeName).objectStore(storeName);
-            _pool[_name].tables[storeName].ref.indexNames = IDBObjectStore.indexNames;
-            _pool[_name].tables[storeName].ref.keyPath = IDBObjectStore.keyPath;
-            _pool[_name].tables[storeName].ref.name = IDBObjectStore.name;
+            _pool[name].tables[storeName].ref.indexNames = IDBObjectStore.indexNames;
+            _pool[name].tables[storeName].ref.keyPath = IDBObjectStore.keyPath;
+            _pool[name].tables[storeName].ref.name = IDBObjectStore.name;
             IDBObjectStore.openCursor().onsuccess = function(ev){
                 var cursor = ev.target.result;
                 if(cursor){
-                    _pool[_name].tables[storeName].ref.rows.push(cursor.value);
+                    _pool[name].tables[storeName].ref.rows.push(cursor.value);
                     cursor.continue();
                 }else{
                     $scope.$apply();
-                    db.close();
+                    //db.close();
                 }
             };
         }
     };
-    var displayData = function(){
+    var displayHistory = function(){
         var objectStore = db.transaction('indexedDB').objectStore('indexedDB');
         objectStore.openCursor().onsuccess = function (ev) {
             var cursor = event.target.result;
@@ -222,7 +225,6 @@ extension.controller('indexedDBController',function($scope){
                 tables:[]
             };
             _pool[name] = {
-                'status':'connecting',
                 ref:objDB,
                 tables:{}
             };
@@ -237,20 +239,24 @@ extension.controller('indexedDBController',function($scope){
         }
         var transaction = db.transaction(['indexedDB'], 'readwrite');
         transaction.oncomplete = function () {
-            displayData();
+            displayHistory();
         };
         var objectStore = transaction.objectStore('indexedDB');
         var objectStoreRequest = objectStore.add({name:name,version:version});
-    }
+    };
     $scope.fill = function(name,version){
         $scope.database = name;
         $scope.version = version;
-    }
+    };
     $scope.clearHistory = function(){
-        debugger;
         db.transaction(['indexedDB'], 'readwrite').objectStore('indexedDB').clear();
         $scope.history = null;
-    }
+    };
+    $scope.refresh = function(name){
+        _pool[name].tables = {};
+        _pool[name].ref.tables = [];
+        displayTable(name);
+    };
     req = window.indexedDB.open('HTML5StorageManagerHistory',1);
     req.onupgradeneeded = function(ev){
         db = ev.target.result;
@@ -263,7 +269,7 @@ extension.controller('indexedDBController',function($scope){
     };
     req.onsuccess = function(ev){
         db = ev.target.result;
-        displayData();
+        displayHistory();
     };
 });
 
@@ -373,3 +379,14 @@ extension.controller('storageController',function($scope){
 });
 
 sendMessage('onload');
+
+setTimeout(function(){
+    var elActive = document.getElementById('activeTab');
+    if(elActive){
+        if(elActive.value === 'indexedDB'){
+            document.querySelector('ul.nav li:nth-child(3) a').click();
+        }else{
+        }
+    }else{
+    }
+},500);

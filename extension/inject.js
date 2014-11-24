@@ -1,6 +1,6 @@
 var inited = false;
-//var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd'; //online
-var extensionid = 'kmclokmeccmafganmdhcodpgdobjmklk'; //offline
+var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd'; //online
+//var extensionid = 'kmclokmeccmafganmdhcodpgdobjmklk'; //offline
 var init = function(){
 	var body = document.getElementsByTagName('body')[0];
 	var iframe = document.createElement('iframe');
@@ -79,7 +79,7 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 		}else if(message.event  === 'popup'){
 			winPopup = window.open('/chrome-extension-localstorage-manager-popup-404.html#'+(message.data.hash||''),'storagemanager','toolbar=yes, scrollbars=yes, resizable=yes, width=580, height=800');
 			winPopup.onload = function(ev){
-                winPopup.document.write(popupHTML);
+                winPopup.document.write(popupHTML+'<input type="hidden" id="activeTab" value="'+(message.data.hash||'')+'">');
 			};
 		}
 	}else if(message.source === 'background'){
@@ -102,7 +102,6 @@ var popupHTML = ''
 +'                        <label class="btn btn-info btn-sm" ng-model="type" btn-radio="\'session\'">Sessin Storage</label>'
 +'                    </div>'
 +'                    <div class="col-xs-6 text-right">'
-//+'                        <button ng-click="openWindow()" type="button" class="btn btn-primary btn-sm">Popup in new window <span class="glyphicon glyphicon-new-window"></span></button>'
 +'                    </div>'
 +'                </div>'
 +'                <form class="row add" role="form" ng-submit="type==\'session\'?addSession():add()">'
@@ -236,10 +235,11 @@ var popupHTML = ''
 +'                    </div>'
 +'                </form>'
 +'                <div class="row recent" ng-hide="history == null"><div class="col-xs-12">Recently Connected:'
-+'                    <a href="javascript:void;" ng-repeat="(name,ver) in history" ng-click="fill(name,ver)" class="item">{{name}}({{ver}})</a>'
-+'                    <a href="javascript:void;" ng-click="clearHistory()" class="item clear">Clear History</a>'
++'                    <a href="javascript:void(0)" ng-repeat="(name,ver) in history" ng-click="fill(name,ver)" class="item">{{name}}({{ver}})</a>'
++'                    <a href="javascript:void(0)" ng-click="clearHistory()" class="item clear">Clear History</a>'
 +'                </div></div>'
 +'                <div ng-repeat="database in databases" class="database-wrap">'
++'                    <button ng-click="refresh(database.name)" type="button" class="btn btn-primary btn-xs pull-right idb-refresh">Refresh <span class="glyphicon glyphicon-refresh"></span></button>'
 +'                    <h4>Database : {{database.name}} ( Version : {{database.version}} )</h4>'
 +'                    <accordion>'
 +'                        <accordion-group heading="{{table.name}}" ng-repeat="table in database.tables">'
@@ -256,7 +256,7 @@ var popupHTML = ''
 +'                        </accordion-group>'
 +'                    </accordion>'
 +'                </div>'
-+'                <div class="alert alert-warning beta" role="alert">This is a <strong>beta</strong> version of indexedDB Manager! <a target="_blank" href="https://github.com/AndreLion/html5-localstorage-manager/issues/8" class="alert-link">Report bugs or suggestion</a>.</div>'
++'                <div class="alert alert-warning beta" role="alert">This is a <strong>beta</strong> version of indexedDB Manager! <a target="_blank" href="https://github.com/AndreLion/html5-localstorage-manager/issues/" class="alert-link">Report bugs or suggestions</a>.</div>'
 +'            </tab>'
 +'        </tabset>'
 +'        <script src="chrome-extension://'+extensionid+'/lib/angular.min.js"></script>'

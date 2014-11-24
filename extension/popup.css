@@ -42,8 +42,9 @@ table tbody tr.nothing td { padding:40px 0; }
 tbody .key .content { word-break:break-all; }
 tbody .value .content { word-break:break-all; }
 
+.idb-refresh { margin-top:15px; }
 .database-wrap { }
-.database-wrap>h4 { margin:0;padding:15px 0 5px 0;font-size:14px;display:inline-block; }
+.database-wrap>h4 { margin:0;padding:15px 0 5px 0;font-size:18px;display:inline-block; }
 .table-wrap { border:1px solid #DDD; }
 .table-wrap>h5 { margin:0;padding:5px 10px;background-color:#DDD;text-align:center;color:#FFF; }
 .database-wrap table>caption { text-align:center; }
