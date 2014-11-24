@@ -1,6 +1,6 @@
 var inited = false;
-var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd'; //online
-//var extensionid = 'kmclokmeccmafganmdhcodpgdobjmklk'; //offline
+//var extensionid = 'giompennnhheakjcnobejbnjgbbkmdnd'; //online
+var extensionid = 'kmclokmeccmafganmdhcodpgdobjmklk'; //offline
 var init = function(){
 	var body = document.getElementsByTagName('body')[0];
 	var iframe = document.createElement('iframe');
@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
             console.log('%c [Dump JSON by HTML5 Storage Manager All in One]','background: yellow; color: darkblue');
             console.log(message.data.type+' '+message.data.key+' :  %O', JSON.parse(message.data.value));
 		}else if(message.event  === 'popup'){
-			winPopup = window.open("/chrome-extension-localstorage-manager-popup-404.html","storagemanager","toolbar=yes, scrollbars=yes, resizable=yes, width=580, height=600");
+			winPopup = window.open('/chrome-extension-localstorage-manager-popup-404.html#'+(message.data.hash||''),'storagemanager','toolbar=yes, scrollbars=yes, resizable=yes, width=580, height=800');
 			winPopup.onload = function(ev){
                 winPopup.document.write(popupHTML);
 			};
@@ -224,16 +224,39 @@ var popupHTML = ''
 +'                </table>'
 +'            </tab>'
 +'            <tab heading="indexedDB" ng-controller="indexedDBController">'
-+'                <table class="table table-condensed table-striped table-bordered table-hover" style="visibility:hidden;">'
-+'                    <thead>'
-+'                        <tr>'
-+'                            <th class="text-center"></th>'
-+'                        </tr>'
-+'                    </thead>'
-+'                </table>'
-+'                <p class="text-center">'
-+'                    <a href="https://github.com/AndreLion/html5-localstorage-manager/issues/8" target="_blank">Anyone using indexedDB?</a>'
-+'                </p>'
++'                <form class="row" role="form" ng-submit="connect()">'
++'                    <div class="col-xs-6">'
++'                        <input ng-model="database" class="form-control input-sm" type="text" placeholder="database name" />'
++'                    </div>'
++'                    <div class="col-xs-3">'
++'                        <input ng-model="version" class="form-control input-sm" type="text" placeholder="version" />'
++'                    </div>'
++'                    <div class="col-xs-3">'
++'                        <button type="submit" class="btn btn-primary btn-sm">Connect</button>'
++'                    </div>'
++'                </form>'
++'                <div class="row recent" ng-hide="history == null"><div class="col-xs-12">Recently Connected:'
++'                    <a href="javascript:void;" ng-repeat="(name,ver) in history" ng-click="fill(name,ver)" class="item">{{name}}({{ver}})</a>'
++'                    <a href="javascript:void;" ng-click="clearHistory()" class="item clear">Clear History</a>'
++'                </div></div>'
++'                <div ng-repeat="database in databases" class="database-wrap">'
++'                    <h4>Database : {{database.name}} ( Version : {{database.version}} )</h4>'
++'                    <accordion>'
++'                        <accordion-group heading="{{table.name}}" ng-repeat="table in database.tables">'
++'                            <table class="table table-condensed table-bordered table-hover">'
++'                                <tr>'
++'                                    <th>{{table.keyPath}}</th>'
++'                                    <th ng-repeat="key in table.indexNames">{{key}}</th>'
++'                                </tr>'
++'                                <tr ng-repeat="row in table.rows">'
++'                                    <td>{{row[table.keyPath]}}</td>'
++'                                    <td ng-repeat="key in table.indexNames">{{row[key]}}</td>'
++'                                </tr>'
++'                            </table>'
++'                        </accordion-group>'
++'                    </accordion>'
++'                </div>'
++'                <div class="alert alert-warning beta" role="alert">This is a <strong>beta</strong> version of indexedDB Manager! <a target="_blank" href="https://github.com/AndreLion/html5-localstorage-manager/issues/8" class="alert-link">Report bugs or suggestion</a>.</div>'
 +'            </tab>'
 +'        </tabset>'
 +'        <script src="chrome-extension://'+extensionid+'/lib/angular.min.js"></script>'

@@ -155,6 +155,116 @@ extension.controller('cookieController',function($scope){
 });
 
 extension.controller('indexedDBController',function($scope){
+    $scope.database = '';
+    $scope.version = '';
+    $scope.databases = [];
+    $scope.history = null;
+    var req, db;
+    var _pool = {};
+    var _history = {};
+    var onSuccess = function(_name,db){
+        var IDBObjectStore;
+        _pool[_name].status = 'connected';
+        _pool[_name].db = db;
+        for(var i=0,l=db.objectStoreNames.length;i<l;i++){
+            var storeName = db.objectStoreNames[i];
+            var objTable = {
+                name:null,
+                rows:[],
+                keys:null
+            };
+            _pool[_name].ref.tables.push(objTable);
+            _pool[_name].tables[storeName] = {};
+            _pool[_name].tables[storeName].ref = objTable;
+            IDBObjectStore = db.transaction(storeName).objectStore(storeName);
+            _pool[_name].tables[storeName].ref.indexNames = IDBObjectStore.indexNames;
+            _pool[_name].tables[storeName].ref.keyPath = IDBObjectStore.keyPath;
+            _pool[_name].tables[storeName].ref.name = IDBObjectStore.name;
+            IDBObjectStore.openCursor().onsuccess = function(ev){
+                var cursor = ev.target.result;
+                if(cursor){
+                    _pool[_name].tables[storeName].ref.rows.push(cursor.value);
+                    cursor.continue();
+                }else{
+                    $scope.$apply();
+                    db.close();
+                }
+            };
+        }
+    };
+    var displayData = function(){
+        var objectStore = db.transaction('indexedDB').objectStore('indexedDB');
+        objectStore.openCursor().onsuccess = function (ev) {
+            var cursor = event.target.result;
+            if (cursor) {
+                if($scope.history == null ){
+                    $scope.history = {};
+                }
+                $scope.history[cursor.value.name] = cursor.value.version;
+                cursor.continue();
+            }
+            $scope.$apply();
+        };
+        
+    };
+    $scope.openWindow = function(key){
+		sendMessage('popup',function(){},{hash:'indexedDB'});
+    };
+
+    $scope.connect = function(){
+        var name = $scope.database;
+        var version = $scope.version;
+        var _req;
+        if(!_pool[name]){
+            var objDB = {
+                name:name,
+                version:version,
+                tables:[]
+            };
+            _pool[name] = {
+                'status':'connecting',
+                ref:objDB,
+                tables:{}
+            };
+            $scope.databases.push(objDB);
+            _pool[name].request = window.indexedDB.open(name,version);
+            _pool[name].request.onupgradeneeded = function(ev){
+                onSuccess(name,ev.target.result);
+            }
+            _pool[name].request.onsuccess = function(ev){
+                onSuccess(name,ev.target.result);
+            }
+        }
+        var transaction = db.transaction(['indexedDB'], 'readwrite');
+        transaction.oncomplete = function () {
+            displayData();
+        };
+        var objectStore = transaction.objectStore('indexedDB');
+        var objectStoreRequest = objectStore.add({name:name,version:version});
+    }
+    $scope.fill = function(name,version){
+        $scope.database = name;
+        $scope.version = version;
+    }
+    $scope.clearHistory = function(){
+        debugger;
+        db.transaction(['indexedDB'], 'readwrite').objectStore('indexedDB').clear();
+        $scope.history = null;
+    }
+    req = window.indexedDB.open('HTML5StorageManagerHistory',1);
+    req.onupgradeneeded = function(ev){
+        db = ev.target.result;
+        var objectStore = db.createObjectStore('indexedDB', {
+            keyPath:'name' 
+        });
+        objectStore.createIndex('version', 'version', {
+            unique: false
+        });
+    };
+    req.onsuccess = function(ev){
+        db = ev.target.result;
+        displayData();
+    };
 });
 
 extension.controller('storageController',function($scope){
@@ -234,7 +344,7 @@ extension.controller('storageController',function($scope){
 		},{key:key});
     };
     $scope.openWindow = function(key){
-        sendMessage('popup');
+		sendMessage('popup',function(){},{hash:'storage'});
     };
 
 	sendMessage('pull',function(data){

@@ -3,7 +3,7 @@
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "icons": { 
 	"16": "icon-128.png",
 	"48": "icon-128.png",
@@ -38,6 +38,7 @@
     "fonts/glyphicons-halflings-regular.woff",
     "fonts/glyphicons-halflings-regular.ttf",
 	"notification.js",
+	"indexedDB.js",
 	"lib/angular.min.js",
 	"lib/cookies.min.js",
 	"lib/angular.min.js.map",
