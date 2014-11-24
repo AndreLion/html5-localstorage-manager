@@ -4,7 +4,7 @@
     "description": "The title of the application, displayed in the web store."
   },
   "appDesc": {
-    "message": "Best web storage manager ever! Real-time inspection and easy to use. It's a convenient & efficient tool for web developers", 
+    "message": "Local Storage, Session Storage, Cookie, indexedDB (beta) ... Most Complete Storage Manager Extension Ever!", 
     "description":"The description of the application, displayed in the web store."
   }
 }

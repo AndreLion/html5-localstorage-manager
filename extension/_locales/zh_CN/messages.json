@@ -4,7 +4,7 @@
     "description": "The title of the application, displayed in the web store."
   },
   "appDesc": {
-    "message": "史上最好用的Web存储管理插件！功能强大且易用，HTML5时代前端开发必备工具！", 
+    "message": "Local Storage, Session Storage, Cookie, indexedDB (测试版) ... 史上最全的HTML5存储管理插件！Web开发必备工具！", 
     "description":"The description of the application, displayed in the web store."
   }
 }
