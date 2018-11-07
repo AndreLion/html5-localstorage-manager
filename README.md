@@ -17,7 +17,7 @@ A : Make sure there is any localstorage data stored in current page, if not, the
 
 Q : The popup page of the extension is not working or the current page is redirected to somewhere else after clicked the icon under some certain website, such as stackoverflow.com or twitter.com.
 
-A : Beacuse these websites prohibit 3rd part script from injecting iframes into their own website, so that the extension totally failed.
+A : Since these websites prohibit 3rd party script from injecting iframes into their own website, the extension totally fails.
 
 Q : Some javascript exceptions and 404 errors are thrown out into the console by the extension.
 
