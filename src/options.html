@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Options - HTML5 Storage Manager All in One</title>
+<link rel="stylesheet" href="lib/bootstrap.min.css" />
+<style>
+	h2 { margin:30px; }
+	.options { margin:50px 0; }
+	label { display:block;cursor:pointer;padding:30px 0 0 0;font-weight:normal;font-size:18px;min-width:600px; }
+	#options-icon { height:250px;max-width:600px;overflow:hidden;background:transparent url(http://andrelion.github.io/html5-localstorage-manager/images/options-icon.png) no-repeat 100% 0 scroll; }
+	#options-icon.always { background-position:100% -250px; }
+	#status { display:inline-block;padding:10px;display:none;margin-top:20px; }
+	.wrap { text-align:left;margin:10px;width:540px; }
+	.thank { line-height:18px;font-size:16px; }
+	.donate { display:block;margin-top:10px; }
+	.donate-image { width:128px; }
+	.other { display:inline-block;padding:10px; }
+</style>
+</head>
+<body>
+<h2>Options:</h2>
+<div class="options container-fluid">
+	<div class="row">
+		<div class="col-lg-6 col-md-5 col-sm-4 text-center">
+			<div class="thumbnail" id="options-icon"></div>
+		</div>
+		<div class="col-lg-6 col-md-7 col-sm-8 text-">
+			<label for="hide">
+				<input type="radio" name="icon" value="hide" id="hide" />
+				<span>Only show the orange icon when localstorage is used in current tab</span>
+			</label>
+			<label for="show">
+				<input type="radio" name="icon" value="show" id="show" />
+				<span>Always show the orange icon in address bar</span>
+			</label>
+			<div class="col-md-12 text-">
+				<div class="bg-success" id="status"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr />
+
+<div class="wrap">
+<span class="thank">If this extension is helpful for you and save you lots of time. Please donate a little to the developer who have been working hard on it. Thank you.</span>
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" class="donate">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="GW9VUMQTSR54W">
+<table>
+<tr><td><input type="hidden" name="on0" value="Donate me a"></td></tr><tr><td><select name="os0">
+	<option value="localStorage.setItem('donate',1);">localStorage.setItem('donate',1); $1.00 USD</option>
+	<option value="localStorage.setItem('donate',2);">localStorage.setItem('donate',2); $2.00 USD</option>
+	<option value="localStorage.setItem('donate',5);" selected="selected">localStorage.setItem('donate',5); $5.00 USD</option>
+</select> </td></tr>
+</table>
+<input type="hidden" name="currency_code" value="USD">
+<input type="image" class="donate-image" align="absmiddle" src="http://andrelion.github.io/html5-localstorage-manager/images/donate.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+</div>
+<hr />
+<a class="other" href="http://andrelion.github.io/about/" target="_blank">♥ There are some other projects you may be interested in ♥</a>
+<script src="options.js"></script>
+</body>
+</html>

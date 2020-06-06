@@ -1,0 +1,26 @@
+{
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
+  "version": "2.0",
+  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "options_page": "options.html",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "page_action": {
+    "default_title": "Web Storage JSON Editor",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "19": "assets/icon-19.png",
+      "38": "assets/icon-38.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon-128.png",
+    "48": "assets/icon-128.png",
+    "128": "assets/icon-128.png"
+  },
+  "manifest_version": 2
+}
