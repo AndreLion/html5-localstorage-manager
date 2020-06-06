@@ -1,2 +1,5 @@
 *.swp
+*.bak
+*.zip
 *.DS_Store
+.idea

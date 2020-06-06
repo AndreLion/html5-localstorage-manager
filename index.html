@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>HTML5 Localstorage Manager</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0;URL=https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd" />
+	<link rel="stylesheet" href="extension/lib/bootstrap.min.css">
+	<link rel="stylesheet" href="extension/localstorage.css">
+	<style>
+		body { padding:20px 10px; }
+		.version { font-size:16px;font-weight:normal;font-style:italic;display:none; }
+		.extension { font-family:'Open Sans',arial,sans-serif;font-size:18px;vertical-align:bottom; }
+		.extension img { margin-right:10px; }
+		.desc { margin-top:30px;margin-bottom:30px; }
+		.popup .wrap { position:relative;min-width:440px; }
+		.popup .icon .addressbar { display:inline-block;position:relative;width:90%;background:#FFF url(extension/icon-38.png) no-repeat 98% 4px scroll;border:1px solid #959592;border-radius:4px;line-height:29px;background-size:19px 19px;padding-left:26px;color:#686868;margin:0 2px; }
+		.popup .icon .glyphicon { color:#6d6d6d; }
+		.popup .icon .addressbar:before { content:' ';position:absolute;top:0;left:0;height:29px;width:24px;background:transparent url(images/url.png) no-repeat 3px 6px scroll;background-size:18px 18px; }
+		.popup .wrap .window { position:absolute;top:36px;right:0;margin-right:15px; }
+		.popup .wrap .window-inner { height:410px;width:400px;background-color:#fff;border-radius:4px;border:1px solid #afafaf;box-shadow:1px 1px 15px #AAA;padding:0 10px;overflow:auto; }
+		.popup .wrap .window:before { content:' ';position:absolute;top:-24px;right:16px;background-color:transparent;border:12px solid transparent;border-bottom-color:#AFAFAF; }
+		.popup .wrap .window:after { content:' ';position:absolute;top:-23px;right:16px;background-color:transparent;border:12px solid transparent;border-bottom-color:#FFF; }
+		.popup .wrap .window .form-inline { margin-top:10px; }
+		.popup .wrap .window .progress { margin-top:10px; }
+		#key-demo { width:80px; }
+		#value-demo { width:140px; }
+		/*.popup .icon img { width:20px; }*/
+		.brief { color:#666;padding-left:3px;padding-right:90px; }
+		.progress { margin-top:20px; }
+		.progress .progress-bar { margin-right:5px; }
+		.progress label { font-weight:normal;padding-left:5px;display:block; }
+		.mt { margin-top:15px; }
+		.feature { margin-top:30px;margin-bottom:30px;padding-left:30px; }
+		.feature p { font-size:16px;margin-bottom:5px; }
+		.snapshot { list-style-type:none;width:100%;margin-top:10px;margin-bottom:50px; }
+		.snapshot span { height:200px;overflow:hidden;border-bottom:3px solid #FFF; }
+		.snapshot label { font-weight:normal;line-height:18px;color:#666;font-size:16px;margin-top:10px; }
+		.jumbotron { background-image:url(images/forkme.png);background-position:right top;background-repeat:no-repeat;position:relative; }
+		.jumbotron .github-fork { position:absolute;right:0;top:0;height:135px;width:135px; }
+		.github-logo { background:transparent url(images/github.png) right 7px no-repeat scroll;background-size:16px;padding-right:22px; }
+		.table-responsive { min-height:320px; }
+	</style>
+	<script>
+		try{
+			localStorage.setItem('data','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborumLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolora');
+			localStorage.setItem('json','{"key":"value","object":{"level2nd":"deep"},"bool":true,"array":[1,2,3,{"another":"object"},"string"]}');
+            sessionStorage.setItem('session','This is session data.');
+		}catch(e){}
+	</script>
+</head>
+<body>
+	<div class="jumbotron">
+	  <div class="container-fluid">
+		<div class="container">
+			<span class="extension"><img src="images/extension.png" alt="" height="32" width="32" />Chrome Extension</span>
+			<h1>HTML5 Storage Manager All in One</h1>
+			<div class="row desc">
+				<div class="col-sm-6 col-md-7">
+                    <ul>
+                        <li>Local Storage</li>
+                        <li>Session Storage</li>
+                        <li>Cookie</li>
+                        <li>indexedDB</li>
+                        <li>...</li>
+                    </ul>
+					<p class="brief">Best LocalStorage Manager Chrome Extension ever! Real-time inspect localstorage data and easily manage them in an independent popup window. It's a convenient and efficient tool for every web developers.</p>
+				</div>
+				<div class="col-sm-6 col-md-5 popup">
+					<div class="wrap">
+						<!--<div class="icon"><img src="extension/icon-38.png" /></div>-->
+						<div class="icon">
+							<span class="glyphicon glyphicon-home"></span>
+							<div class="addressbar">http://localhost/</div>
+							<span class="glyphicon glyphicon-align-justify"></span>
+						</div>
+						<div class="window"><div class="window-inner" ng-app="storageManagerApp">
+                            <tabset>
+                                <tab heading="Storage" ng-controller="storageController">
+                                    <div class="row">
+                                        <div class="btn-group col-xs-6">
+                                            <label class="btn btn-default btn-sm" ng-model="type" btn-radio="'local'">Local Storage</label>
+                                            <label class="btn btn-info btn-sm" ng-model="type" btn-radio="'session'">Sessin Storage</label>
+                                        </div>
+                                        <div class="col-xs-6 text-right">
+                                            <button ng-click="openWindow()" type="button" class="btn btn-primary btn-sm">Popup in new window <span class="glyphicon glyphicon-new-window"></span></button>
+                                        </div>
+                                    </div>
+                                    <form class="row add" role="form" ng-submit="type=='session'?addSession():add()">
+                                        <div class="col-xs-3">
+                                            <input ng-model="key" class="form-control input-sm" type="text" placeholder="{{type}} storage key" ng-class="{session:type=='session'}" />
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input ng-model="value" class="form-control input-sm" type="text" placeholder="{{type}} storage value" ng-class="{session:type=='session'}" />
+                                        </div>
+                                        <div class="col-xs-3 text-right">
+                                            <button type="submit" class="btn btn-success btn-sm">Add</button>
+                                            <button ng-click="type=='session'?clearSession():clear()" type="button" class="btn btn-danger btn-sm">Remove All</button>
+                                        </div>
+                                    </form>
+                                    <progressbar value="percentage" type="success"><b>{{100-percentage}}% Available</b></progressbar>
+                                    <table class="table table-condensed table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th width="15%">Key</th>
+                                                <th width="70%">Value</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in sessionStorage" class="something info" ng-class="{editing:editing==item.key}">
+                                                <td class="key">
+                                                    <span ng-show="item.isJson" class="json"></span>
+                                                    <div class="inner">
+                                                        <div class="content">{{item.key}}</div>
+                                                    </div>
+                                                </td>
+                                                <td class="value" ng-contenteditable ng-model="item.value" strip-br="true"></td>
+                                                <td class="action">
+                                                    <button type="button" ng-click="submitSession(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
+                                                    <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
+                                                    <button type="button" ng-click="dump(item.key,item.value,'session storage')" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
+                                                    <button type="button" ng-click="edit(item.key,'session')" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                                    <button type="button" ng-click="removeSession(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
+                                                    <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
+                                                    <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="item in localStorage" class="something" ng-class="{editing:editing==item.key}">
+                                                <td class="key">
+                                                    <span ng-show="item.isJson" class="json"></span>
+                                                    <div class="inner">
+                                                        <div class="content">{{item.key}}</div>
+                                                    </div>
+                                                </td>
+                                                <td class="value" ng-contenteditable ng-model="item.value" strip-br="true"></td>
+                                                <td class="action">
+                                                    <button type="button" ng-click="submit(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
+                                                    <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
+                                                    <button type="button" ng-click="dump(item.key,item.value,'local storage')" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
+                                                    <button type="button" ng-click="edit(item.key,'local')" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                                    <button type="button" ng-click="remove(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
+                                                    <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
+                                                    <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-hide="localStorage.length || sessionStorage.length" class="nothing text-center">
+                                                <td colspan="3">
+                                                    Nothing stored in SessionStorage or LocalStorage under current domain
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </tab>
+                                <tab heading="Cookie" ng-controller="cookieController">
+                                    <button ng-click="refresh()" type="button" class="btn btn-primary btn-sm">Refresh <span class="glyphicon glyphicon-refresh"></span></button>
+                                    <form class="row add" role="form" ng-submit="add()">
+                                        <div class="col-xs-3">
+                                            <input ng-model="key" class="form-control input-sm" type="text" placeholder="cookie name" />
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input ng-model="value" class="form-control input-sm" type="text" placeholder="cookie value" />
+                                        </div>
+                                        <div class="col-xs-3 text-right">
+                                            <button type="submit" class="btn btn-success btn-sm">Add</button>
+                                            <button ng-click="clear()" type="button" class="btn btn-danger btn-sm">Remove All</button>
+                                        </div>
+                                    </form>
+                                    <table class="table table-condensed table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th width="15%">Name</th>
+                                                <th width="70%">Value</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in cookies" class="something">
+                                                <td class="key">
+                                                    <div class="inner">
+                                                        <div class="content">{{item.key}}</div>
+                                                    </div>
+                                                </td>
+                                                <td class="value" ng-contenteditable ng-model="item.value" strip-br="true"></td>
+                                                <td class="action">
+                                                    <button type="button" ng-click="submit(item.key,item.value)" ng-show="editing==item.key" class="btn btn-success btn-xs btn-block">Confirm</button>
+                                                    <button type="button" ng-click="cancel()" ng-show="editing==item.key" class="btn btn-warning btn-xs btn-block">Cancel</button>
+                                                    <button type="button" ng-click="dump(item.key,item.value)" ng-hide="editing==item.key || !item.isJson" tooltip="Dump JSON to DevTool Console" class="btn btn-primary btn-xs btn-block">Dump JSON</button>
+                                                    <button type="button" ng-click="edit(item.key)" ng-hide="editing==item.key" class="btn btn-primary btn-xs btn-block edit">Edit</button>
+                                                    <button type="button" ng-click="remove(item.key)" ng-hide="editing==item.key" class="btn btn-danger btn-xs btn-block remove">Remove</button>
+                                                    <button type="button" ng-click="item.expand=true" ng-show="item.value.length>300 && !item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show All</button>
+                                                    <button type="button" ng-click="item.expand=false" ng-show="item.value.length>300 && item.expand && editing !=item.key" class="btn btn-warning btn-xs btn-block remove">Show Less</button>
+                                                </td>
+                                            </tr>
+                                            </tr>
+                                            <tr ng-hide="cookies.length" class="nothing text-center">
+                                                <td colspan="3">
+                                                    No cookie found.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </tab>
+                                <tab heading="indexedDB" ng-controller="indexedDBController">
+                                    <table class="table table-condensed table-striped table-bordered table-hover" style="visibility:hidden;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <p class="text-center">
+                                        <a href="https://github.com/AndreLion/html5-localstorage-manager/issues/8" target="_blank">Anyone using indexedDB?</a>
+                                    </p>
+                                </tab>
+                            </tabset>
+						</div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p class="container">
+			<a class="btn btn-primary btn-lg" href="https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd">Download in Chrome Web Store</a>
+
+			<!--<a class="btn btn-link github-logo" href="https://github.com/AndreLion/html5-localstorage-manager">View Source Code and Contribute on GitHub</a>-->
+		</p>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-md-7 ">
+					<ul class="feature">
+						<li><p>Real-time inspect, any change of localstorage will be shown in this extension immediately. </p></li>
+						<li><p>Check / add / edit / remove localstoage easily, also in an independent window.</p></li>
+						<li><p>Parse and send JSON to devtool console by clicking the <button class="btn btn-primary btn-xs">Dump JSON</button> button.</p></li>
+						<li><p>Visualizable available storage size. And a simple cookie manager.</p></li>
+					</ul>
+					<a href="https://twitter.com/share" class="twitter-share-button" style="visibility:hidden;" data-url="http://git.io/neaESw" data-text="Best HTML5 LocalStorage Manager Chrome Extension ever! Strongly recommend to every web developers" id="twitter-share" data-via="AndreLion" data-count="none">Tweet</a>
+					<script>!function(d,s,id){window.onload = function(){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';setTimeout(function(){fjs.parentNode.insertBefore(js,fjs);document.getElementById('twitter-share').style.visibility='';},3000);}}}(document, 'script', 'twitter-wjs');</script>
+				</div>
+			</div>
+		</div>
+	  </div>
+	  <a href="https://github.com/AndreLion/html5-localstorage-manager" class="github-fork"></a>
+	</div>
+	<hr />
+	<h2 id="faq">FAQ</h2>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : The orange icon in the address bar is missing (sometimes).</div>
+		<div class="panel-body">
+			A : Make sure there is any localstorage data stored in current page, if not, the orange icon is hidden. Or, try to restart the chrome browser or reavtive the extension in the chrome extension manager center.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : The popup page of the extension is not working or the current page is redirected to somewhere else after clicked the icon under some certain website, such as <a href="http://stackoverflow.com/">stackoverflow.com</a> or <a href="https://twitter.com/">twitter.com</a>. </div>
+		<div class="panel-body">
+			A : Beacuse these websites prohibit 3rd part script from injecting iframes into their own website, so that the extension totally failed.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : The popup page of the extension get stuck when huge amount of data stored in the localstorage, what's the problem?</div>
+		<div class="panel-body">
+			A : The problem is Chrome browser can not deal with such amounts of DOM nodes in extension page, it's overloaded. Currently there is no solutions, even the Chrome Developer Tool get stuck too.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : Some javascript exceptions and 404 errors are thrown out into the console by the extension.</div>
+		<div class="panel-body">
+			A : Yes it happens, just leave them alone.
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">Q : Who made this extension?</div>
+		<div class="panel-body">
+			A : Please visit my <a href="http://andrelion.github.io/about/" target="blank">Github About Page</a> and <a href="http://lnkd.in/breRy8z" target="blank">LinkedIn Profile</a>.
+		</div>
+	</div>
+	<hr />
+	<footer>
+		<p>
+			<span class="glyphicon glyphicon-hand-up"></span> If you find a bug or have suggestion, please <a href="https://github.com/AndreLion/html5-localstorage-manager/issues"><span class="glyphicon glyphicon-pencil"></span> write it down</a>.
+		</p>
+		<p>
+			<span class="glyphicon glyphicon-thumbs-up"></span> If you like it, please tell another web developer or give us a rate.
+			<a class="rate" href="https://chrome.google.com/webstore/detail/html5-localstorage-manage/giompennnhheakjcnobejbnjgbbkmdnd/reviews">
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+				<span class="glyphicon glyphicon-star-empty"></span>
+			</a>
+		</p>
+	</footer>
+	<!--<iframe src="notification-demo.html" style="display:none;"></iframe>
+    <script src="extension/lib/angular.min.js"></script>
+    <script src="extension/lib/angular-sanitize.min.js"></script>
+    <script src="extension/lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
+    <script src="extension/common.js"></script>
+    <script src="extension/popup.js"></script>
+	<script>
+        window.onchange = function(ev){
+        };
+	</script>-->
+</body>
+</html>
