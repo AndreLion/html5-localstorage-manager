@@ -2,7 +2,6 @@
 <html ng-app="storageManagerApp">
     <head>
         <title>HTML5 Storage Manager All in One Popup</title>
-        <link rel="stylesheet" href="lib/bootstrap.min.css" />
         <link rel="stylesheet" href="popup.css" />
     </head>
     <body>
@@ -31,7 +30,7 @@
                 </form>
                 <progressbar value="percentage" type="success"><b>{{100-percentage}}% Available</b></progressbar>
                 <div class="text-right" ng-show="sessionStorage.length">
-                    <label> <input type="checkbox" ng-model="showSession"/> Show Session Storage </label> 
+                    <label> <input type="checkbox" ng-model="showSession"/> Show Session Storage </label>
                 </div>
                 <table class="table table-condensed table-bordered table-hover">
                     <thead>
@@ -144,7 +143,7 @@
                     </thead>
                 </table>
                 <p class="text-center lead">
-                    A beta version of indexedDB Manager is free to use: 
+                    A beta version of indexedDB Manager is free to use:
                 </p>
                 <p class="text-center">
                     <button ng-click="openWindow()" type="button" class="btn btn-primary btn-sm">Open in new window <span class="glyphicon glyphicon-new-window"></span></button>
@@ -156,9 +155,6 @@
         <div class="text-right footer" >
             <a class="options" href="chrome-extension://giompennnhheakjcnobejbnjgbbkmdnd/options.html" target="_blank">Options <span class="glyphicon glyphicon-wrench"></span></a>
         </div>
-        <script src="lib/angular.min.js"></script>
-        <script src="lib/angular-sanitize.min.js"></script>
-        <script src="lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
         <script src="popup.js"></script>
     </body>
 </html>
