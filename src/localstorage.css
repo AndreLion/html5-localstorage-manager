@@ -1,0 +1,15 @@
+.form-inline * { display:inline-block; }
+.smily { display:inline-block;font-size:18px;line-height:10px; }
+body.not-suport { height:100%;overflow:hidden; }
+body.not-support #not-support { display:block;position:absolute;top:0;left:0;height:100%;width:100%;background-color:#FFF;padding:50px 0; }
+#not-support { display:none; }
+table tbody tr.nothing td { padding:40px 0; }
+table tbody td { vertical-align:middle; }
+tbody .inner { max-height:100px;overflow:hidden; }
+
+iframe#notification { display:none; }
+footer { padding-bottom:15px; }
+footer .rate:hover { text-decoration:none; }
+/*.json { position:absolute;top:3px;left:3px;width:24px;height:11px;background:transparent url(json.png) no-repeat 0 0 scroll;background-size:24px; }*/
+.avatar { position:absolute;background:#EEE;opcaity:0.5; }
+

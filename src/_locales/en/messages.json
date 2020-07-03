@@ -1,0 +1,11 @@
+{
+  "appName": {
+    "message": "Web Storage JSON Editor",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "Make editing JSON data in localstorage a breeze",
+    "description":"The description of the application, displayed in the web store."
+  }
+}
+
