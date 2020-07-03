@@ -1,5 +1,5 @@
 <template>
-  <div id="popup">
+  <div>
     Popup
     <img alt="Vue logo" src="../assets/icon-128.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
