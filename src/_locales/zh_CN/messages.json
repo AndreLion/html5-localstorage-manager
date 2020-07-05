@@ -1,0 +1,11 @@
+{
+  "appName": {
+    "message": "LocalStorage JSON 编辑器",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "编辑 LocalStage 中的 JSON 数据易如反掌",
+    "description":"The description of the application, displayed in the web store."
+  }
+}
+

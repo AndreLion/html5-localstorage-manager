@@ -1,0 +1,11 @@
+{
+  "appName": {
+    "message": "JSON-Friendly LocalStorage Manager",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "Editing JSON in localstorage is a breeze!",
+    "description":"The description of the application, displayed in the web store."
+  }
+}
+
