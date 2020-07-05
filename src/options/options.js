@@ -1,11 +1,11 @@
-import Vue from "vue";
-import Options from "./Options.vue";
+import Vue from 'vue';
+import Options from './Options.vue';
 
 Vue.config.productionTip = false;
 
 new Vue({
   render: h => h(Options)
-}).$mount("#options");
+}).$mount('#options');
 
 // // Copyright 2018 The Chromium Authors. All rights reserved.
 // // Use of this source code is governed by a BSD-style license that can be

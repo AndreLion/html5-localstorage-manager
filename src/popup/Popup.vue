@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="border-4 border-black">
     This is Popup in /popup
   </div>
 </template>
@@ -10,3 +10,4 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Popup extends Vue {
 };
 </script>
+<style src="../style.css" />

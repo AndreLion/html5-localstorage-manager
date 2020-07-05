@@ -4,17 +4,9 @@ module.exports = {
   filenameHashing: false,
   pages: {
     popup: {
-      // entry for the page
       entry: 'src/popup/popup.js',
-      // the source template
       template: 'src/popup/popup.html',
-      // output as dist/index.html
       filename: 'popup.html',
-      // when using title option,
-      // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
-      // title: 'Index Page',
-      // chunks to include on this page, by default includes
-      // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'popup']
     },
     options: {
@@ -23,6 +15,12 @@ module.exports = {
       filename: 'options.html',
       chunks: ['chunk-vendors', 'chunk-common', 'options']
     }
+  },
+  chainWebpack: config => {
+    // No automatic preload
+    config.plugins.delete("preload");
+    // No automatic prefetch
+    config.plugins.delete("prefetch");
   },
   configureWebpack: {
     devtool: 'cheap-module-source-map',
