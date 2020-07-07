@@ -3,7 +3,7 @@
   "description": "__MSG_appDesc__",
   "default_locale": "en",
   "version": "2.0",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": ["activeTab"],
   "options_page": "options.html",
   "background": {
     "scripts": ["background.js"],

@@ -29,6 +29,7 @@ module.exports = {
         patterns: [
           { from: 'src/manifest.json' },
           { from: 'src/background.js' },
+          { from: 'src/inject.js' },
           { from: 'src/assets/', to: 'assets' },
           { from: 'src/_locales/', to: '_locales' }
         ]

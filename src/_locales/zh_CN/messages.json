@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "LocalStorage JSON 编辑器",
+    "message": "LocalStorage JSON 实时编辑器",
     "description": "The title of the application, displayed in the web store."
   },
   "appDesc": {
