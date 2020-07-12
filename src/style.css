@@ -18,3 +18,47 @@
 button {
   height: 20px !important;
 }
+
+
+td.session, td.local {
+  position: relative;
+}
+
+td.session::before, td.local::before {
+  content: ' ';
+  height: 100%;
+  border-left-width: 3px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+td.session::before {
+  border-left-color: #428be2;
+}
+td.local::before {
+  border-left-color: #9861c0;
+}
+
+td.json, td.eval {
+  position: relative;
+  padding-left: 2rem !important;
+}
+td.json::before, td.eval::before {
+  font-size: 10px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  align-items: center;
+  display: flex;
+  color: #999;
+  font-weight: 800;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+td.json::before {
+  content: 'JSON';
+}
+td.eval::before {
+  content: 'EVAL';
+}

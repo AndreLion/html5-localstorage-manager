@@ -29,22 +29,32 @@
       :sticky-header="true"
     >
       <template slot-scope="props">
-        <b-table-column field="key" label="Key" class="w-20 cursor-pointer">
+        <b-table-column
+          field="key"
+          label="Key"
+          class="w-20"
+          :class="[props.row._type]"
+        >
           {{ props.row.key }}
         </b-table-column>
-        <b-table-column field="value" label="Value" class="cursor-pointer">
+        <b-table-column
+          field="value"
+          label="Value"
+          class="cursor-pointer"
+          :class="props.row._json ? 'json' : (props.row._eval ? 'eval' : '')"
+        >
           {{ props.row.value }}
         </b-table-column>
         <b-table-column class="w-40">
           <div class="flex justify-end ">
             <span
-              class="text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
+              class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
               v-if="!isRemoving(props.row.key, props.row._type)"
             >
               <EditIcon :size="20" title="Edit" />
             </span>
             <span
-              class="text-red-300 hover:text-red-600 invisible group-hover:visible"
+              class="cursor-pointer text-red-300 hover:text-red-600 invisible group-hover:visible"
               @click="remove(props.row.key, props.row._type)"
               v-if="!isRemoving(props.row.key, props.row._type)"
             >
@@ -55,7 +65,7 @@
               type="is-danger"
               class="mr-1"
               v-if="isRemoving(props.row.key, props.row._type)"
-              @click="deleteItem(props.row.key, props.row._type)"
+              @click="removeItem(props.row.key, props.row._type)"
             >
               Delete
             </b-button>
@@ -84,7 +94,7 @@
 <script>
 import { Component, Vue } from "vue-property-decorator";
 import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
-import EditIcon from "vue-material-design-icons/SquareEditOutline.vue";
+import EditIcon from "vue-material-design-icons/PencilOutline.vue";
 import HeartIcon from "vue-material-design-icons/HandHeart.vue";
 
 @Component({
@@ -105,9 +115,11 @@ export default class Popup extends Vue {
     key: null,
     type: null
   };
+  e = null;
   mounted() {
     // Mock
-    this.$set(this.d, "local", [{ key: "mockKey", value: `123` }, { key: "longKey", value: `[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},trrt{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]tt非人vvvvaaaa` }, { key: "shortKey", value: `abc` }]);
+    this.$set(this.d, "local", [{ key: "mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},trrt{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]tt非人vvvvaaaa` }, { key: "shortKey", value: `abc` }]);
+    this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
 
     try {
       chrome.runtime.sendMessage({ source: "popup", event: "mounted" });
@@ -123,7 +135,7 @@ export default class Popup extends Vue {
         });
       });
     } catch (e) {
-      console.log("erro");
+      this.e = e;
     }
   }
 
@@ -141,7 +153,7 @@ export default class Popup extends Vue {
     this.status.type = null;
   }
 
-  deleteItem(key, type) {
+  removeItem(key, type) {
     console.log("Remove", key, type);
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -158,7 +170,7 @@ export default class Popup extends Vue {
         }
       });
     } catch (e) {
-      console.log("erro");
+      this.e = e;
     }
     this.status.action = null;
     this.status.key = null;
@@ -173,13 +185,41 @@ export default class Popup extends Vue {
     );
   }
 
+  isJSON(value) {
+    if(value.startsWith('[') || value.startsWith('{')){
+      try {
+        JSON.parse(value);
+        return true;
+      } catch (e) {
+        this.e = e;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  isEval(value) {
+    if(value.startsWith('[') || value.startsWith('{')){
+      try {
+        eval(value);
+        return true;
+      } catch (e) {
+        this.e = e;
+      }
+      return false;
+    }
+    return false;
+  }
+
   get table() {
     let result = [];
     if (this.checked.includes("local")) {
       result = result.concat(
         this.d.local.map(item => ({
           ...item,
-          _type: "local"
+          _type: "local",
+          _eval: this.isEval(item.value),
+          _json: this.isJSON(item.value)
         }))
       );
     }
@@ -188,7 +228,9 @@ export default class Popup extends Vue {
       result = result.concat(
         this.d.session.map(item => ({
           ...item,
-          _type: "session"
+          _type: "session",
+          _eval: this.isEval(item.value),
+          _json: this.isJSON(item.value)
         }))
       );
     }
