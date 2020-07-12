@@ -46,13 +46,23 @@
       console.log("sender:", sender);
       if (data.source === 'popup') {
         if (data.event === 'remove') {
-          console.log('Remove:', data.key, data.source);
+          console.log('Remove:', data.key, data.type);
           switch(data.type) {
             case 'local':
               localStorage.removeItem(data.key);
               break;
             case 'session':
               sessionStorage.removeItem(data.key);
+              break;
+          }
+        } else if (data.event === 'edit') {
+          console.log('Set:', data.type, data.key, data.value);
+          switch(data.type) {
+            case 'local':
+              localStorage.setItem(data.key, data.value);
+              break;
+            case 'session':
+              sessionStorage.setItem(data.key, data.value);
               break;
           }
         }

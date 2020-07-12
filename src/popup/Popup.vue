@@ -43,40 +43,69 @@
           class="cursor-pointer"
           :class="props.row._json ? 'json' : (props.row._eval ? 'eval' : '')"
         >
-          {{ props.row.value }}
+          <div
+            @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
+            v-if="!isEditing(props.row.key, props.row._type)"
+          >
+            {{ props.row.value }}
+          </div>
+          <div v-else contenteditable class="bg-blue-100" ref="editor">
+            {{ status.value }}
+          </div>
         </b-table-column>
         <b-table-column class="w-40">
           <div class="flex justify-end ">
             <span
               class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
-              v-if="!isRemoving(props.row.key, props.row._type)"
+              v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
             >
-              <EditIcon :size="20" title="Edit" />
+              <EditIcon
+                :size="20"
+                title="Edit"
+                @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
+              />
             </span>
             <span
               class="cursor-pointer text-red-300 hover:text-red-600 invisible group-hover:visible"
-              @click="remove(props.row.key, props.row._type)"
-              v-if="!isRemoving(props.row.key, props.row._type)"
+              @click="removing(props.row.key, props.row._type)"
+              v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
             >
               <DeleteIcon :size="20" title="Delete?" />
             </span>
-            <b-button
-              size="is-small"
-              type="is-danger"
-              class="mr-1"
-              v-if="isRemoving(props.row.key, props.row._type)"
-              @click="removeItem(props.row.key, props.row._type)"
-            >
-              Delete
-            </b-button>
-            <b-button
-              size="is-small"
-              type="is-light"
-              v-if="isRemoving(props.row.key, props.row._type)"
-              @click="cancel(props.row.key, props.row._type)"
-            >
-              Cancel
-            </b-button>
+            <span v-if="isEditing(props.row.key, props.row._type)">
+              <b-button
+                size="is-small"
+                type="is-success"
+                class="mr-1"
+                @click="edit(props.row.key, props.row._type)"
+              >
+                Submit
+              </b-button>
+              <b-button
+                size="is-small"
+                type="is-light"
+                @click="cancel(props.row.key, props.row._type)"
+              >
+                Cancel
+              </b-button>
+            </span>
+            <span v-if="isRemoving(props.row.key, props.row._type)">
+              <b-button
+                size="is-small"
+                type="is-danger"
+                class="mr-1"
+                @click="remove(props.row.key, props.row._type)"
+              >
+                Delete
+              </b-button>
+              <b-button
+                size="is-small"
+                type="is-light"
+                @click="cancel(props.row.key, props.row._type)"
+              >
+                Cancel
+              </b-button>
+            </span>
           </div>
         </b-table-column>
       </template>
@@ -92,7 +121,7 @@
   </div>
 </template>
 <script>
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Ref } from "vue-property-decorator";
 import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
 import EditIcon from "vue-material-design-icons/PencilOutline.vue";
 import HeartIcon from "vue-material-design-icons/HandHeart.vue";
@@ -105,6 +134,8 @@ import HeartIcon from "vue-material-design-icons/HandHeart.vue";
   }
 })
 export default class Popup extends Vue {
+  @Ref("editor")
+  editor;
   checked = ["local", "session"];
   d = {
     local: [],
@@ -113,12 +144,13 @@ export default class Popup extends Vue {
   status = {
     action: null,
     key: null,
-    type: null
+    type: null,
+    value: null
   };
   e = null;
   mounted() {
     // Mock
-    this.$set(this.d, "local", [{ key: "mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},trrt{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]tt非人vvvvaaaa` }, { key: "shortKey", value: `abc` }]);
+    this.$set(this.d, "local", [{ key: "mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }]);
     this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
 
     try {
@@ -139,9 +171,23 @@ export default class Popup extends Vue {
     }
   }
 
-  remove(key, type) {
+  async editing(key, type, isJson, isEval) {
+    console.log("editing", key, type, isJson, isEval);
+    this.status.action = "editing";
+    this.status.key = key;
+    this.status.type = type;
+
+    const filtered = this.d[type].filter(item => item.key === key);
+    if (filtered.length) {
+      this.status.value = filtered[0].value;
+    }
+    await this.$nextTick();
+    this.editor.focus();
+  }
+
+  removing(key, type) {
     console.log("Remove", key, type);
-    this.status.action = "remove";
+    this.status.action = "removing";
     this.status.key = key;
     this.status.type = type;
   }
@@ -153,13 +199,38 @@ export default class Popup extends Vue {
     this.status.type = null;
   }
 
-  removeItem(key, type) {
+  edit(key, type) {
+    const value = this.editor.innerHTML;
+    console.log("Edit", type, key, value);
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs.length) {
+          const activeTab = tabs[0];
+          console.log(type, key);
+          chrome.tabs.sendMessage(activeTab.id, {
+            source: "popup",
+            event: "edit",
+            type,
+            key,
+            value
+          });
+        }
+      });
+    } catch (e) {
+      this.e = e;
+    }
+    this.status.action = null;
+    this.status.key = null;
+    this.status.type = null;
+    this.status.value = null;
+  }
+
+  remove(key, type) {
     console.log("Remove", key, type);
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
-          console.log('target tab id', activeTab.id);
           console.log(type, key);
           chrome.tabs.sendMessage(activeTab.id, {
             source: "popup",
@@ -179,14 +250,22 @@ export default class Popup extends Vue {
 
   isRemoving(key, type) {
     return (
-      this.status.action === "remove" &&
+      this.status.action === "removing" &&
+      this.status.type === type &&
+      this.status.key === key
+    );
+  }
+
+  isEditing(key, type) {
+    return (
+      this.status.action === "editing" &&
       this.status.type === type &&
       this.status.key === key
     );
   }
 
   isJSON(value) {
-    if(value.startsWith('[') || value.startsWith('{')){
+    if (value.startsWith("[") || value.startsWith("{")) {
       try {
         JSON.parse(value);
         return true;
@@ -199,7 +278,7 @@ export default class Popup extends Vue {
   }
 
   isEval(value) {
-    if(value.startsWith('[') || value.startsWith('{')){
+    if (value.startsWith("[") || value.startsWith("{")) {
       try {
         eval(value);
         return true;
@@ -209,6 +288,10 @@ export default class Popup extends Vue {
       return false;
     }
     return false;
+  }
+
+  getValue(key, type) {
+    console.log('Get Value:', key, type);
   }
 
   get table() {
