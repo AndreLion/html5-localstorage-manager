@@ -12,6 +12,7 @@
     "buefy": "^0.8.20",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
+    "vue-json-editor": "^1.4.1",
     "vue-material-design-icons": "^4.7.1"
   },
   "devDependencies": {

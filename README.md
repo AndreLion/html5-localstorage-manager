@@ -1,24 +1,32 @@
-# html5-localstorage-manager
+> Chrome Extension
 
-## Project setup
-```
-yarn install
-```
+# Realtime JSON-Friendly LocalStorage Manager
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+Former known as: HTML5 LocalStorage Manager
 
-### Compiles and minifies for production
-```
-yarn build
-```
 
-### Lints and fixes files
-```
-yarn lint
-```
+Enhances the native chrome devtool for local/session storage.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Features
+
+- Real-time inspection for storage value change.
+- JSON-friendly editor.
+
+## Release log:
+
+Ver 2.0 (working in progress)
+
+Ver 1.6 (Nov 10, 2014)
+  - Support session storage
+  - Support edit cookie
+  - rewrite everything with AngularJS
+
+Ver 1.5 (Mar 20, 2014)
+  - Independent popup up window
+  - Support cookie
+
+Ver 1.1 (Sep 1, 2013)
+  - Dump JSON button
+
+Ver 1.0 ( Aug 31, 2013)
+  - Everything basic

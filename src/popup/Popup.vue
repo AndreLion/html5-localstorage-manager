@@ -1,123 +1,134 @@
 <template>
   <div class="text-sm">
-    <section>
-      <b-field>
-        <b-checkbox
-          v-model="checked"
-          native-value="local"
-          size="is-small"
-          :disabled="d.local.length === 0"
-          >Local Storage ({{ d.local.length }})</b-checkbox
-        >
-        <b-checkbox
-          v-model="checked"
-          native-value="session"
-          type="is-info"
-          size="is-small"
-          :disabled="d.session.length === 0"
-          >Session Storage ({{ d.session.length }})</b-checkbox
-        >
-      </b-field>
-    </section>
-    <b-table
-      :data="table"
-      :striped="false"
-      :narrowed="true"
-      :hoverable="true"
-      :mobile-cards="false"
-      :row-class="() => 'group'"
-      :sticky-header="true"
-    >
-      <template slot-scope="props">
-        <b-table-column
-          field="key"
-          label="Key"
-          class="w-20"
-          :class="[props.row._type]"
-        >
-          {{ props.row.key }}
-        </b-table-column>
-        <b-table-column
-          field="value"
-          label="Value"
-          class="cursor-pointer"
-          :class="props.row._json ? 'json' : (props.row._eval ? 'eval' : '')"
-        >
-          <div
-            @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
-            v-if="!isEditing(props.row.key, props.row._type)"
+    <section v-if="status.action !== 'editingJSON'">
+      <div>
+        <b-field>
+          <b-checkbox
+            v-model="checked"
+            native-value="local"
+            size="is-small"
+            :disabled="d.local.length === 0"
+            >Local Storage ({{ d.local.length }})</b-checkbox
           >
-            {{ props.row.value }}
-          </div>
-          <div v-else contenteditable class="bg-blue-100" ref="editor">
-            {{ status.value }}
-          </div>
-        </b-table-column>
-        <b-table-column class="w-40">
-          <div class="flex justify-end ">
-            <span
-              class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
-              v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
+          <b-checkbox
+            v-model="checked"
+            native-value="session"
+            type="is-info"
+            size="is-small"
+            :disabled="d.session.length === 0"
+            >Session Storage ({{ d.session.length }})</b-checkbox
+          >
+        </b-field>
+      </div>
+      <b-table
+        :data="table"
+        :striped="false"
+        :narrowed="true"
+        :hoverable="true"
+        :mobile-cards="false"
+        :row-class="() => 'group'"
+        :sticky-header="true"
+      >
+        <template slot-scope="props">
+          <b-table-column
+            field="key"
+            label="Key"
+            class="w-20"
+            :class="[props.row._type]"
+          >
+            {{ props.row.key }}
+          </b-table-column>
+          <b-table-column
+            field="value"
+            label="Value"
+            class="cursor-pointer"
+            :class="props.row._json ? 'json' : ''"
+          >
+            <div
+              @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
+              v-if="!isEditing(props.row.key, props.row._type)"
             >
-              <EditIcon
-                :size="20"
-                title="Edit"
-                @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
-              />
-            </span>
-            <span
-              class="cursor-pointer text-red-300 hover:text-red-600 invisible group-hover:visible"
-              @click="removing(props.row.key, props.row._type)"
-              v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
-            >
-              <DeleteIcon :size="20" title="Delete?" />
-            </span>
-            <span v-if="isEditing(props.row.key, props.row._type)">
-              <b-button
-                size="is-small"
-                type="is-success"
-                class="mr-1"
-                @click="edit(props.row.key, props.row._type)"
+              {{ props.row.value }}
+            </div>
+            <div v-else contenteditable class="bg-blue-100" ref="editor">
+              {{ status.value }}
+            </div>
+          </b-table-column>
+          <b-table-column class="w-40">
+            <div class="flex justify-end ">
+              <span
+                class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
+                v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
               >
-                Submit
-              </b-button>
-              <b-button
-                size="is-small"
-                type="is-light"
-                @click="cancel(props.row.key, props.row._type)"
+                <EditIcon
+                  :size="20"
+                  title="Edit"
+                  @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
+                />
+              </span>
+              <span
+                class="cursor-pointer text-red-300 hover:text-red-600 invisible group-hover:visible"
+                @click="removing(props.row.key, props.row._type)"
+                v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
               >
-                Cancel
-              </b-button>
-            </span>
-            <span v-if="isRemoving(props.row.key, props.row._type)">
-              <b-button
-                size="is-small"
-                type="is-danger"
-                class="mr-1"
-                @click="remove(props.row.key, props.row._type)"
-              >
-                Delete
-              </b-button>
-              <b-button
-                size="is-small"
-                type="is-light"
-                @click="cancel(props.row.key, props.row._type)"
-              >
-                Cancel
-              </b-button>
-            </span>
+                <DeleteIcon :size="20" title="Delete?" />
+              </span>
+              <span v-if="isEditing(props.row.key, props.row._type)">
+                <b-button
+                  size="is-small"
+                  type="is-success"
+                  class="mr-1"
+                  @click="edit(props.row.key, props.row._type)"
+                >
+                  Submit
+                </b-button>
+                <b-button
+                  size="is-small"
+                  type="is-light"
+                  @click="cancel(props.row.key, props.row._type)"
+                >
+                  Cancel
+                </b-button>
+              </span>
+              <span v-if="isRemoving(props.row.key, props.row._type)">
+                <b-button
+                  size="is-small"
+                  type="is-danger"
+                  class="mr-1"
+                  @click="remove(props.row.key, props.row._type)"
+                >
+                  Delete
+                </b-button>
+                <b-button
+                  size="is-small"
+                  type="is-light"
+                  @click="cancel(props.row.key, props.row._type)"
+                >
+                  Cancel
+                </b-button>
+              </span>
+            </div>
+          </b-table-column>
+        </template>
+        <template slot="footer">
+          <div class="has-text-right">
+            <a href="#" class="flex justify-end">
+              <HeartIcon :size="20" />
+              Sponsor
+            </a>
           </div>
-        </b-table-column>
-      </template>
-      <template slot="footer">
-        <div class="has-text-right">
-          <a href="#" class="flex justify-end">
-            <HeartIcon :size="20" />
-            Sponsor
-          </a>
-        </div>
-      </template>
-    </b-table>
+        </template>
+      </b-table>
+    </section>
+    <section v-else>
+      Editing JSON
+      <JsonEditor
+        v-model="status.json"
+        :show-btns="true"
+        :expandedOnStart="true"
+        @json-change="onJsonChange"
+      />
+    </section>
   </div>
 </template>
 <script>
@@ -125,13 +136,15 @@ import { Component, Vue, Ref } from "vue-property-decorator";
 import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
 import EditIcon from "vue-material-design-icons/PencilOutline.vue";
 import HeartIcon from "vue-material-design-icons/HandHeart.vue";
+import JsonEditor from "vue-json-editor";
 
 @Component({
   components: {
     EditIcon,
     HeartIcon,
-    DeleteIcon
-  }
+    DeleteIcon,
+    JsonEditor
+}
 })
 export default class Popup extends Vue {
   @Ref("editor")
@@ -145,7 +158,8 @@ export default class Popup extends Vue {
     action: null,
     key: null,
     type: null,
-    value: null
+    value: null,
+    json: null
   };
   e = null;
   mounted() {
@@ -171,18 +185,23 @@ export default class Popup extends Vue {
     }
   }
 
-  async editing(key, type, isJson, isEval) {
-    console.log("editing", key, type, isJson, isEval);
-    this.status.action = "editing";
+  async editing(key, type, isJson ) {
+    console.log("editing", key, type, isJson);
     this.status.key = key;
     this.status.type = type;
-
     const filtered = this.d[type].filter(item => item.key === key);
-    if (filtered.length) {
+    if (isJson)  {
+      this.status.action = "editingJSON";
+      if (isJson) {
+        this.status.json = JSON.parse(filtered[0].value);
+      }
+    } else {
+      this.status.action = "editing";
       this.status.value = filtered[0].value;
+
+      await this.$nextTick();
+      this.editor.focus();
     }
-    await this.$nextTick();
-    this.editor.focus();
   }
 
   removing(key, type) {
@@ -277,19 +296,6 @@ export default class Popup extends Vue {
     return false;
   }
 
-  isEval(value) {
-    if (value.startsWith("[") || value.startsWith("{")) {
-      try {
-        eval(value);
-        return true;
-      } catch (e) {
-        this.e = e;
-      }
-      return false;
-    }
-    return false;
-  }
-
   getValue(key, type) {
     console.log('Get Value:', key, type);
   }
@@ -301,7 +307,6 @@ export default class Popup extends Vue {
         this.d.local.map(item => ({
           ...item,
           _type: "local",
-          _eval: this.isEval(item.value),
           _json: this.isJSON(item.value)
         }))
       );
@@ -312,7 +317,6 @@ export default class Popup extends Vue {
         this.d.session.map(item => ({
           ...item,
           _type: "session",
-          _eval: this.isEval(item.value),
           _json: this.isJSON(item.value)
         }))
       );
