@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "serve": "vue-cli-service serve",
     "dev": "vue-cli-service build --mode development --no-unsafe-inline --modern --watch",
     "build": "vue-cli-service build --no-unsafe-inline --modern",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "buefy": "^0.8.20",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-material-design-icons": "^4.7.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

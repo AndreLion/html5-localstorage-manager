@@ -7,7 +7,6 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class Options extends Vue {
-};
+export default class Options extends Vue {}
 </script>
 <style src="../style.css" />

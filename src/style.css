@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* override */
+.table tfoot td, .table tfoot th {
+  border-width: 1px 0 0 !important;
+}
+
+.table thead td, .table thead th {
+  border-width: 0 0 1px !important;
+}
+
+.table td, .table th {
+  vertical-align: middle !important;
+}
+
+button {
+  height: 20px !important;
+}

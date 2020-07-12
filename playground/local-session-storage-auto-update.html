@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Localstorage Basic - Test Case</title>
+</head>
+<body>
+    <h5>Local Storage</h5>
+    <div><label>Key: <span id="lskey">now</span></label></div>
+    <div><label>Value: <span id="lsvalue"></span></label></div>
+    <h5>Session Storage</h5>
+    <div><label>Key: <span id="sskey">counter</span></label></div>
+    <div><label>Value: <span id="ssvalue"></span></label></div>
+    <script>
+      setInterval(() => {
+        const key = 'now';
+        const now = +new Date + '';
+        localStorage.setItem(key, now);
+        document.getElementById('lsvalue').innerHTML = localStorage.getItem(key);
+      }, 1111);
+
+      setInterval(() => {
+        const key = 'counter';
+        let counter = parseInt(sessionStorage.getItem(key)) || 0;
+        sessionStorage.setItem(key, (counter > 1000 ? 1 : ++counter) + '');
+        document.getElementById('ssvalue').innerHTML = sessionStorage.getItem(key);
+      }, 1500);
+
+      window.addEventListener('storage', () => {
+        console.log('localStorage now:', localStorage.getItem('now'));
+        console.log('sessionStorage counter:', window.sessionStorage.getItem('counter'));
+      });
+    </script>
+</body>
+</html>
