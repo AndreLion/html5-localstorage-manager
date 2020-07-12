@@ -38,6 +38,28 @@
       false
     );
 
+    chrome.runtime.onMessage.addListener((data, sender) => {
+      if(sender.id !== extensionId) {
+        return ;
+      }
+      console.log("request data:", data);
+      console.log("sender:", sender);
+      if (data.source === 'popup') {
+        if (data.event === 'remove') {
+          console.log('Remove:', data.key, data.source);
+          switch(data.type) {
+            case 'local':
+              localStorage.removeItem(data.key);
+              break;
+            case 'session':
+              sessionStorage.removeItem(data.key);
+              break;
+          }
+        }
+      }
+
+    });
+
     const iframe = document.createElement("iframe");
     iframe.id = iframeId;
     iframe.src = `${location.origin}/${extensionId}-proxy.html`;

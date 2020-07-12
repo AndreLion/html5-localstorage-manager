@@ -25,28 +25,28 @@
       :narrowed="true"
       :hoverable="true"
       :mobile-cards="false"
-      :row-class="() => 'group cursor-pointer'"
+      :row-class="() => 'group'"
       :sticky-header="true"
     >
       <template slot-scope="props">
-        <b-table-column field="key" label="Key" class="w-20">
+        <b-table-column field="key" label="Key" class="w-20 cursor-pointer">
           {{ props.row.key }}
         </b-table-column>
-        <b-table-column field="value" label="Value">
+        <b-table-column field="value" label="Value" class="cursor-pointer">
           {{ props.row.value }}
         </b-table-column>
         <b-table-column class="w-40">
           <div class="flex justify-end ">
             <span
               class="text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
-              v-if="!isDeleting(props.row.key, props.row._type)"
+              v-if="!isRemoving(props.row.key, props.row._type)"
             >
               <EditIcon :size="20" title="Edit" />
             </span>
             <span
               class="text-red-300 hover:text-red-600 invisible group-hover:visible"
-              @click="deleting(props.row.key, props.row._type)"
-              v-if="!isDeleting(props.row.key, props.row._type)"
+              @click="remove(props.row.key, props.row._type)"
+              v-if="!isRemoving(props.row.key, props.row._type)"
             >
               <DeleteIcon :size="20" title="Delete?" />
             </span>
@@ -54,7 +54,7 @@
               size="is-small"
               type="is-danger"
               class="mr-1"
-              v-if="isDeleting(props.row.key, props.row._type)"
+              v-if="isRemoving(props.row.key, props.row._type)"
               @click="deleteItem(props.row.key, props.row._type)"
             >
               Delete
@@ -62,7 +62,7 @@
             <b-button
               size="is-small"
               type="is-light"
-              v-if="isDeleting(props.row.key, props.row._type)"
+              v-if="isRemoving(props.row.key, props.row._type)"
               @click="cancel(props.row.key, props.row._type)"
             >
               Cancel
@@ -127,9 +127,9 @@ export default class Popup extends Vue {
     }
   }
 
-  deleting(key, type) {
-    console.log("deleting", key, type);
-    this.status.action = "deleting";
+  remove(key, type) {
+    console.log("Remove", key, type);
+    this.status.action = "remove";
     this.status.key = key;
     this.status.type = type;
   }
@@ -142,15 +142,32 @@ export default class Popup extends Vue {
   }
 
   deleteItem(key, type) {
-    console.log("delete", key, type);
+    console.log("Remove", key, type);
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs.length) {
+          const activeTab = tabs[0];
+          console.log('target tab id', activeTab.id);
+          console.log(type, key);
+          chrome.tabs.sendMessage(activeTab.id, {
+            source: "popup",
+            event: "remove",
+            type,
+            key
+          });
+        }
+      });
+    } catch (e) {
+      console.log("erro");
+    }
     this.status.action = null;
     this.status.key = null;
     this.status.type = null;
   }
 
-  isDeleting(key, type) {
+  isRemoving(key, type) {
     return (
-      this.status.action === "deleting" &&
+      this.status.action === "remove" &&
       this.status.type === type &&
       this.status.key === key
     );
