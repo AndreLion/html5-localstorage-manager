@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.w-36 {
+  width: 9rem;
+}
+#popup {
+  width: 600px;
+  height: 300px;
+  overflow-y: auto;
+}
+
 /* override */
 .table tfoot td, .table tfoot th {
   border-width: 1px 0 0 !important;
@@ -15,10 +24,9 @@
   vertical-align: middle !important;
 }
 
-button {
+table button {
   height: 20px !important;
 }
-
 
 td.session, td.local {
   position: relative;
@@ -40,25 +48,36 @@ td.local::before {
   border-left-color: #9861c0;
 }
 
-td.json, td.eval {
-  position: relative;
-  padding-left: 2rem !important;
-}
-td.json::before, td.eval::before {
+td.json::after {
+  content: '{JSON}';
   font-size: 10px;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  align-items: center;
-  display: flex;
   color: #999;
   font-weight: 800;
   font-family: "Lucida Console", Monaco, monospace;
 }
-td.json::before {
-  content: 'JSON';
+
+tfoot th {
+  padding: 0 !important;
 }
-td.eval::before {
-  content: 'EVAL';
+
+span.plus-circle-outline-icon {
+  transition: transform .2s;
+}
+
+span.plus-circle-outline-icon.adding {
+  transform: rotate(45deg);
+}
+
+.content-cell {
+  max-height: 8rem;
+}
+
+.fix-top {
+  position: fixed;
+  top: 1px;
+}
+
+.fix-bottom {
+  position: fixed;
+  bottom: 1px;
 }

@@ -1,24 +1,91 @@
 <template>
-  <div class="text-sm">
+  <div class="text-sm p-2" id="popup" ref="popup">
     <section v-if="status.action !== 'editingJSON'">
-      <div>
-        <b-field>
-          <b-checkbox
-            v-model="checked"
-            native-value="local"
-            size="is-small"
-            :disabled="d.local.length === 0"
-            >Local Storage ({{ d.local.length }})</b-checkbox
-          >
-          <b-checkbox
-            v-model="checked"
-            native-value="session"
-            type="is-info"
-            size="is-small"
-            :disabled="d.session.length === 0"
-            >Session Storage ({{ d.session.length }})</b-checkbox
-          >
-        </b-field>
+      <div class="flex">
+        <span
+          class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6 relative"
+          @click="addToggle"
+        >
+          <AddIcon :size="20" class="absolute" :class="status.action === 'adding' ? 'adding' : ''" />
+        </span>
+        <div class="relative w-full mt-px pt-px">
+          <transition name="fade" mode="out-in">
+            <b-field v-if="status.action !== 'adding'" class="h-12">
+              <b-checkbox
+                v-model="checked"
+                native-value="local"
+                size="is-small"
+                :disabled="d.local.length === 0"
+                >Local Storage ({{ d.local.length }})</b-checkbox
+              >
+              <b-checkbox
+                v-model="checked"
+                native-value="session"
+                type="is-info"
+                size="is-small"
+                :disabled="d.session.length === 0"
+                >Session Storage ({{ d.session.length }})</b-checkbox
+              >
+            </b-field>
+            <div v-else class="">
+              <div>
+                <b-radio
+                  v-model="addType"
+                  name="type"
+                  native-value="local"
+                  size="is-small"
+                  type="is-success"
+                >
+                  Local Storage
+                </b-radio>
+                <b-radio
+                  v-model="addType"
+                  name="type"
+                  native-value="session"
+                  size="is-small"
+                  type="is-success"
+                >
+                  Session Storage
+                </b-radio>
+              </div>
+              <div>
+                <b-field grouped>
+                  <b-input
+                    size="is-small"
+                    placeholder="Key"
+                    v-model="addKey"
+                  ></b-input>
+                  <b-input
+                    size="is-small"
+                    placeholder="Value (Optional)"
+                    v-model="addValue"
+                  ></b-input>
+                  <p class="control">
+                    <b-button type="is-success" size="is-small" @click="add">
+                      Add
+                    </b-button>
+                  </p>
+                  <p class="control">
+                    <b-button
+                      type="is-light"
+                      size="is-small"
+                      @click="addToggle"
+                    >
+                      Cancel
+                    </b-button>
+                  </p>
+                </b-field>
+              </div>
+            </div>
+          </transition>
+        </div>
+        <span
+          class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6"
+          @click="popup2"
+          v-if="!isPopup2"
+        >
+          <OpenIcon :size="20" />
+        </span>
       </div>
       <b-table
         :data="table"
@@ -27,26 +94,27 @@
         :hoverable="true"
         :mobile-cards="false"
         :row-class="() => 'group'"
-        :sticky-header="true"
+        :sticky-header="false"
+        v-cloak
       >
         <template slot-scope="props">
           <b-table-column
             field="key"
             label="Key"
-            class="w-20"
-            :class="[props.row._type]"
+            class="w-32"
+            :class="[props.row._type, props.row._json ? 'json' : '']"
           >
-            {{ props.row.key }}
+            <div class="content-cell overflow-y-auto">{{ props.row.key }}</div>
           </b-table-column>
           <b-table-column
             field="value"
             label="Value"
             class="cursor-pointer"
-            :class="props.row._json ? 'json' : ''"
           >
             <div
-              @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
+              @click="editing(props.row.key, props.row._type, props.row._json, props.row._index)"
               v-if="!isEditing(props.row.key, props.row._type)"
+              class="content-cell overflow-y-auto"
             >
               {{ props.row.value }}
             </div>
@@ -54,8 +122,8 @@
               {{ status.value }}
             </div>
           </b-table-column>
-          <b-table-column class="w-40">
-            <div class="flex justify-end ">
+          <b-table-column class="w-36" :class="`${props.row._type}-${props.row._index}`">
+            <div class="flex justify-end">
               <span
                 class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
                 v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
@@ -63,7 +131,7 @@
                 <EditIcon
                   :size="20"
                   title="Edit"
-                  @click="editing(props.row.key, props.row._type, props.row._json, props.row._eval)"
+                  @click="editing(props.row.key, props.row._type, props.row._json, props.row._index)"
                 />
               </span>
               <span
@@ -73,22 +141,28 @@
               >
                 <DeleteIcon :size="20" title="Delete?" />
               </span>
-              <span v-if="isEditing(props.row.key, props.row._type)">
-                <b-button
-                  size="is-small"
-                  type="is-success"
-                  class="mr-1"
-                  @click="edit(props.row.key, props.row._type)"
-                >
-                  Submit
-                </b-button>
-                <b-button
-                  size="is-small"
-                  type="is-light"
-                  @click="cancel(props.row.key, props.row._type)"
-                >
-                  Cancel
-                </b-button>
+              <span
+                class="h-5 w-32"
+                :class="`${props.row._type}-${props.row._index}`"
+                v-if="isEditing(props.row.key, props.row._type)"
+              >
+                <span :class="ioFix">
+                  <b-button
+                    size="is-small"
+                    type="is-success"
+                    class="mr-1"
+                    @click="edit(props.row.key, props.row._type)"
+                  >
+                    Submit
+                  </b-button>
+                  <b-button
+                    size="is-small"
+                    type="is-light"
+                    @click="cancel(props.row.key, props.row._type)"
+                  >
+                    Discard
+                  </b-button>
+                </span>
               </span>
               <span v-if="isRemoving(props.row.key, props.row._type)">
                 <b-button
@@ -111,22 +185,48 @@
           </b-table-column>
         </template>
         <template slot="footer">
-          <div class="has-text-right">
-            <a href="#" class="flex justify-end">
-              <HeartIcon :size="20" />
+          <div class="flex justify-end mt-2">
+            <a
+              href="https://github.com/AndreLion/html5-localstorage-manager"
+              target="_blank"
+              class="flex justify-end text-pink-300 hover:text-sponsor mr-2"
+            >
+              <HeartIcon :size="20" class="mr-1" />
               Sponsor
+            </a>
+            <a
+              href="https://github.com/AndreLion/html5-localstorage-manager/issues"
+              target="_blank"
+              class="flex justify-end text-grey-500 hover:text-grey-700"
+            >
+              <BugIcon :size="20" class="mr-1" />
+              Report Bug
             </a>
           </div>
         </template>
       </b-table>
     </section>
     <section v-else>
-      Editing JSON
+      <div class="flex justify-end mb-2">
+        <span class="mr-auto">
+          Editing {{ status.type }}Storage: {{ status.key }}
+        </span>
+        <b-button
+          size="is-small"
+          type="is-success"
+          class="mr-1"
+          @click="editJSON"
+        >
+          Submit
+        </b-button>
+        <b-button size="is-small" type="is-light" @click="cancelJSON">
+          Discard
+        </b-button>
+      </div>
       <JsonEditor
         v-model="status.json"
-        :show-btns="true"
+        :show-btns="false"
         :expandedOnStart="true"
-        @json-change="onJsonChange"
       />
     </section>
   </div>
@@ -136,19 +236,29 @@ import { Component, Vue, Ref } from "vue-property-decorator";
 import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
 import EditIcon from "vue-material-design-icons/PencilOutline.vue";
 import HeartIcon from "vue-material-design-icons/HandHeart.vue";
+import BugIcon from "vue-material-design-icons/Bug.vue";
+import AddIcon from "vue-material-design-icons/PlusCircleOutline.vue";
+import OpenIcon from "vue-material-design-icons/OpenInNew.vue";
 import JsonEditor from "vue-json-editor";
 
 @Component({
   components: {
     EditIcon,
     HeartIcon,
+    BugIcon,
     DeleteIcon,
+    AddIcon,
+    OpenIcon,
     JsonEditor
-}
+  }
 })
 export default class Popup extends Vue {
   @Ref("editor")
   editor;
+
+  @Ref("popup")
+  popup;
+
   checked = ["local", "session"];
   d = {
     local: [],
@@ -162,9 +272,17 @@ export default class Popup extends Vue {
     json: null
   };
   e = null;
+  addType = "local";
+  addKey = "";
+  addValue = "";
+  isPopup2 = false;
+  ioButtons = null;
+  ioCell = null;
+  ioFix = "";
+
   mounted() {
     // Mock
-    this.$set(this.d, "local", [{ key: "mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }]);
+    this.$set(this.d, "local", [{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
     this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
 
     try {
@@ -173,7 +291,12 @@ export default class Popup extends Vue {
         port.onMessage.addListener(msg => {
           const query = { active: true, currentWindow: true };
           chrome.tabs.query(query, tabs => {
-            if (tabs.length && tabs[0].url.startsWith(msg.origin)) {
+            if (tabs.length && tabs[0].url) {
+              if (tabs.length && tabs[0].url.startsWith(msg.origin)) {
+                this.$set(this.d, "local", msg.local || []);
+                this.$set(this.d, "session", msg.session || []);
+              }
+            } else {
               this.$set(this.d, "local", msg.local || []);
               this.$set(this.d, "session", msg.session || []);
             }
@@ -183,49 +306,82 @@ export default class Popup extends Vue {
     } catch (e) {
       this.e = e;
     }
+    if (location.hash === "#popup2") {
+      this.isPopup2 = true;
+    }
+    const options= {
+      root: this.popup,
+      rootMargin: "0px",
+      threshold: 1.0
+    };
+    this.ioButtons = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.ioFix = "";
+        } else {
+          if (entry.boundingClientRect.bottom > 150) {
+            this.ioFix = "fix-bottom";
+          } else if (entry.boundingClientRect.top < 150) {
+            this.ioFix = "fix-top";
+          }
+        }
+      });
+    }, options);
+    this.ioCell = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (entry.boundingClientRect.bottom > 150) {
+            this.ioFix = "fix-bottom";
+          } else if (entry.boundingClientRect.top < 0) {
+            this.ioFix = "fix-top";
+          }
+        } else {
+          this.ioFix = "";
+        }
+      });
+    }, Object.assign(options, { threshold: 0 }));
   }
 
-  async editing(key, type, isJson ) {
-    console.log("editing", key, type, isJson);
+  async editing(key, type, isJson, index) {
     this.status.key = key;
     this.status.type = type;
     const filtered = this.d[type].filter(item => item.key === key);
-    if (isJson)  {
+    if (isJson) {
       this.status.action = "editingJSON";
       if (isJson) {
         this.status.json = JSON.parse(filtered[0].value);
       }
     } else {
       this.status.action = "editing";
-      this.status.value = filtered[0].value;
-
       await this.$nextTick();
+      this.status.value = filtered[0].value;
       this.editor.focus();
+      this.ioButtons.observe(document.querySelector(`span.${type}-${index}`));
+      this.ioCell.observe(document.querySelector(`td.${type}-${index}`));
     }
   }
 
   removing(key, type) {
-    console.log("Remove", key, type);
     this.status.action = "removing";
     this.status.key = key;
     this.status.type = type;
   }
 
-  cancel(key, type) {
-    console.log("cancel", key, type);
+  cancel() {
     this.status.action = null;
     this.status.key = null;
     this.status.type = null;
+    this.status.value = null;
+    this.ioButtons.disconnect();
+    this.ioCell.disconnect();
   }
 
-  edit(key, type) {
-    const value = this.editor.innerHTML;
-    console.log("Edit", type, key, value);
+  edit(key, type, v) {
+    const value = v ? v : this.editor.textContent;
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
-          console.log(type, key);
           chrome.tabs.sendMessage(activeTab.id, {
             source: "popup",
             event: "edit",
@@ -244,13 +400,26 @@ export default class Popup extends Vue {
     this.status.value = null;
   }
 
+  cancelJSON() {
+    this.status.action = null;
+    this.status.key = null;
+    this.status.type = null;
+    this.status.json = null;
+  }
+
+  editJSON() {
+    this.edit(
+      this.status.key,
+      this.status.type,
+      JSON.stringify(this.status.json)
+    );
+  }
+
   remove(key, type) {
-    console.log("Remove", key, type);
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
-          console.log(type, key);
           chrome.tabs.sendMessage(activeTab.id, {
             source: "popup",
             event: "remove",
@@ -296,28 +465,77 @@ export default class Popup extends Vue {
     return false;
   }
 
-  getValue(key, type) {
-    console.log('Get Value:', key, type);
+  addToggle() {
+    if (this.status.action === "adding") {
+      this.status.action = null;
+    } else {
+      this.status.action = "adding";
+    }
+  }
+
+  add() {
+    if (!this.addKey) {
+      return;
+    }
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs.length) {
+          const activeTab = tabs[0];
+          chrome.tabs.sendMessage(activeTab.id, {
+            source: "popup",
+            event: "add",
+            type: this.addType,
+            key: this.addKey,
+            value: this.addValue
+          });
+        }
+      });
+    } catch (e) {
+      this.e = e;
+    }
+    this.status.action = null;
+    this.status.key = null;
+    this.status.type = null;
+    this.status.value = null;
+  }
+
+  popup2() {
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs.length) {
+          const activeTab = tabs[0];
+          chrome.tabs.sendMessage(activeTab.id, {
+            source: "popup",
+            event: "popup2",
+            hash: ""
+          });
+        }
+      });
+    } catch (e) {
+      this.e = e;
+    }
   }
 
   get table() {
     let result = [];
     if (this.checked.includes("local")) {
       result = result.concat(
-        this.d.local.map(item => ({
+        this.d.local.map((item, index) => ({
           ...item,
           _type: "local",
-          _json: this.isJSON(item.value)
+          _json: this.isJSON(item.value),
+          _index: index
         }))
       );
     }
 
     if (this.checked.includes("session")) {
       result = result.concat(
-        this.d.session.map(item => ({
+        this.d.session.map((item, index) => ({
           ...item,
           _type: "session",
-          _json: this.isJSON(item.value)
+          _json: this.isJSON(item.value),
+          _index: index
         }))
       );
     }

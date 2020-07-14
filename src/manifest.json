@@ -3,8 +3,7 @@
   "description": "__MSG_appDesc__",
   "default_locale": "en",
   "version": "2.0",
-  "permissions": ["activeTab"],
-  "options_page": "options.html",
+  "permissions": ["activeTab", "http://*/", "https://*/"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -22,5 +21,8 @@
     "48": "assets/icon-128.png",
     "128": "assets/icon-128.png"
   },
-  "manifest_version": 2
+  "manifest_version": 2,
+  "web_accessible_resources": [
+    "popup.html"
+  ]
 }
