@@ -207,8 +207,8 @@
       </b-table>
     </section>
     <section v-else>
-      <div class="flex justify-end mb-2">
-        <span class="mr-auto">
+      <div class="flex justify-end py-2">
+        <span class="mr-auto" ref="jsonKey">
           Editing {{ status.type }}Storage: {{ status.key }}
         </span>
         <b-button
@@ -258,6 +258,9 @@ export default class Popup extends Vue {
 
   @Ref("popup")
   popup;
+
+  @Ref("jsonKey")
+  jsonKey;
 
   checked = ["local", "session"];
   d = {
@@ -319,9 +322,9 @@ export default class Popup extends Vue {
         if (entry.isIntersecting) {
           this.ioFix = "";
         } else {
-          if (entry.boundingClientRect.bottom > 150) {
+          if (entry.boundingClientRect.bottom > 300) {
             this.ioFix = "fix-bottom";
-          } else if (entry.boundingClientRect.top < 150) {
+          } else if (entry.boundingClientRect.top < 300) {
             this.ioFix = "fix-top";
           }
         }
@@ -330,7 +333,7 @@ export default class Popup extends Vue {
     this.ioCell = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          if (entry.boundingClientRect.bottom > 150) {
+          if (entry.boundingClientRect.bottom > 300) {
             this.ioFix = "fix-bottom";
           } else if (entry.boundingClientRect.top < 0) {
             this.ioFix = "fix-top";
@@ -348,9 +351,10 @@ export default class Popup extends Vue {
     const filtered = this.d[type].filter(item => item.key === key);
     if (isJson) {
       this.status.action = "editingJSON";
-      if (isJson) {
-        this.status.json = JSON.parse(filtered[0].value);
-      }
+      this.status.json = JSON.parse(filtered[0].value);
+      await this.$nextTick();
+      window.scrollTo(0,0);
+      this.jsonKey.scrollIntoView()
     } else {
       this.status.action = "editing";
       await this.$nextTick();

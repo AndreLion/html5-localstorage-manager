@@ -73,15 +73,17 @@
         } else if (data.event === 'popup2') {
           const winPopup = window.open(
             `/${extensionId}-popup2.html`,
-            'storagemanager',
+            extensionId,
             'toolbar=yes, scrollbars=yes, resizable=yes, width=600, height=500'
           );
-          winPopup.onload = () => {
+          setTimeout(() => {
+            winPopup.document.open();
             winPopup.document.write(
               `<style>*{padding:0;margin:0;}</style>` +
-              `<iframe id="${extensionId}-popup2" style="height:100%;width:100%;" frameBorder="0" src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2"></iframe>`
+              `<iframe id="${extensionId}-popup2" style="position:absolute;top:0;left:0;z-index:99999;height:100%;width:100%;" frameBorder="0" src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2"></iframe>`
             );
-          };
+            winPopup.document.close();
+          }, 1000);
         }
       }
     });
@@ -93,15 +95,15 @@
       iframe.style.display = "none";
       iframe.onload = () => {
         const fd = iframe.contentWindow.document;
-        const fb = fd.body;
-        const fs = fd.createElement("script");
-        fs.innerHTML =
-          `const onchange = (ev) => {window.parent.postMessage({source:'proxy',event:'sync'});};` +
-          'window.addEventListener("storage", onchange, false);';
-        fb.appendChild(fs);
+        const script =
+          '<script>' +
+          `const onchange = (ev) => {window.parent.postMessage({source: 'proxy', event: 'sync'});};` +
+          'window.addEventListener("storage", onchange, false);' +
+          '</script>';
+        fd.write(script);
       };
       document.body.appendChild(iframe);
     }
   }
-  window.postMessage({source:'proxy',event:'sync'});
+  window.postMessage({source: 'proxy', event: 'sync'});
 })();
