@@ -54,11 +54,13 @@
                     size="is-small"
                     placeholder="Key"
                     v-model="addKey"
+                    @keydown.native.enter="add"
                   ></b-input>
                   <b-input
                     size="is-small"
                     placeholder="Value (Optional)"
                     v-model="addValue"
+                    @keydown.native.enter="add"
                   ></b-input>
                   <p class="control">
                     <b-button type="is-success" size="is-small" @click="add">
@@ -102,6 +104,7 @@
             field="key"
             label="Key"
             class="w-32"
+            :width="128"
             :class="[props.row._type, props.row._json ? 'json' : '']"
           >
             <div class="content-cell overflow-y-auto">{{ props.row.key }}</div>
@@ -114,13 +117,17 @@
             <div
               @click="editing(props.row.key, props.row._type, props.row._json, props.row._index)"
               v-if="!isEditing(props.row.key, props.row._type)"
-              class="content-cell overflow-y-auto"
-            >
-              {{ props.row.value }}
-            </div>
-            <div v-else contenteditable class="bg-blue-100" ref="editor">
-              {{ status.value }}
-            </div>
+              class="content-cell overflow-y-auto max-w-xs"
+              key="raw"
+            >{{ props.row.value }}</div>
+            <div
+              v-else
+              contenteditable
+              class="bg-blue-100"
+              ref="editor"
+              key="editing"
+              @keydown.enter.prevent="edit(props.row.key, props.row._type)"
+            >{{ status.value }}</div>
           </b-table-column>
           <b-table-column class="w-36" :class="`${props.row._type}-${props.row._index}`">
             <div class="flex justify-end">
@@ -185,23 +192,50 @@
           </b-table-column>
         </template>
         <template slot="footer">
-          <div class="flex justify-end mt-2">
-            <a
-              href="https://github.com/AndreLion/html5-localstorage-manager"
-              target="_blank"
-              class="flex justify-end text-pink-300 hover:text-sponsor mr-2"
+          <div class="flex mt-2 text-xs">
+            <div class="items-end" v-if="d.local.length || d.session.length">
+              <span class="text-grey-700">Used Space:</span>
+              <span class="text-local mr-2" v-if="d.local.length">
+                Local: {{ localSize }}Mb
+              </span>
+              <span class="text-session" v-if="d.session.length">
+                Session: {{ sessionSize }}Mb
+              </span>
+            </div>
+            <div class="ml-auto flex-grow flex justify-end">
+              <a
+                href="https://github.com/sponsors/andrelion"
+                target="_blank"
+                class="flex justify-end text-pink-300 hover:text-sponsor mr-2"
+              >
+                <HeartIcon :size="16" class="mr-1" />
+                Sponsor
+              </a>
+              <a
+                href="https://github.com/AndreLion/html5-localstorage-manager/issues"
+                target="_blank"
+                class="flex justify-end text-grey-500 hover:text-grey-700"
+              >
+                <BugIcon :size="16" class="mr-1" />
+                Report Bug
+              </a>
+            </div>
+          </div>
+        </template>
+        <template slot="empty">
+          <div class="text-grey-700">
+            <div
+              class="h-16 flex items-center justify-center"
+              v-if="d.session.length === 0 && d.local.length === 0"
             >
-              <HeartIcon :size="20" class="mr-1" />
-              Sponsor
-            </a>
-            <a
-              href="https://github.com/AndreLion/html5-localstorage-manager/issues"
-              target="_blank"
-              class="flex justify-end text-grey-500 hover:text-grey-700"
+              No data stored in local / session storage
+            </div>
+            <div
+              class="text-center"
+              v-else
             >
-              <BugIcon :size="20" class="mr-1" />
-              Report Bug
-            </a>
+              Storage data is hidden
+            </div>
           </div>
         </template>
       </b-table>
@@ -285,8 +319,8 @@ export default class Popup extends Vue {
 
   mounted() {
     // Mock
-    this.$set(this.d, "local", [{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
-    this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
+    // this.$set(this.d, "local", [{"key":"wrap","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
+    // this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
 
     try {
       chrome.runtime.sendMessage({ source: "popup", event: "mounted" });
@@ -302,6 +336,9 @@ export default class Popup extends Vue {
             } else {
               this.$set(this.d, "local", msg.local || []);
               this.$set(this.d, "session", msg.session || []);
+            }
+            if (this.d.local.length === 0 && this.d.session.length === 0) {
+              this.status.action = "adding";
             }
           });
         });
@@ -381,7 +418,7 @@ export default class Popup extends Vue {
   }
 
   edit(key, type, v) {
-    const value = v ? v : this.editor.textContent;
+    const value = v ? v : this.editor.textContent.trim();
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
@@ -496,6 +533,10 @@ export default class Popup extends Vue {
       });
     } catch (e) {
       this.e = e;
+    } finally {
+      this.addKey = "";
+      this.addValue = "";
+
     }
     this.status.action = null;
     this.status.key = null;
@@ -518,6 +559,12 @@ export default class Popup extends Vue {
     } catch (e) {
       this.e = e;
     }
+  }
+
+  calculateSize(type) {
+    const content = this.d[type].map(item => [item.key, item.value]).flat().join('');
+    const byte = new Blob([content]).size;
+    return (byte/1024).toFixed(2);
   }
 
   get table() {
@@ -546,18 +593,12 @@ export default class Popup extends Vue {
     return result;
   }
 
-  get columns() {
-    return [
-      {
-        field: "key",
-        label: "Key",
-        width: "40"
-      },
-      {
-        field: "value",
-        label: "Value"
-      }
-    ];
+  get localSize() {
+    return this.calculateSize('local');
+  }
+
+  get sessionSize() {
+    return this.calculateSize('session');
   }
 }
 </script>

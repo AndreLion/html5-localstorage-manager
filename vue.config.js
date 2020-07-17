@@ -33,8 +33,7 @@ module.exports = {
             from: "src/inject.js",
             transform: content => terser.minify(content.toString()).code
           },
-          { from: "src/assets/", to: "assets" },
-          { from: "src/_locales/", to: "_locales" }
+          { from: "src/assets/", to: "assets" }
         ]
       })
     ]

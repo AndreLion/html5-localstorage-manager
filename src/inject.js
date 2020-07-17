@@ -74,7 +74,7 @@
           const winPopup = window.open(
             `/${extensionId}-popup2.html`,
             extensionId,
-            'toolbar=yes, scrollbars=yes, resizable=yes, width=600, height=500'
+            'toolbar=yes, scrollbars=yes, resizable=yes, width=640, height=600'
           );
           setTimeout(() => {
             winPopup.document.open();

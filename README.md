@@ -4,15 +4,14 @@
 
 *Formerly known as: HTML5 LocalStorage Manager*
 
-
 A chrome extension that enhances the native chrome devtool for managing local / session storage.
 Helps you accelerate web development if you relay on local storage heavily.
 
 ## Highlight Features
 
-- Two-way realtime value sync.
+- Realtime (current tab ➜ extension) storage value sync.
 - JSON-friendly editor.
-- Managing in independent popup window. 
+- Inspect storage in independent popup window. 
 
 ## Playground for Testing
 
@@ -20,7 +19,9 @@ Helps you accelerate web development if you relay on local storage heavily.
 
 ## Release log:
 
-Ver 2.0 (working in progress)
+Ver 2.0 (July 2020)
+  - Rewrite everything, again, since 2014
+  - Adapt new API & facilitate latest compliance 
 
 Ver 1.6 (Nov 10, 2014)
   - Support session storage

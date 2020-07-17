@@ -1,7 +1,6 @@
 {
-  "name": "__MSG_appName__",
-  "description": "__MSG_appDesc__",
-  "default_locale": "en",
+  "name": "Realtime JSON-Friendly LocalStorage Manager",
+  "description": "Editing JSON in localstorage is a breeze!",
   "version": "2.0",
   "permissions": ["activeTab", "http://*/", "https://*/"],
   "background": {

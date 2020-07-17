@@ -100,7 +100,9 @@ module.exports = {
           "800": "#a5215c",
           "900": "#820d41"
         },
-        sponsor: '#ec6cb9'
+        sponsor: '#ec6cb9',
+        local: '#9861c0',
+        session: '#428be2'
       }
     }
   },
