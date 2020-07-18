@@ -4,8 +4,8 @@
 
 *Formerly known as: HTML5 LocalStorage Manager*
 
-A chrome extension that enhances the native chrome devtool for managing local / session storage.
-Helps you accelerate web development if you relay on local storage heavily.
+A chrome extension that focuses on creating / retrieving / editing / deleting local / session storage.
+Helps you accelerate web development if you relay on localStorage heavily.
 
 ## Highlight Features
 
@@ -21,7 +21,7 @@ Helps you accelerate web development if you relay on local storage heavily.
 
 Ver 2.0 (July 2020)
   - Rewrite everything, again, since 2014
-  - Adapt new API & facilitate latest compliance 
+  - Adapt latest API & facilitate latest compliance 
 
 Ver 1.6 (Nov 10, 2014)
   - Support session storage

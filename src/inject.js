@@ -79,7 +79,12 @@
             winPopup.document.open();
             winPopup.document.write(
               `<style>*{padding:0;margin:0;}</style>` +
-              `<iframe id="${extensionId}-popup2" style="position:absolute;top:0;left:0;z-index:99999;height:100%;width:100%;" frameBorder="0" src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2"></iframe>`
+              `<iframe ` +
+              `id="${extensionId}-popup2" ` +
+              `style="position:absolute;top:0;left:0;z-index:99999;height:100%;width:100%;" ` +
+              `frameBorder="0" ` +
+              `src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2"` +
+              `></iframe>`
             );
             winPopup.document.close();
           }, 1000);
@@ -97,13 +102,15 @@
           const fd = iframe.contentWindow.document;
           const script =
             '<script>' +
-            `const onchange = () => {window.parent.postMessage({source: 'proxy', event: 'sync'}, location.origin);};` +
+            `const onchange = () => {` +
+            `window.parent.postMessage({source: 'proxy', event: 'sync', origin: location.origin}, location.origin);` +
+            `};` +
             'window.addEventListener("storage", onchange, false);' +
             '</script>';
           fd.write(script);
         } catch (e) {
           setInterval(() => {
-            window.postMessage({source: 'proxy', event: 'sync'}, location.origin);
+            window.postMessage({source: 'proxy', event: 'sync', origin: location.origin}, location.origin);
           }, 1000);
         }
       };
