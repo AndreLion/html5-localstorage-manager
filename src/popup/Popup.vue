@@ -6,7 +6,11 @@
           class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6 relative"
           @click="addToggle"
         >
-          <AddIcon :size="20" class="absolute" :class="status.action === 'adding' ? 'adding' : ''" />
+          <AddIcon
+            :size="20"
+            class="absolute"
+            :class="status.action === 'adding' ? 'adding' : ''"
+          />
         </span>
         <div class="relative w-full mt-px pt-px">
           <transition name="fade" mode="out-in">
@@ -109,42 +113,63 @@
           >
             <div class="content-cell overflow-y-auto">{{ props.row.key }}</div>
           </b-table-column>
-          <b-table-column
-            field="value"
-            label="Value"
-            class="cursor-pointer"
-          >
+          <b-table-column field="value" label="Value" class="cursor-pointer">
             <div
-              @click="editing(props.row.key, props.row._type, props.row._json, props.row._index)"
+              @click="
+                editing(
+                  props.row.key,
+                  props.row._type,
+                  props.row._json,
+                  props.row._index
+                )
+              "
               v-if="!isEditing(props.row.key, props.row._type)"
               class="content-cell overflow-y-auto max-w-xs"
               key="raw"
-            >{{ props.row.value }}</div>
+              v-text="props.row.value"
+            ></div>
             <div
               v-else
               contenteditable
               class="bg-blue-100"
               ref="editor"
               key="editing"
+              v-text="status.value"
               @keydown.enter.prevent="edit(props.row.key, props.row._type)"
-            >{{ status.value }}</div>
+            ></div>
           </b-table-column>
-          <b-table-column class="w-36" :class="`${props.row._type}-${props.row._index}`">
+          <b-table-column
+            class="w-36"
+            :class="`${props.row._type}-${props.row._index}`"
+          >
             <div class="flex justify-end">
               <span
                 class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
-                v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
+                v-if="
+                  !isRemoving(props.row.key, props.row._type) &&
+                    !isEditing(props.row.key, props.row._type)
+                "
               >
                 <EditIcon
                   :size="20"
                   title="Edit"
-                  @click="editing(props.row.key, props.row._type, props.row._json, props.row._index)"
+                  @click="
+                    editing(
+                      props.row.key,
+                      props.row._type,
+                      props.row._json,
+                      props.row._index
+                    )
+                  "
                 />
               </span>
               <span
                 class="cursor-pointer text-red-300 hover:text-red-600 invisible group-hover:visible"
                 @click="removing(props.row.key, props.row._type)"
-                v-if="!isRemoving(props.row.key, props.row._type) && !isEditing(props.row.key, props.row._type)"
+                v-if="
+                  !isRemoving(props.row.key, props.row._type) &&
+                    !isEditing(props.row.key, props.row._type)
+                "
               >
                 <DeleteIcon :size="20" title="Delete?" />
               </span>
@@ -230,10 +255,7 @@
             >
               No data stored in local / session storage
             </div>
-            <div
-              class="text-center"
-              v-else
-            >
+            <div class="text-center" v-else>
               Storage data is hidden
             </div>
           </div>
@@ -349,7 +371,7 @@ export default class Popup extends Vue {
     if (location.hash === "#popup2") {
       this.isPopup2 = true;
     }
-    const options= {
+    const options = {
       root: this.popup,
       rootMargin: "0px",
       threshold: 1.0
@@ -390,8 +412,8 @@ export default class Popup extends Vue {
       this.status.action = "editingJSON";
       this.status.json = JSON.parse(filtered[0].value);
       await this.$nextTick();
-      window.scrollTo(0,0);
-      this.jsonKey.scrollIntoView()
+      window.scrollTo(0, 0);
+      this.jsonKey.scrollIntoView();
     } else {
       this.status.action = "editing";
       await this.$nextTick();
@@ -519,15 +541,18 @@ export default class Popup extends Vue {
       return;
     }
     try {
+      const key = this.addKey;
+      const value = this.addValue;
+      const type = this.addType;
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
           chrome.tabs.sendMessage(activeTab.id, {
             source: "popup",
             event: "add",
-            type: this.addType,
-            key: this.addKey,
-            value: this.addValue
+            type,
+            key,
+            value
           });
         }
       });
@@ -536,7 +561,6 @@ export default class Popup extends Vue {
     } finally {
       this.addKey = "";
       this.addValue = "";
-
     }
     this.status.action = null;
     this.status.key = null;
@@ -562,9 +586,12 @@ export default class Popup extends Vue {
   }
 
   calculateSize(type) {
-    const content = this.d[type].map(item => [item.key, item.value]).flat().join('');
+    const content = this.d[type]
+      .map(item => [item.key, item.value])
+      .flat()
+      .join("");
     const byte = new Blob([content]).size;
-    return (byte/1024).toFixed(2);
+    return (byte / 1024).toFixed(2);
   }
 
   get table() {
@@ -594,11 +621,11 @@ export default class Popup extends Vue {
   }
 
   get localSize() {
-    return this.calculateSize('local');
+    return this.calculateSize("local");
   }
 
   get sessionSize() {
-    return this.calculateSize('session');
+    return this.calculateSize("session");
   }
 }
 </script>

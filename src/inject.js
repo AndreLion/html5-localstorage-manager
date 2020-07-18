@@ -1,7 +1,6 @@
 (() => {
   // const extensionId = 'giompennnhheakjcnobejbnjgbbkmdnd'; // prod id
   const extensionId = "edlnliiobjcbbiafjdclellilgfocmmb"; // dev id
-  const iframeId = extensionId;
   const getStorage = type => {
     let storage,
       data = [];
@@ -21,7 +20,7 @@
     }
     return data;
   };
-  if (!document.getElementById(iframeId)) {
+  if (!document.getElementById(extensionId)) {
     window.addEventListener(
       "message",
       ({ data }) => {
@@ -88,22 +87,28 @@
       }
     });
 
-    if (!document.getElementById(`${iframeId}-popup2`)) {
+    if (!document.getElementById(`${extensionId}-popup2`)) {
       const iframe = document.createElement("iframe");
-      iframe.id = iframeId;
+      iframe.id = extensionId;
       iframe.src = `${location.origin}/${extensionId}-proxy.html`;
       iframe.style.display = "none";
       iframe.onload = () => {
-        const fd = iframe.contentWindow.document;
-        const script =
-          '<script>' +
-          `const onchange = (ev) => {window.parent.postMessage({source: 'proxy', event: 'sync'});};` +
-          'window.addEventListener("storage", onchange, false);' +
-          '</script>';
-        fd.write(script);
+        try {
+          const fd = iframe.contentWindow.document;
+          const script =
+            '<script>' +
+            `const onchange = () => {window.parent.postMessage({source: 'proxy', event: 'sync'}, location.origin);};` +
+            'window.addEventListener("storage", onchange, false);' +
+            '</script>';
+          fd.write(script);
+        } catch (e) {
+          setInterval(() => {
+            window.postMessage({source: 'proxy', event: 'sync'}, location.origin);
+          }, 1000);
+        }
       };
       document.body.appendChild(iframe);
     }
   }
-  window.postMessage({source: 'proxy', event: 'sync'});
+  window.postMessage({source: 'proxy', event: 'sync'}, location.origin);
 })();
