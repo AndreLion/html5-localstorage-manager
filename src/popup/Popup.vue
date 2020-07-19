@@ -190,7 +190,7 @@
                   <b-button
                     size="is-small"
                     type="is-light"
-                    @click="cancel(props.row.key, props.row._type)"
+                    @click="cancel"
                   >
                     Discard
                   </b-button>
@@ -208,7 +208,7 @@
                 <b-button
                   size="is-small"
                   type="is-light"
-                  @click="cancel(props.row.key, props.row._type)"
+                  @click="cancel"
                 >
                   Cancel
                 </b-button>
@@ -328,7 +328,8 @@ export default class Popup extends Vue {
     key: null,
     type: null,
     value: null,
-    json: null
+    json: null,
+    index: null
   };
   e = null;
   addType = "local";
@@ -373,40 +374,47 @@ export default class Popup extends Vue {
     }
     const options = {
       root: this.popup,
-      rootMargin: "0px",
+      rootMargin: "-13px",
       threshold: 1.0
     };
+   this.ioCell = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (entry.boundingClientRect.bottom > 300) {
+            console.log('IO: cell shows up, fix bottom');
+            this.ioFix = "fix-bottom";
+          } else if (entry.boundingClientRect.top < 0) {
+            console.log('IO: cell shows up, fix top');
+            this.ioFix = "fix-top";
+          }
+        } else {
+          console.log('IO: cell is hidden, no fix');
+          this.ioFix = "";
+        }
+      });
+    }, Object.assign(options, { threshold: 0 }));
     this.ioButtons = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
+          console.log('IO: button shows up , no fix');
           this.ioFix = "";
         } else {
           if (entry.boundingClientRect.bottom > 300) {
+            console.log('IO: button is hidden, fix bottom');
             this.ioFix = "fix-bottom";
           } else if (entry.boundingClientRect.top < 300) {
+            console.log('IO: button is hidden, fix top');
             this.ioFix = "fix-top";
           }
         }
       });
     }, options);
-    this.ioCell = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (entry.boundingClientRect.bottom > 300) {
-            this.ioFix = "fix-bottom";
-          } else if (entry.boundingClientRect.top < 0) {
-            this.ioFix = "fix-top";
-          }
-        } else {
-          this.ioFix = "";
-        }
-      });
-    }, Object.assign(options, { threshold: 0 }));
   }
 
   async editing(key, type, isJson, index) {
     this.status.key = key;
     this.status.type = type;
+    this.status.index = index;
     const filtered = this.d[type].filter(item => item.key === key);
     if (isJson) {
       this.status.action = "editingJSON";
@@ -435,6 +443,7 @@ export default class Popup extends Vue {
     this.status.key = null;
     this.status.type = null;
     this.status.value = null;
+    this.status.index = null;
     this.ioButtons.disconnect();
     this.ioCell.disconnect();
   }
@@ -461,6 +470,9 @@ export default class Popup extends Vue {
     this.status.key = null;
     this.status.type = null;
     this.status.value = null;
+    this.status.index = null;
+    this.ioButtons.disconnect();
+    this.ioCell.disconnect();
   }
 
   cancelJSON() {
