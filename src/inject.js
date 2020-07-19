@@ -1,6 +1,7 @@
 (() => {
   // const extensionId = 'giompennnhheakjcnobejbnjgbbkmdnd'; // prod id
   const extensionId = "edlnliiobjcbbiafjdclellilgfocmmb"; // dev id
+  let origin = "";
   const getStorage = type => {
     let storage,
       data = [];
@@ -33,12 +34,16 @@
           });
           port.disconnect();
         }
+        origin = location.origin;
       },
       false
     );
 
     chrome.runtime.onMessage.addListener((data, sender) => {
+      // console.log("injection received message from:", sender);
+      // console.log("data:", data);
       if(sender.id !== extensionId) {
+        // console.log("sender ID miss match:", sender.id, extensionId);
         return ;
       }
       if (data.source === 'popup') {
@@ -70,6 +75,7 @@
               break;
           }
         } else if (data.event === 'popup2') {
+          const tabId = data.tabId;
           const winPopup = window.open(
             `/${extensionId}-popup2.html`,
             extensionId,
@@ -83,7 +89,7 @@
               `id="${extensionId}-popup2" ` +
               `style="position:absolute;top:0;left:0;z-index:99999;height:100%;width:100%;" ` +
               `frameBorder="0" ` +
-              `src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2"` +
+              `src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2-${origin}-${tabId}"` +
               `></iframe>`
             );
             winPopup.document.close();

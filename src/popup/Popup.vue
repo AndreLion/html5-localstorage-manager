@@ -187,11 +187,7 @@
                   >
                     Submit
                   </b-button>
-                  <b-button
-                    size="is-small"
-                    type="is-light"
-                    @click="cancel"
-                  >
+                  <b-button size="is-small" type="is-light" @click="cancel">
                     Discard
                   </b-button>
                 </span>
@@ -205,11 +201,7 @@
                 >
                   Delete
                 </b-button>
-                <b-button
-                  size="is-small"
-                  type="is-light"
-                  @click="cancel"
-                >
+                <b-button size="is-small" type="is-light" @click="cancel">
                   Cancel
                 </b-button>
               </span>
@@ -339,6 +331,8 @@ export default class Popup extends Vue {
   ioButtons = null;
   ioCell = null;
   ioFix = "";
+  origin = "";
+  tabId = "";
 
   mounted() {
     // Mock
@@ -353,42 +347,42 @@ export default class Popup extends Vue {
           chrome.tabs.query(query, tabs => {
             if (tabs.length && tabs[0].url) {
               if (tabs.length && tabs[0].url.startsWith(msg.origin)) {
-                this.$set(this.d, "local", msg.local || []);
-                this.$set(this.d, "session", msg.session || []);
+                this.update(msg.local, msg.session);
               }
             } else {
-              this.$set(this.d, "local", msg.local || []);
-              this.$set(this.d, "session", msg.session || []);
-            }
-            if (this.d.local.length === 0 && this.d.session.length === 0) {
-              this.status.action = "adding";
+              if (this.origin === msg.origin) {
+                this.update(msg.local, msg.session);
+              }
             }
           });
         });
       });
     } catch (e) {
-      this.e = e;
+      console.log("Init Mounting Failed:", e);
     }
-    if (location.hash === "#popup2") {
+    if (location.hash.startsWith("#popup2")) {
       this.isPopup2 = true;
+      this.origin = location.hash.split("-")[1];
+      this.tabId = parseInt(location.hash.split("-")[2]);
+      console.log("popup2 opened from origin:", this.origin, "Tab ID:", this.tabId);
     }
     const options = {
       root: this.popup,
       rootMargin: "-13px",
       threshold: 1.0
     };
-   this.ioCell = new IntersectionObserver(entries => {
+    this.ioCell = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           if (entry.boundingClientRect.bottom > 300) {
-            console.log('IO: cell shows up, fix bottom');
+            console.log("IO: cell shows up, fix bottom");
             this.ioFix = "fix-bottom";
           } else if (entry.boundingClientRect.top < 0) {
-            console.log('IO: cell shows up, fix top');
+            console.log("IO: cell shows up, fix top");
             this.ioFix = "fix-top";
           }
         } else {
-          console.log('IO: cell is hidden, no fix');
+          console.log("IO: cell is hidden, no fix");
           this.ioFix = "";
         }
       });
@@ -396,19 +390,27 @@ export default class Popup extends Vue {
     this.ioButtons = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          console.log('IO: button shows up , no fix');
+          console.log("IO: button shows up , no fix");
           this.ioFix = "";
         } else {
           if (entry.boundingClientRect.bottom > 300) {
-            console.log('IO: button is hidden, fix bottom');
+            console.log("IO: button is hidden, fix bottom");
             this.ioFix = "fix-bottom";
           } else if (entry.boundingClientRect.top < 300) {
-            console.log('IO: button is hidden, fix top');
+            console.log("IO: button is hidden, fix top");
             this.ioFix = "fix-top";
           }
         }
       });
     }, options);
+  }
+
+  update(local, session) {
+    this.$set(this.d, "local", local || []);
+    this.$set(this.d, "session", session || []);
+    if (local.length === 0 && session.length === 0) {
+      this.status.action = "adding";
+    }
   }
 
   async editing(key, type, isJson, index) {
@@ -454,7 +456,8 @@ export default class Popup extends Vue {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
-          chrome.tabs.sendMessage(activeTab.id, {
+          const id = this.isPopup2 ? this.tabId : activeTab.id;
+          chrome.tabs.sendMessage(id, {
             source: "popup",
             event: "edit",
             type,
@@ -464,7 +467,7 @@ export default class Popup extends Vue {
         }
       });
     } catch (e) {
-      this.e = e;
+      console.log("Edit Failed:", e);
     }
     this.status.action = null;
     this.status.key = null;
@@ -495,7 +498,8 @@ export default class Popup extends Vue {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
-          chrome.tabs.sendMessage(activeTab.id, {
+          const id = this.isPopup2 ? this.tabId : activeTab.id;
+          chrome.tabs.sendMessage(id, {
             source: "popup",
             event: "remove",
             type,
@@ -504,7 +508,7 @@ export default class Popup extends Vue {
         }
       });
     } catch (e) {
-      this.e = e;
+      console.log("Remove Failed:", e);
     }
     this.status.action = null;
     this.status.key = null;
@@ -559,7 +563,8 @@ export default class Popup extends Vue {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs.length) {
           const activeTab = tabs[0];
-          chrome.tabs.sendMessage(activeTab.id, {
+          const id = this.isPopup2 ? this.tabId : activeTab.id;
+          chrome.tabs.sendMessage(id, {
             source: "popup",
             event: "add",
             type,
@@ -569,7 +574,7 @@ export default class Popup extends Vue {
         }
       });
     } catch (e) {
-      this.e = e;
+      console.log("Add item Failed:", e);
     } finally {
       this.addKey = "";
       this.addValue = "";
@@ -588,12 +593,13 @@ export default class Popup extends Vue {
           chrome.tabs.sendMessage(activeTab.id, {
             source: "popup",
             event: "popup2",
-            hash: ""
+            hash: "",
+            tabId: activeTab.id
           });
         }
       });
     } catch (e) {
-      this.e = e;
+      console.log("Popup 2 Failed:", e);
     }
   }
 

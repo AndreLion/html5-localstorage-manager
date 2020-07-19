@@ -2,7 +2,7 @@
   "name": "Realtime JSON-Friendly LocalStorage Manager",
   "description": "Editing JSON in localstorage is a breeze!",
   "version": "2.0",
-  "permissions": ["http://*/", "https://*/"],
+  "permissions": ["activeTab"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
