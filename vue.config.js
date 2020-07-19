@@ -1,9 +1,10 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const terser = require('terser');
+const isProd = process.env.NODE_ENV === "production";
 
 module.exports = {
   filenameHashing: false,
-  productionSourceMap: false,
+  productionSourceMap: !isProd,
   pages: {
     popup: {
       entry: "src/popup/popup.js",
@@ -19,7 +20,7 @@ module.exports = {
     config.plugins.delete("prefetch");
   },
   configureWebpack: {
-    mode: 'production',
+    mode: process.env.NODE_ENV,
     devtool: "cheap-module-source-map",
     plugins: [
       new CopyPlugin({
@@ -27,11 +28,11 @@ module.exports = {
           { from: "src/manifest.json" },
           {
             from: "src/background.js",
-            transform: content => terser.minify(content.toString()).code
+            transform: isProd ? content => terser.minify(content.toString()).code : undefined
           },
           {
             from: "src/inject.js",
-            transform: content => terser.minify(content.toString()).code
+            transform: isProd ? content => terser.minify(content.toString()).code : undefined
           },
           { from: "src/assets/", to: "assets" }
         ]

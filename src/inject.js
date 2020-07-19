@@ -87,7 +87,7 @@
               `></iframe>`
             );
             winPopup.document.close();
-          }, 1000);
+          }, 1400);
         }
       }
     });
