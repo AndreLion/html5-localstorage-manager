@@ -362,8 +362,8 @@ export default class Popup extends Vue {
     }
     if (location.hash.startsWith("#popup2")) {
       this.isPopup2 = true;
-      this.origin = location.hash.split("-")[1];
-      this.tabId = parseInt(location.hash.split("-")[2]);
+      this.origin = location.hash.split("|")[1];
+      this.tabId = parseInt(location.hash.split("|")[2]);
       console.log("popup2 opened from origin:", this.origin, "Tab ID:", this.tabId);
     }
     const options = {

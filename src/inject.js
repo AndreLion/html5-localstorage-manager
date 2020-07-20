@@ -89,7 +89,7 @@
               `id="${extensionId}-popup2" ` +
               `style="position:absolute;top:0;left:0;z-index:99999;height:100%;width:100%;" ` +
               `frameBorder="0" ` +
-              `src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2-${origin}-${tabId}"` +
+              `src="chrome-extension://edlnliiobjcbbiafjdclellilgfocmmb/popup.html#popup2|${origin}|${tabId}"` +
               `></iframe>`
             );
             winPopup.document.close();
