@@ -213,10 +213,10 @@
             <div class="items-end" v-if="d.local.length || d.session.length">
               <span class="text-grey-700">Used Space:</span>
               <span class="text-local mr-2" v-if="d.local.length">
-                Local: {{ localSize }}Mb
+                Local: {{ localSize }}
               </span>
               <span class="text-session" v-if="d.session.length">
-                Session: {{ sessionSize }}Mb
+                Session: {{ sessionSize }}
               </span>
             </div>
             <div class="ml-auto flex-grow flex justify-end">
@@ -336,11 +336,16 @@ export default class Popup extends Vue {
 
   mounted() {
     // Mock
-    // this.$set(this.d, "local", [{"key":"wrap","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
+    // this.$set(this.d, "local", [{"key":"snowplowOutQueue_spTrack_webTracker_get","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
     // this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
-
+    if (location.hash.startsWith("#popup2")) {
+      this.isPopup2 = true;
+      this.origin = location.hash.split("|")[1];
+      this.tabId = parseInt(location.hash.split("|")[2]);
+      console.log("popup2 opened from origin:", this.origin, "Tab ID:", this.tabId);
+    }
     try {
-      chrome.runtime.sendMessage({ source: "popup", event: "mounted" });
+      chrome.runtime.sendMessage({ source: this.isPopup2 ? "popup2" :"popup", event: "mounted" });
       chrome.runtime.onConnect.addListener(port => {
         port.onMessage.addListener(msg => {
           const query = { active: true, currentWindow: true };
@@ -360,11 +365,8 @@ export default class Popup extends Vue {
     } catch (e) {
       console.log("Init Mounting Failed:", e);
     }
-    if (location.hash.startsWith("#popup2")) {
-      this.isPopup2 = true;
-      this.origin = location.hash.split("|")[1];
-      this.tabId = parseInt(location.hash.split("|")[2]);
-      console.log("popup2 opened from origin:", this.origin, "Tab ID:", this.tabId);
+    if (this.isPopup2) {
+      this.syncRequest();
     }
     const options = {
       root: this.popup,
@@ -609,7 +611,23 @@ export default class Popup extends Vue {
       .flat()
       .join("");
     const byte = new Blob([content]).size;
-    return (byte / 1024).toFixed(2);
+    const kb = (byte / 1024).toFixed(2);
+    const mb = (byte / 1024 / 1024).toFixed(2);
+    if (mb > 1) {
+      return `${mb}Mb`;
+    }
+    return `${kb}kb`;
+  }
+
+  syncRequest() {
+    try {
+      chrome.tabs.sendMessage(this.tabId, {
+        source: "popup2",
+        event: "sync"
+      });
+    } catch (e) {
+      console.log("Popup2 Sync Request Failed:", e);
+    }
   }
 
   get table() {

@@ -70,6 +70,7 @@ span.plus-circle-outline-icon.adding {
 
 .content-cell {
   max-height: 8rem;
+  word-break: break-word;
 }
 
 .fix-top {
