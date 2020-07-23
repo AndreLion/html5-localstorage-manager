@@ -30,7 +30,8 @@
           port.postMessage({
             origin: location.origin,
             local: getStorage("local"),
-            session: getStorage("session")
+            session: getStorage("session"),
+            timestamp: Date.now()
           });
           port.disconnect();
         }

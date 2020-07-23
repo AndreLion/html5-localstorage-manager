@@ -357,6 +357,7 @@ export default class Popup extends Vue {
   tabId = "";
   favorites = {};
   storageLoaded = false;
+  lastUpdated = 0;
 
   mounted() {
     // Mock
@@ -400,11 +401,11 @@ export default class Popup extends Vue {
           chrome.tabs.query(query, tabs => {
             if (tabs.length && tabs[0].url) {
               if (tabs.length && tabs[0].url.startsWith(msg.origin)) {
-                this.update(msg.local, msg.session);
+                this.update(msg.local, msg.session, msg.timestamp);
               }
             } else {
               if (this.origin === msg.origin) {
-                this.update(msg.local, msg.session);
+                this.update(msg.local, msg.session, msg.timestamp);
               }
             }
           });
@@ -424,12 +425,14 @@ export default class Popup extends Vue {
     this.ioCell = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          if (entry.boundingClientRect.bottom > 300) {
-            console.log("IO: cell shows up, fix bottom");
-            this.ioFix = "fix-bottom";
-          } else if (entry.boundingClientRect.top < 0) {
-            console.log("IO: cell shows up, fix top");
-            this.ioFix = "fix-top";
+          if (!this.isInViewport(entry.target)) {
+            if (entry.boundingClientRect.bottom > 300) {
+              console.log("IO: cell shows up, fix bottom");
+              this.ioFix = "fix-bottom";
+            } else if (entry.boundingClientRect.top < 0) {
+              console.log("IO: cell shows up, fix top");
+              this.ioFix = "fix-top";
+            }
           }
         } else {
           console.log("IO: cell is hidden, no fix");
@@ -443,23 +446,28 @@ export default class Popup extends Vue {
           console.log("IO: button shows up , no fix");
           this.ioFix = "";
         } else {
-          if (entry.boundingClientRect.bottom > 300) {
-            console.log("IO: button is hidden, fix bottom");
-            this.ioFix = "fix-bottom";
-          } else if (entry.boundingClientRect.top < 300) {
-            console.log("IO: button is hidden, fix top");
-            this.ioFix = "fix-top";
+          if (!this.isInViewport(entry.target.closest("td"))) {
+            if (entry.boundingClientRect.bottom > 300) {
+              console.log("IO: button is hidden, fix bottom");
+              this.ioFix = "fix-bottom";
+            } else if (entry.boundingClientRect.top < 300) {
+              console.log("IO: button is hidden, fix top");
+              this.ioFix = "fix-top";
+            }
           }
         }
       });
     }, options);
   }
 
-  update(local, session) {
-    this.$set(this.d, "local", local || []);
-    this.$set(this.d, "session", session || []);
-    if (local.length === 0 && session.length === 0) {
-      this.status.action = "adding";
+  update(local, session, timestamp) {
+    if (timestamp > this.lastUpdated) {
+      this.$set(this.d, "local", local || []);
+      this.$set(this.d, "session", session || []);
+      if (local.length === 0 && session.length === 0) {
+        this.status.action = "adding";
+      }
+      this.lastUpdated = timestamp;
     }
   }
 
@@ -702,6 +710,17 @@ export default class Popup extends Vue {
     } catch (e) {
       console.log("Set favorites storage failed:", e);
     }
+  }
+
+  isInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
   }
 
   get table() {
