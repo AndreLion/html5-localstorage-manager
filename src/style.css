@@ -35,7 +35,7 @@ td.session, td.local {
 td.session::before, td.local::before {
   content: ' ';
   height: 100%;
-  border-left-width: 3px;
+  border-left-width: 4px;
   position: absolute;
   top: 0;
   left: 0;

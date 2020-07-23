@@ -94,6 +94,7 @@
         </span>
       </div>
       <b-table
+        class="mb-8"
         :data="table"
         :striped="false"
         :narrowed="true"
@@ -143,6 +144,25 @@
             :class="`${props.row._type}-${props.row._index}`"
           >
             <div class="flex justify-end">
+              <span
+                class="cursor-pointer text-yellow-600 hover:text-yellow-400 mr-1 group-hover:visible"
+                :class="
+                  favorites[`${props.row._type}_${props.row.key}`]
+                    ? 'visible '
+                    : 'invisible '
+                "
+                v-if="
+                  !isRemoving(props.row.key, props.row._type) &&
+                    !isEditing(props.row.key, props.row._type)
+                "
+              >
+                <component
+                  :is="getFavIcon(props.row.key, props.row._type)"
+                  :size="20"
+                  title="Edit"
+                  @click="toggleFav(props.row.key, props.row._type)"
+                />
+              </span>
               <span
                 class="cursor-pointer text-blue-300 hover:text-blue-600 mr-1 invisible group-hover:visible"
                 v-if="
@@ -209,7 +229,7 @@
           </b-table-column>
         </template>
         <template slot="footer">
-          <div class="flex mt-2 text-xs">
+          <div class="flex text-xs fixed bottom-0 w-full pr-5 py-2 bg-white">
             <div class="items-end" v-if="d.local.length || d.session.length">
               <span class="text-grey-700">Used Space:</span>
               <span class="text-local mr-2" v-if="d.local.length">
@@ -287,6 +307,8 @@ import HeartIcon from "vue-material-design-icons/HandHeart.vue";
 import BugIcon from "vue-material-design-icons/Bug.vue";
 import AddIcon from "vue-material-design-icons/PlusCircleOutline.vue";
 import OpenIcon from "vue-material-design-icons/OpenInNew.vue";
+import StarOutlineIcon from "vue-material-design-icons/StarOutline.vue";
+import StarIcon from "vue-material-design-icons/Star.vue";
 import JsonEditor from "vue-json-editor";
 
 @Component({
@@ -333,6 +355,8 @@ export default class Popup extends Vue {
   ioFix = "";
   origin = "";
   tabId = "";
+  favorites = {};
+  storageLoaded = false;
 
   mounted() {
     // Mock
@@ -342,12 +366,36 @@ export default class Popup extends Vue {
       this.isPopup2 = true;
       this.origin = location.hash.split("|")[1];
       this.tabId = parseInt(location.hash.split("|")[2]);
-      console.log("popup2 opened from origin:", this.origin, "Tab ID:", this.tabId);
+      console.log(
+        "popup2 opened from origin:",
+        this.origin,
+        "Tab ID:",
+        this.tabId
+      );
     }
     try {
-      chrome.runtime.sendMessage({ source: this.isPopup2 ? "popup2" :"popup", event: "mounted" });
+      chrome.runtime.sendMessage({
+        source: this.isPopup2 ? "popup2" : "popup",
+        event: "mounted"
+      });
       chrome.runtime.onConnect.addListener(port => {
         port.onMessage.addListener(msg => {
+          if (!this.origin) {
+            this.origin = msg.origin;
+          }
+          if (!this.storageLoaded) {
+            chrome.storage.sync.get([this.origin], result => {
+              console.log("favorites in storage:", result);
+              if (
+                result &&
+                result[this.origin] &&
+                Object.keys(result[this.origin])
+              ) {
+                this.favorites = result[this.origin];
+              }
+              this.storageLoaded = true;
+            });
+          }
           const query = { active: true, currentWindow: true };
           chrome.tabs.query(query, tabs => {
             if (tabs.length && tabs[0].url) {
@@ -630,30 +678,72 @@ export default class Popup extends Vue {
     }
   }
 
+  getFavIcon(key, type) {
+    if (this.favorites[`${type}_${key}`]) {
+      return StarIcon;
+    }
+    return StarOutlineIcon;
+  }
+
+  toggleFav(key, type) {
+    console.log("fav", key, type);
+    if (this.favorites[`${type}_${key}`]) {
+      this.$delete(this.favorites, `${type}_${key}`);
+    } else {
+      this.$set(this.favorites, `${type}_${key}`, true);
+    }
+    try {
+      const data = {};
+      data[this.origin] = this.favorites;
+      console.log("Set storage:", data);
+      chrome.storage.sync.set(data, function() {
+        console.log("Favorite storage set");
+      });
+    } catch (e) {
+      console.log("Set favorites storage failed:", e);
+    }
+  }
+
   get table() {
     let result = [];
     if (this.checked.includes("local")) {
       result = result.concat(
-        this.d.local.map((item, index) => ({
-          ...item,
-          _type: "local",
-          _json: this.isJSON(item.value),
-          _index: index
-        }))
+        this.d.local
+          .map((item, index) => ({
+            ...item,
+            _type: "local",
+            _json: this.isJSON(item.value),
+            _index: index
+          }))
+          .sort((a, b) => {
+            const A = a.key.toUpperCase();
+            const B = b.key.toUpperCase();
+            return A < B ? -1 : A > B ? 1 : 0;
+          })
       );
     }
 
     if (this.checked.includes("session")) {
       result = result.concat(
-        this.d.session.map((item, index) => ({
-          ...item,
-          _type: "session",
-          _json: this.isJSON(item.value),
-          _index: index
-        }))
+        this.d.session
+          .map((item, index) => ({
+            ...item,
+            _type: "session",
+            _json: this.isJSON(item.value),
+            _index: index
+          }))
+          .sort((a, b) => {
+            const A = a.key.toUpperCase();
+            const B = b.key.toUpperCase();
+            return A < B ? -1 : A > B ? 1 : 0;
+          })
       );
     }
-    return result;
+    return result.sort((a, b) => {
+      const A = this.favorites[`${a._type}_${a.key}`];
+      const B = this.favorites[`${b._type}_${b.key}`];
+      return A && !B ? -1 : !A && B ? 1 : 0;
+    });
   }
 
   get localSize() {

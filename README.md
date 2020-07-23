@@ -9,9 +9,10 @@ Helps to accelerate web development if you relay on localStorage heavily.
 
 ## Highlight Features
 
-- Realtime (current tab ➜ extension) storage value sync.
+- Realtime storage value sync (current tab ➜ extension popup).
 - JSON-friendly editor.
 - Inspect storage in independent popup window. 
+- Favorite item always on top
 
 ## Playground for Testing
 
