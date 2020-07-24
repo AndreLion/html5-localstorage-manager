@@ -67,7 +67,7 @@
               </div>
             </div>
             <div
-              v-else-if="status.action === 'searching'"
+              v-else-if="status.isSearching"
               class="h-12 flex items-center justify-end pr-4"
               :key="'searching'"
             >
@@ -105,7 +105,7 @@
           class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6"
           @click="toggleSearch"
         >
-          <MagnifyPlusIcon v-if="status.action !== 'searching'" :size="20" />
+          <MagnifyPlusIcon v-if="!status.isSearching" :size="20" />
           <MagnifyCloseIcon v-else :size="20" />
         </span>
         <span
@@ -155,7 +155,7 @@
             <div
               v-else
               contenteditable
-              class="bg-blue-100"
+              class="content-cell bg-blue-100"
               ref="editor"
               :key="'editing'"
               v-text="status.value"
@@ -292,7 +292,7 @@
             </div>
             <div
               class="text-center"
-              v-else-if="status.action === 'searching' && this.keyword !== ''"
+              v-else-if="status.isSearching && this.keyword !== ''"
             >
               Search result is empty
             </div>
@@ -379,7 +379,8 @@ export default class Popup extends Vue {
     type: null,
     value: null,
     json: null,
-    index: null
+    index: null,
+    isSearching: false
   };
   e = null;
   addType = "local";
@@ -398,7 +399,7 @@ export default class Popup extends Vue {
 
   mounted() {
     // Mock
-    // this.$set(this.d, "local", [{"key":"snowplowOutQueue_spTrack_webTracker_get","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
+    // this.$set(this.d, "local", [{"key":"wrap","value":"p:*|l:1_{\"state\":null,\"url\":\"/\",\"metadata\":{\"n$\":1595622219462,\"Ck\":1595622219463,\"kR\":1595622219464,\"jK\":0}}"},{"key":"snowplowOutQueue_spTrack_webTracker_get","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
     // this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
     if (location.hash.startsWith("#popup2")) {
       this.isPopup2 = true;
@@ -648,15 +649,11 @@ export default class Popup extends Vue {
   }
 
   toggleSearch() {
-    if (this.status.action === "searching") {
-      this.status.action = null;
-    } else {
-      this.status.action = "searching";
-    }
+    this.status.isSearching = !this.status.isSearching;
   }
 
   afterEnter() {
-    if (this.status.action === "searching" && this.searchInput) {
+    if (this.status.isSearching && this.searchInput) {
       this.searchInput.$el.querySelector("input").select();
     }
   }
@@ -818,7 +815,7 @@ export default class Popup extends Vue {
     });
 
     // Search check
-    if (this.status.action === "searching" && this.keyword !== "") {
+    if (this.status.isSearching && this.keyword !== "") {
       result = result.filter(item => {
         const regex = RegExp(this.keyword, "ig");
         item._keyMatched = regex.test(item.key);
