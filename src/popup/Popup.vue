@@ -4,7 +4,7 @@
       <div class="flex">
         <span
           class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6 relative"
-          @click="addToggle"
+          @click="toggleAdd"
         >
           <AddIcon
             :size="20"
@@ -13,25 +13,8 @@
           />
         </span>
         <div class="relative w-full mt-px pt-px">
-          <transition name="fade" mode="out-in">
-            <b-field v-if="status.action !== 'adding'" class="h-12">
-              <b-checkbox
-                v-model="checked"
-                native-value="local"
-                size="is-small"
-                :disabled="d.local.length === 0"
-                >Local Storage ({{ d.local.length }})</b-checkbox
-              >
-              <b-checkbox
-                v-model="checked"
-                native-value="session"
-                type="is-info"
-                size="is-small"
-                :disabled="d.session.length === 0"
-                >Session Storage ({{ d.session.length }})</b-checkbox
-              >
-            </b-field>
-            <div v-else class="">
+          <transition name="fade" mode="out-in" @after-enter="afterEnter">
+            <div v-if="status.action === 'adding'" :key="'adding'">
               <div>
                 <b-radio
                   v-model="addType"
@@ -75,7 +58,7 @@
                     <b-button
                       type="is-light"
                       size="is-small"
-                      @click="addToggle"
+                      @click="toggleAdd"
                     >
                       Cancel
                     </b-button>
@@ -83,8 +66,48 @@
                 </b-field>
               </div>
             </div>
+            <div
+              v-else-if="status.action === 'searching'"
+              class="h-12 flex items-center justify-end pr-4"
+              :key="'searching'"
+            >
+              <b-field custom-class="is-small" type="is-success">
+                <b-input
+                  placeholder="Search..."
+                  size="is-small"
+                  v-model="keyword"
+                  type="search"
+                  class="w-40"
+                  ref="search"
+                ></b-input>
+              </b-field>
+            </div>
+            <b-field v-else class="h-12">
+              <b-checkbox
+                v-model="checked"
+                native-value="local"
+                size="is-small"
+                :disabled="d.local.length === 0"
+                >Local Storage ({{ d.local.length }})</b-checkbox
+              >
+              <b-checkbox
+                v-model="checked"
+                native-value="session"
+                type="is-info"
+                size="is-small"
+                :disabled="d.session.length === 0"
+                >Session Storage ({{ d.session.length }})</b-checkbox
+              >
+            </b-field>
           </transition>
         </div>
+        <span
+          class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6"
+          @click="toggleSearch"
+        >
+          <MagnifyPlusIcon v-if="status.action !== 'searching'" :size="20" />
+          <MagnifyCloseIcon v-else :size="20" />
+        </span>
         <span
           class="cursor-pointer text-green-300 hover:text-green-600 mr-2 mt-4 w-6"
           @click="popup2"
@@ -126,7 +149,7 @@
               "
               v-if="!isEditing(props.row.key, props.row._type)"
               class="content-cell overflow-y-auto max-w-xs"
-              key="raw"
+              :key="'raw'"
               v-text="props.row.value"
             ></div>
             <div
@@ -134,7 +157,7 @@
               contenteditable
               class="bg-blue-100"
               ref="editor"
-              key="editing"
+              :key="'editing'"
               v-text="status.value"
               @keydown.enter.prevent="edit(props.row.key, props.row._type)"
             ></div>
@@ -267,6 +290,12 @@
             >
               No data stored in local / session storage
             </div>
+            <div
+              class="text-center"
+              v-else-if="status.action === 'searching' && this.keyword !== ''"
+            >
+              Search result is empty
+            </div>
             <div class="text-center" v-else>
               Storage data is hidden
             </div>
@@ -307,6 +336,8 @@ import HeartIcon from "vue-material-design-icons/HandHeart.vue";
 import BugIcon from "vue-material-design-icons/Bug.vue";
 import AddIcon from "vue-material-design-icons/PlusCircleOutline.vue";
 import OpenIcon from "vue-material-design-icons/OpenInNew.vue";
+import MagnifyPlusIcon from "vue-material-design-icons/MagnifyPlus.vue";
+import MagnifyCloseIcon from "vue-material-design-icons/MagnifyClose.vue";
 import StarOutlineIcon from "vue-material-design-icons/StarOutline.vue";
 import StarIcon from "vue-material-design-icons/Star.vue";
 import JsonEditor from "vue-json-editor";
@@ -319,10 +350,15 @@ import JsonEditor from "vue-json-editor";
     DeleteIcon,
     AddIcon,
     OpenIcon,
+    MagnifyPlusIcon,
+    MagnifyCloseIcon,
     JsonEditor
   }
 })
 export default class Popup extends Vue {
+  @Ref("search")
+  searchInput;
+
   @Ref("editor")
   editor;
 
@@ -358,6 +394,7 @@ export default class Popup extends Vue {
   favorites = {};
   storageLoaded = false;
   lastUpdated = 0;
+  keyword = "";
 
   mounted() {
     // Mock
@@ -602,11 +639,25 @@ export default class Popup extends Vue {
     return false;
   }
 
-  addToggle() {
+  toggleAdd() {
     if (this.status.action === "adding") {
       this.status.action = null;
     } else {
       this.status.action = "adding";
+    }
+  }
+
+  toggleSearch() {
+    if (this.status.action === "searching") {
+      this.status.action = null;
+    } else {
+      this.status.action = "searching";
+    }
+  }
+
+  afterEnter() {
+    if (this.status.action === "searching" && this.searchInput) {
+      this.searchInput.$el.querySelector("input").select();
     }
   }
 
@@ -758,11 +809,24 @@ export default class Popup extends Vue {
           })
       );
     }
-    return result.sort((a, b) => {
+
+    // Fav check
+    result = result.sort((a, b) => {
       const A = this.favorites[`${a._type}_${a.key}`];
       const B = this.favorites[`${b._type}_${b.key}`];
       return A && !B ? -1 : !A && B ? 1 : 0;
     });
+
+    // Search check
+    if (this.status.action === "searching" && this.keyword !== "") {
+      result = result.filter(item => {
+        const regex = RegExp(this.keyword, "ig");
+        item._keyMatched = regex.test(item.key);
+        item._valueMatched = regex.test(item.value);
+        return item._keyMatched || item._valueMatched;
+      });
+    }
+    return result;
   }
 
   get localSize() {

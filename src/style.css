@@ -82,3 +82,7 @@ span.plus-circle-outline-icon.adding {
   position: fixed;
   bottom: 35px;
 }
+
+.control.has-icons-right .input[type="search"] {
+  padding-right: calc(0.625em - 1px);
+}
