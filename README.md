@@ -12,7 +12,8 @@ Helps to accelerate web development if you relay on localStorage heavily.
 - Realtime storage value sync (current tab ➜ extension popup).
 - JSON-friendly editor.
 - Inspect storage in independent popup window. 
-- Favorite item always on top
+- Favourite item always on top
+- Search keyword in key & value
 
 ## Playground for Testing
 
