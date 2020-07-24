@@ -155,7 +155,7 @@
             <div
               v-else
               contenteditable
-              class="content-cell bg-blue-100"
+              class="content-cell overflow-y-auto bg-blue-100"
               ref="editor"
               :key="'editing'"
               v-text="status.value"
