@@ -41,10 +41,7 @@
     );
 
     chrome.runtime.onMessage.addListener((data, sender) => {
-      // console.log("injection received message from:", sender);
-      // console.log("data:", data);
       if(sender.id !== extensionId) {
-        // console.log("sender ID miss match:", sender.id, extensionId);
         return ;
       }
       if (data.source === 'popup') {
