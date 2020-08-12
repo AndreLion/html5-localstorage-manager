@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        textarea { height: 50px; width: 300px; }
+    </style>
+</head>
+<body>
+    <div><label>Key: Valid-JSON</label></div>
+    <div><label>Value: <textarea id="valid">{"key":"value", "array":["string", true, {"obj": null}]}</textarea></label></div>
+    <div><button onclick="addValid()">Set Valid JSON</button></div>
+    <hr />
+    <div><label>Key: Invalid-JSON</label></div>
+    <div><label>Value: <textarea id="invalid">{key:"value", "array":["string", true, {"obj": null}]}</textarea></label></div>
+    <div><button onclick="addInvalid()">Set Invalid JSON</button></div>
+    <footer>
+        <a href="./">Back to content</a>
+    </footer>
+    <script>
+      function addValid() {
+        const key = 'Valid-JSON';
+        const value = document.getElementById('valid').value;
+        localStorage.setItem(key, value);
+      }
+      function addInvalid() {
+        const key = 'Invalid-JSON';
+        const value = document.getElementById('invalid').value;
+        localStorage.setItem(key, value);
+      }
+    </script>
+</body>
+</html>

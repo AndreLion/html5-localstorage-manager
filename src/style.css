@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.w-36 {
+  width: 9rem;
+}
+#popup {
+  width: 640px;
+  max-height:600px;
+  overflow-y: auto;
+}
+
+/* override */
+.table tfoot td, .table tfoot th {
+  border-width: 1px 0 0 !important;
+}
+
+.table thead td, .table thead th {
+  border-width: 0 0 1px !important;
+}
+
+.table td, .table th {
+  vertical-align: middle !important;
+}
+
+table button {
+  height: 20px !important;
+}
+
+td.session, td.local {
+  position: relative;
+}
+
+td.session::before, td.local::before {
+  content: ' ';
+  height: 100%;
+  border-left-width: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+td.session::before {
+  border-left-color: #428be2;
+}
+td.local::before {
+  border-left-color: #9861c0;
+}
+
+td.json::after {
+  content: '{JSON}';
+  font-size: 10px;
+  color: #999;
+  font-weight: 800;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+tfoot th {
+  padding: 0 !important;
+}
+
+span.plus-circle-outline-icon {
+  transition: transform .2s;
+}
+
+span.plus-circle-outline-icon.adding {
+  transform: rotate(45deg);
+}
+
+.content-cell {
+  max-height: 8rem;
+  word-break: break-word;
+}
+
+.fix-top {
+  position: fixed;
+  top: 1px;
+}
+
+.fix-bottom {
+  position: fixed;
+  bottom: 35px;
+}
+
+.control.has-icons-right .input[type="search"] {
+  padding-right: calc(0.625em - 1px);
+}

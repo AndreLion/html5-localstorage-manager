@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div><label>Key: <input type="text" id="key" /></label></div>
+    <div><label>Value: <textarea id="value"></textarea></label></div>
+    <div><button onclick="add()">Add</button></div>
+    <br />
+    <div>Items:</div>
+    <ul id="result">
+    </ul>
+    <footer>
+        <a href="./">Back to content</a>
+    </footer>
+    <script>
+        function add() {
+            const key = document.getElementById('key').value;
+            const value = document.getElementById('value').value;
+            console.log(key, value);
+            if (key !== '') {
+                localStorage.setItem(key, value);
+                document.getElementById('key').value = '';
+                document.getElementById('value').value = '';
+            }
+        }
+
+        function getItemElement(key, value) {
+            const span = document.createElement('span');
+            span.textContent = key;
+            const textarea = document.createElement('textarea');
+            textarea.value = value;
+            const li = document.createElement('li');
+            li.appendChild(span);
+            li.appendChild(textarea);
+            return li;
+        }
+
+        function refresh() {
+            const length = localStorage.length;
+            const ul = document.getElementById('result');
+            ul.innerHTML = '';
+            for (let i = 0; i < length; i++) {
+                console.log(localStorage.key(i));
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                const li = getItemElement(key, value);
+                ul.appendChild(li);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function(event) {
+            refresh();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        textarea { height: 250px; width: 800px; }
+    </style>
+</head>
+<body>
+    <div><label>Key: long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key</label></div>
+    <div><label>Value:
+        <input id="longkey" value="Key is super long"/>
+    </label></div>
+    <div><button onclick="addLongKey()">Set Long Key</button></div>
+    <hr />
+
+    <div><label>Key: long-valid-JSON-key-long-valid-JSON-key-long-valid-JSON-key-long-valid-JSON-key</label></div>
+    <div><label>Value:
+        <textarea id="valid">
+[{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]},{"key":"value", "array":["string", true, {"obj": null}]}]
+        </textarea>
+    </label></div>
+    <div><button onclick="addValid()">Set Long JSON Content</button></div>
+    <hr />
+    <div><label>Key: long-content-long-content-long-content-long-content-long-content-long-content-long-content-long-key</label></div>
+    <div><label>Value:
+        <textarea id="invalid">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel quam at mauris interdum molestie. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce posuere justo lorem, in consectetur sem egestas vitae. Nunc imperdiet sapien sed odio eleifend volutpat. Curabitur magna libero, varius sit amet tempor quis, tristique vitae elit. Morbi eleifend tellus nec purus facilisis pulvinar. Maecenas pretium condimentum lectus non tristique. Sed in quam eleifend, pharetra turpis vel, vestibulum felis.
+
+Cras at nisi dapibus, volutpat leo ut, aliquam dui. Donec nec iaculis justo, elementum elementum sapien. Ut a ex in diam fringilla dictum vitae et lectus. Morbi vestibulum lacinia tortor, finibus facilisis lorem. Etiam nulla lorem, mollis sit amet massa eget, euismod sodales lectus. Quisque id convallis enim, in congue enim. Nullam maximus cursus libero. Duis ipsum dolor, imperdiet vitae orci vel, tincidunt varius justo. Suspendisse arcu tortor, varius vel sapien nec, congue blandit purus. Etiam eu quam ante.
+
+Nam vitae dolor vitae velit vulputate molestie eu ut mi. Nunc ut vehicula lacus, sed dictum nunc. Nam porta dui vel efficitur egestas. Phasellus at mi at elit viverra rutrum et a lectus. Nunc sed nulla urna. Aenean et consectetur enim, at euismod dolor. Nunc tempus risus lorem, ut consectetur elit dignissim nec. Aliquam eleifend ipsum vel cursus rhoncus. Suspendisse egestas maximus elit, et accumsan turpis. Suspendisse et sagittis odio. Morbi tincidunt vel leo vitae mollis. Etiam blandit tincidunt nulla, id tempus elit cursus sed. Suspendisse lacinia lacinia auctor. Curabitur eu mauris faucibus, volutpat erat ac, consectetur tortor. Cras ornare lectus eu urna laoreet pretium. Sed volutpat mollis rhoncus.
+
+Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In interdum faucibus nunc, quis laoreet turpis fringilla sed. Phasellus tellus purus, semper at malesuada eu, tempor eu magna. Morbi nibh sem, vulputate vitae tempus ut, iaculis vitae urna. Aliquam dolor turpis, commodo ut nisl eu, tristique ultricies nulla. Nulla scelerisque semper eros, quis tempor dui tincidunt at. Vestibulum sit amet est sit amet tellus dignissim maximus a in ante. Nulla a ex malesuada, porta turpis sit amet, ornare neque. Fusce ac velit in est rutrum aliquam. Suspendisse a fringilla turpis, in consequat quam. Vestibulum purus lacus, bibendum eu dui eu, porttitor tempor felis.
+
+Aenean laoreet libero nisl, in ultrices nulla eleifend condimentum. Integer ut mollis sapien, viverra semper nisi. Cras suscipit justo ut libero interdum laoreet. Nulla fringilla augue massa, sit amet tristique dui porttitor vitae. Aenean consequat ac massa sit amet scelerisque. Mauris dignissim id diam in blandit. Sed quis quam sem.
+        </textarea></label></div>
+    <div><button onclick="addInvalid()">Set Long non-JSON Content</button></div>
+    <footer>
+        <a href="./">Back to content</a>
+    </footer>
+    <script>
+      function addLongKey() {
+        const key = 'long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key-long-key';
+        const value = document.getElementById('longkey').value;
+        localStorage.setItem(key, value);
+      }
+      function addValid() {
+        const key = 'long-valid-JSON-key-long-valid-JSON-key-long-valid-JSON-key-long-valid-JSON-key';
+        const value = document.getElementById('valid').value;
+        localStorage.setItem(key, value);
+      }
+      function addInvalid() {
+        const key = 'long-content-long-content-long-content-long-content-long-content-long-content-long-content-long-key';
+        const value = document.getElementById('invalid').value;
+        localStorage.setItem(key, value);
+      }
+    </script>
+</body>
+</html>

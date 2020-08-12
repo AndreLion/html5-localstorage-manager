@@ -2,19 +2,28 @@
 
 # Realtime JSON-Friendly LocalStorage Manager
 
-Former known as: HTML5 LocalStorage Manager
+*Formerly known as: HTML5 LocalStorage Manager*
 
+A chrome extension that focuses on creating / retrieving / editing / deleting local / session storage.
+Helps to accelerate web development if you relay on localStorage heavily.
 
-Enhances the native chrome devtool for local/session storage.
+## Highlight Features
 
-## Features
-
-- Real-time inspection for storage value change.
+- Realtime storage value sync (current tab ➜ extension popup).
 - JSON-friendly editor.
+- Inspect storage in independent popup window. 
+- Favourite item always on top
+- Search keyword in key & value
+
+## Playground for Testing
+
+[Playground](http://andrelion.github.io/html5-localstorage-manager/playground/)
 
 ## Release log:
 
-Ver 2.0 (working in progress)
+Ver 2.0 (July 2020)
+  - Rewrite everything, again, since 2014
+  - Adapt latest API & facilitate latest compliance 
 
 Ver 1.6 (Nov 10, 2014)
   - Support session storage

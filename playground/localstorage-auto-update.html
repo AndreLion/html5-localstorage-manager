@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div><label>Key: <span id="key">timestamp</span></label></div>
+    <div><label>Value: <span id="value"></span></label></div>
+    <footer>
+        <a href="./">Back to content</a>
+    </footer>
+    <script>
+        setInterval(() => {
+          const key = 'timestamp';
+          const now = +new Date + '';
+          localStorage.setItem(key, now);
+          document.getElementById('value').innerHTML = localStorage.getItem(key);
+        }, 1111);
+
+        window.addEventListener('storage', () => {
+          // When local storage changes, dump the list to
+          // the console.
+          console.log(JSON.parse(window.localStorage.getItem('timestamp')));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div>Local Storage (Update every 1 second)</div>
+    <div><label>Key: <span id="lskey">clock</span></label></div>
+    <div><label>Value: <span id="lsvalue"></span></label></div>
+    <hr />
+    <div>Session Storage (Update every 1.5 second)</div>
+    <div><label>Key: <span id="sskey">counter</span></label></div>
+    <div><label>Value: <span id="ssvalue"></span></label></div>
+    <footer>
+        <a href="./">Back to content</a>
+    </footer>
+    <script>
+      setInterval(() => {
+        const key = 'clock';
+        const now = new Date;
+        const value = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+        localStorage.setItem(key, value);
+        document.getElementById('lsvalue').innerHTML = localStorage.getItem(key);
+      }, 1000);
+
+      setInterval(() => {
+        const key = 'counter';
+        let counter = parseInt(sessionStorage.getItem(key)) || 0;
+        sessionStorage.setItem(key, (counter > 1000 ? 1 : ++counter) + '');
+        document.getElementById('ssvalue').innerHTML = sessionStorage.getItem(key);
+      }, 1500);
+    </script>
+</body>
+</html>
