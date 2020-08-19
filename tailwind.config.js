@@ -102,13 +102,15 @@ module.exports = {
         },
         sponsor: '#ec6cb9',
         local: '#9861c0',
-        session: '#428be2'
+        session: '#428be2',
+        cookie: '#eab602'
       }
     }
   },
   variants: {
     visibility: ['responsive', 'hover', 'focus', 'group-hover'],
-    textColor: ['responsive', 'hover', 'focus']
+    textColor: ['responsive', 'hover', 'focus', 'group-hover'],
+    textDecoration: ['group-hover']
   },
   plugins: [],
   purge: {

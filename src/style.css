@@ -28,11 +28,11 @@ table button {
   height: 20px !important;
 }
 
-td.session, td.local {
+td.session, td.local, td.cookie {
   position: relative;
 }
 
-td.session::before, td.local::before {
+td.session::before, td.local::before, td.cookie::before {
   content: ' ';
   height: 100%;
   border-left-width: 4px;
@@ -46,6 +46,9 @@ td.session::before {
 }
 td.local::before {
   border-left-color: #9861c0;
+}
+td.cookie::before {
+  border-left-color: #eab602;
 }
 
 td.json::after {
