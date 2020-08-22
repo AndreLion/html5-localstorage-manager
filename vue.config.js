@@ -34,7 +34,8 @@ module.exports = {
             from: "src/inject.js",
             transform: isProd ? content => terser.minify(content.toString()).code : undefined
           },
-          { from: "src/assets/", to: "assets" }
+          { from: "src/assets/", to: "assets" },
+          { from: "src/vendor/", to: "vendor" }
         ]
       })
     ]

@@ -1,6 +1,6 @@
 {
   "name": "Realtime JSON-Friendly Web Storage Manager",
-  "description": "Editing JSON in local / session storage, cookie is a breeze!",
+  "description": "LocalStorage / SessionStorage / Cookie 3 in 1 Editor",
   "version": "2.1",
   "permissions": ["activeTab", "storage"],
   "background": {

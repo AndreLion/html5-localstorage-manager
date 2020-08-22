@@ -21,20 +21,33 @@
     }
     return data;
   };
+  const getCookie = () => {
+    const cookies = Cookies.get();
+    return Object.keys(cookies).map(key => ({
+      key,
+      value: cookies[key]
+    }));
+  };
   if (!document.getElementById(extensionId)) {
     window.addEventListener(
       "message",
       ({ data }) => {
-        if (data.source === "proxy" && data.event === "sync") {
-          const port = chrome.runtime.connect();
+        const port = chrome.runtime.connect();
+        if (data.source === "proxy" && data.event === "syncStorage") {
           port.postMessage({
             origin: location.origin,
             local: getStorage("local"),
             session: getStorage("session"),
             timestamp: Date.now()
           });
-          port.disconnect();
+        } else if (data.source === "proxy" && data.event === "syncCookie") {
+          port.postMessage({
+            origin: location.origin,
+            cookie: getCookie(),
+            timestamp: Date.now()
+          });
         }
+        port.disconnect();
         origin = location.origin;
       },
       false
@@ -44,6 +57,7 @@
       if(sender.id !== extensionId) {
         return ;
       }
+      console.log("onMessage", data);
       if (data.source === 'popup') {
         if (data.event === 'remove') {
           switch(data.type) {
@@ -52,6 +66,23 @@
               break;
             case 'session':
               sessionStorage.removeItem(data.key);
+              break;
+            case 'cookie':
+              Cookies.remove(data.key);
+              break;
+          }
+        } else if (data.event === 'removeAll') {
+          switch(data.type) {
+            case 'local':
+              localStorage.clear();
+              break;
+            case 'session':
+              sessionStorage.clear();
+              break;
+            case 'cookie':
+              Object.keys(Cookies.get()).forEach(key => {
+                Cookies.remove(key);
+              })
               break;
           }
         } else if (data.event === 'edit') {
@@ -62,6 +93,9 @@
             case 'session':
               sessionStorage.setItem(data.key, data.value);
               break;
+            case 'cookie':
+              Cookies.set(data.key, data.value);
+              break;
           }
         } else if (data.event === 'add') {
           switch(data.type) {
@@ -70,6 +104,9 @@
               break;
             case 'session':
               sessionStorage.setItem(data.key, data.value);
+              break;
+            case 'cookie':
+              Cookies.set(data.key, data.value);
               break;
           }
         } else if (data.event === 'popup2') {
@@ -94,8 +131,8 @@
           }, 1400);
         }
       } else if (data.source === 'popup2') {
-        if (data.event === 'sync') {
-          window.postMessage({source: 'proxy', event: 'sync'}, location.origin);
+        if (data.event === 'syncStorage') {
+          window.postMessage({source: 'proxy', event: 'syncStorage'}, location.origin);
         }
       }
     });
@@ -111,19 +148,23 @@
           const script =
             '<script>' +
             `const onchange = () => {` +
-            `window.parent.postMessage({source: 'proxy', event: 'sync', origin: location.origin}, location.origin);` +
+            `window.parent.postMessage({source: 'proxy', event: 'syncStorage', origin: location.origin}, location.origin);` +
             `};` +
             'window.addEventListener("storage", onchange, false);' +
             '</script>';
           fd.write(script);
         } catch (e) {
           setInterval(() => {
-            window.postMessage({source: 'proxy', event: 'sync', origin: location.origin}, location.origin);
+            window.postMessage({source: 'proxy', event: 'syncStorage', origin: location.origin}, location.origin);
           }, 1000);
         }
       };
       document.body.appendChild(iframe);
+      setInterval(() => {
+        window.postMessage({source: 'proxy', event: 'syncCookie', origin: location.origin}, location.origin);
+      }, 1000);
     }
   }
-  window.postMessage({source: 'proxy', event: 'sync'}, location.origin);
+  window.postMessage({source: 'proxy', event: 'syncStorage'}, location.origin);
+  window.postMessage({source: 'proxy', event: 'syncCookie'}, location.origin);
 })();

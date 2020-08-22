@@ -271,35 +271,42 @@
         <template slot="footer">
           <div class="flex text-xs fixed bottom-0 w-full pr-5 py-2 bg-white">
             <div
-              class="justify-start flex"
+              class="flex items-end"
               v-if="d.local.length || d.session.length"
             >
               <span class="text-grey-700 mr-1">Used Space:</span>
 
               <template v-if="d.local.length && !isNotRemovingAll('local')">
                 <span
-                    v-if="!isRemovingAll('local')"
-                    class="mr-2 cursor-pointer group flex"
-                    title="Delete All Local Storage?"
-                    @click="removingAll('local')"
+                  v-if="!isRemovingAll('local')"
+                  class="mr-2 cursor-pointer group flex"
+                  title="Delete All Local Storage?"
+                  @click="removingAll('local')"
                 >
                   <span class="text-local group-hover:line-through">
                     Local: {{ localSize }}
                   </span>
-                  <span class="text-red-200 group-hover:text-red-600">
-                    <DeleteIcon :size="18" />
+                  <span class="text-red-200 group-hover:text-red-400 group">
+                    <DeleteIcon :size="18" class="group-hover:hidden" />
+                    <DeleteHoverIcon
+                      :size="18"
+                      class="hidden group-hover:inline"
+                    />
                   </span>
                 </span>
                 <span v-else class="flex">
                   <b-button
-                      size="is-small"
-                      type="is-danger"
-                      class="mr-1"
-                      @click="removeAll('local')"
+                    size="is-small"
+                    type="is-danger"
+                    class="mr-1"
+                    @click="removeAll('local')"
                   >
                     Delete All LocalStorage
                   </b-button>
-                  <span class="text-grey-500 hover:text-grey-700 cursor-pointer" @click="cancel">
+                  <span
+                    class="text-grey-500 hover:text-grey-700 cursor-pointer"
+                    @click="cancel"
+                  >
                     <CloseCircleOutlineIcon :size="18" />
                   </span>
                 </span>
@@ -307,16 +314,20 @@
 
               <template v-if="d.session.length && !isNotRemovingAll('session')">
                 <span
-                    v-if="!isRemovingAll('session')"
-                    class="mr-2 cursor-pointer group flex"
-                    title="Delete All Session Storage?"
-                    @click="removingAll('session')"
+                  v-if="!isRemovingAll('session')"
+                  class="mr-2 cursor-pointer group flex"
+                  title="Delete All Session Storage?"
+                  @click="removingAll('session')"
                 >
                   <span class="text-session group-hover:line-through">
                     Session: {{ sessionSize }}
                   </span>
-                  <span class="text-red-200 group-hover:text-red-600">
-                    <DeleteIcon :size="18" />
+                  <span class="text-red-200 group-hover:text-red-400 group">
+                    <DeleteIcon :size="18" class="group-hover:hidden" />
+                    <DeleteHoverIcon
+                      :size="18"
+                      class="hidden group-hover:inline"
+                    />
                   </span>
                 </span>
                 <span v-else class="flex">
@@ -328,7 +339,10 @@
                   >
                     Delete All SessionStorage
                   </b-button>
-                  <span class="text-grey-500 hover:text-grey-700 cursor-pointer" @click="cancel">
+                  <span
+                    class="text-grey-500 hover:text-grey-700 cursor-pointer"
+                    @click="cancel"
+                  >
                     <CloseCircleOutlineIcon :size="18" />
                   </span>
                 </span>
@@ -336,35 +350,41 @@
 
               <template v-if="d.cookie.length && !isNotRemovingAll('cookie')">
                 <span
-                    v-if="!isRemovingAll('cookie')"
-                    class="mr-2 cursor-pointer group flex"
-                    title="Delete All Cookie?"
-                    @click="removingAll('cookie')"
+                  v-if="!isRemovingAll('cookie')"
+                  class="mr-2 cursor-pointer group flex"
+                  title="Delete All Cookie?"
+                  @click="removingAll('cookie')"
                 >
                   <span class="text-cookie group-hover:line-through">
                     Cookie: {{ cookieSize }}
                   </span>
-                  <span class="text-red-200 group-hover:text-red-600">
-                    <DeleteIcon :size="18" />
+                  <span class="text-red-200 group-hover:text-red-400 group">
+                    <DeleteIcon :size="18" class="group-hover:hidden" />
+                    <DeleteHoverIcon
+                      :size="18"
+                      class="hidden group-hover:inline"
+                    />
                   </span>
                 </span>
                 <span v-else class="flex">
                   <b-button
-                      size="is-small"
-                      type="is-danger"
-                      class="mr-1"
-                      @click="removeAll('cookie')"
+                    size="is-small"
+                    type="is-danger"
+                    class="mr-1"
+                    @click="removeAll('cookie')"
                   >
                     Delete All Cookie
                   </b-button>
-                  <span class="text-grey-500 hover:text-grey-700 cursor-pointer" @click="cancel">
+                  <span
+                    class="text-grey-500 hover:text-grey-700 cursor-pointer"
+                    @click="cancel"
+                  >
                     <CloseCircleOutlineIcon :size="18" />
                   </span>
                 </span>
               </template>
-
             </div>
-            <div class="ml-auto flex-grow flex justify-end">
+            <div class="flex-grow flex justify-end items-end">
               <a
                 href="https://github.com/sponsors/andrelion"
                 target="_blank"
@@ -408,7 +428,7 @@
     <section v-else>
       <div class="flex justify-end py-2">
         <span class="mr-auto" ref="jsonKey">
-          Editing {{ status.type }}Storage: {{ status.key }}
+          Editing {{ getDisplayType(status.type) }}: {{ status.key }}
         </span>
         <b-button
           size="is-small"
@@ -431,8 +451,9 @@
   </div>
 </template>
 <script>
-import { Component, Vue, Ref } from "vue-property-decorator";
+import { Component, Vue, Ref, Watch } from "vue-property-decorator";
 import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
+import DeleteHoverIcon from "vue-material-design-icons/Delete.vue";
 import EditIcon from "vue-material-design-icons/PencilOutline.vue";
 import HeartIcon from "vue-material-design-icons/HandHeart.vue";
 import BugIcon from "vue-material-design-icons/Bug.vue";
@@ -451,6 +472,7 @@ import JsonEditor from "vue-json-editor";
     HeartIcon,
     BugIcon,
     DeleteIcon,
+    DeleteHoverIcon,
     AddIcon,
     OpenIcon,
     MagnifyPlusIcon,
@@ -472,7 +494,24 @@ export default class Popup extends Vue {
   @Ref("jsonKey")
   jsonKey;
 
-  checked = ["local", "session", "cookie"];
+  @Watch("checked")
+  onCheckedChanged(checked) {
+    console.log("on checked changed to", checked);
+    try {
+      const data = {};
+      data[this.origin] = {
+        favorites: this.favorites,
+        checked
+      };
+      console.log("Set storage:", data);
+      chrome.storage.sync.set(data, function() {
+        console.log("Favorite storage set");
+      });
+    } catch (e) {
+      console.log("Set favorites storage failed:", e);
+    }
+  }
+  checked = [];
   d = {
     local: [],
     session: [],
@@ -499,14 +538,17 @@ export default class Popup extends Vue {
   tabId = "";
   favorites = {};
   storageLoaded = false;
-  lastUpdated = 0;
+  lastUpdatedStorage = 0;
+  lastUpdatedCookie = 0;
   keyword = "";
 
   mounted() {
     // Mock
-    this.$set(this.d, "local", [{"key":"wrap","value":"p:*|l:1_{\"state\":null,\"url\":\"/\",\"metadata\":{\"n$\":1595622219462,\"Ck\":1595622219463,\"kR\":1595622219464,\"jK\":0}}"},{"key":"snowplowOutQueue_spTrack_webTracker_get","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
-    this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
-    this.$set(this.d, "cookie", [{ key: "mockCookie", value: `1223` }]);
+    // this.$set(this.d, "local", [{"key":"wrap","value":"p:*|l:1_{\"state\":null,\"url\":\"/\",\"metadata\":{\"n$\":1595622219462,\"Ck\":1595622219463,\"kR\":1595622219464,\"jK\":0}}"},{"key":"snowplowOutQueue_spTrack_webTracker_get","value":`{"frameworks.css":"https://github.githubassets.com/assets/frameworks-feecb8f4bc5dce34742f7eae4fa0a799.css","site.css":"https://github.githubassets.com/assets/site-dfba4b408f2494358f8d655558507d21.css","github.css":"https://github.githubassets.com/assets/github-0f40d092afafb6fe64b4577654ba8a62.css"}`},{ key: "mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey-mockKey", value: `{a:1}` }, { key: "JSON", value: `[{"a":1}]` }, { key: "longKey", value: `x[{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}, {"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"},{"name":"John","age":31,"city":"New York"}]` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }, { key: "shortKey", value: `abc` }]);
+    // this.$set(this.d, "local", [{ key: "mockLocal", value: `123` }]);
+    // this.$set(this.d, "session", [{ key: "mockSession", value: `123` }]);
+    // this.$set(this.d, "cookie", [{ key: "mockCookie", value: `1223` }]);
+
     if (location.hash.startsWith("#popup2")) {
       this.isPopup2 = true;
       this.origin = location.hash.split("|")[1];
@@ -531,12 +573,16 @@ export default class Popup extends Vue {
           if (!this.storageLoaded) {
             chrome.storage.sync.get([this.origin], result => {
               console.log("favorites in storage:", result);
-              if (
-                result &&
-                result[this.origin] &&
-                Object.keys(result[this.origin])
-              ) {
-                this.favorites = result[this.origin];
+              if (result && result[this.origin]) {
+                this.favorites =
+                  result[this.origin].favorites || this.favorites;
+                this.checked = result[this.origin].checked || [
+                  "local",
+                  "session",
+                  "cookie"
+                ];
+              } else {
+                this.checked = ["local", "session", "cookie"];
               }
               this.storageLoaded = true;
             });
@@ -545,11 +591,11 @@ export default class Popup extends Vue {
           chrome.tabs.query(query, tabs => {
             if (tabs.length && tabs[0].url) {
               if (tabs.length && tabs[0].url.startsWith(msg.origin)) {
-                this.update(msg.local, msg.session, msg.timestamp);
+                this.update(msg);
               }
             } else {
               if (this.origin === msg.origin) {
-                this.update(msg.local, msg.session, msg.timestamp);
+                this.update(msg);
               }
             }
           });
@@ -604,14 +650,19 @@ export default class Popup extends Vue {
     }, options);
   }
 
-  update(local, session, timestamp) {
-    if (timestamp > this.lastUpdated) {
-      this.$set(this.d, "local", local || []);
-      this.$set(this.d, "session", session || []);
-      if (local.length === 0 && session.length === 0) {
-        this.status.action = "adding";
+  update({ local = null, session = null, cookie = null, timestamp }) {
+    if (local !== null || session !== null) {
+      if (timestamp > this.lastUpdatedStorage) {
+        local && this.$set(this.d, "local", local);
+        session && this.$set(this.d, "session", session);
+        this.lastUpdatedStorage = timestamp;
       }
-      this.lastUpdated = timestamp;
+    }
+    if (cookie !== null) {
+      if (timestamp > this.lastUpdatedCookie) {
+        cookie && this.$set(this.d, "cookie", cookie);
+        this.lastUpdatedCookie = timestamp;
+      }
     }
   }
 
@@ -733,15 +784,31 @@ export default class Popup extends Vue {
 
   removeAll(type) {
     console.log("remove all", type);
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs.length) {
+          const activeTab = tabs[0];
+          const id = this.isPopup2 ? this.tabId : activeTab.id;
+          chrome.tabs.sendMessage(id, {
+            source: "popup",
+            event: "removeAll",
+            type
+          });
+        }
+      });
+    } catch (e) {
+      console.log("Remove All Failed:", e);
+    }
+    this.status.action = null;
+    this.status.key = null;
+    this.status.type = null;
   }
 
   isRemovingAll(type) {
-    console.log(type);
     return this.status.action === "removingAll" && this.status.type === type;
   }
 
   isNotRemovingAll(type) {
-    console.log("isNotRemovingAll", type);
     return this.status.action === "removingAll" && this.status.type !== type;
   }
 
@@ -853,7 +920,11 @@ export default class Popup extends Vue {
     try {
       chrome.tabs.sendMessage(this.tabId, {
         source: "popup2",
-        event: "sync"
+        event: "syncStorage"
+      });
+      chrome.tabs.sendMessage(this.tabId, {
+        source: "popup2",
+        event: "syncCookie"
       });
     } catch (e) {
       console.log("Popup2 Sync Request Failed:", e);
@@ -876,7 +947,10 @@ export default class Popup extends Vue {
     }
     try {
       const data = {};
-      data[this.origin] = this.favorites;
+      data[this.origin] = {
+        favorites: this.favorites,
+        checked: this.checked
+      };
       console.log("Set storage:", data);
       chrome.storage.sync.set(data, function() {
         console.log("Favorite storage set");
@@ -895,6 +969,14 @@ export default class Popup extends Vue {
         (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
+  }
+
+  getDisplayType(type) {
+    if (type === "cookie") {
+      return type;
+    } else {
+      return `${type} storage`;
+    }
   }
 
   get table() {
