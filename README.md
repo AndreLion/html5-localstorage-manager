@@ -4,9 +4,19 @@
 
 *Formerly known as: HTML5 LocalStorage Manager*
 
-A chrome extension that focuses on creating / retrieving / editing / deleting local / session storage and cookie.
-Helps to accelerate web development if you relay on localStorage heavily.
+A chrome extension that focuses on managing local storage, session storage and cookie*, especially in JSON format.
+Helps to accelerate web development if you relay on web storage heavily.
 
+## Highlight Features
+
+- Realtime storage value sync (current tab ➜ extension popup).
+- JSON-friendly editor.
+- Inspect storage in independent popup window. 
+- Favourite item always on top.
+- Search keyword in key & value.
+- Delete all items with one click.
+
+* Only support editing cookie value but not domain, expire data, path etc.
 ## Highlight Features
 
 - Realtime storage value sync (current tab ➜ extension popup).
